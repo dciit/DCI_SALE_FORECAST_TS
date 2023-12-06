@@ -1,0 +1,56 @@
+export interface MSale {
+    ym?: string;
+    empcode?: string;
+    listSale?: Person[];
+    year?: string;
+    month?: string;
+}
+export interface MResponse {
+    status: boolean;
+    error: string;
+}
+export interface Person {
+    customer: string;
+    modelCode: string;
+    sebango: string;
+    pltype: string;
+    d01: string | number;
+    d02: string | number;
+    d03: string | number;
+    d04: string | number;
+    d05: string | number;
+    d06: string | number;
+    d07: string | number;
+    d08: string | number;
+    d09: string | number;
+    d10: string | number;
+    d11?: string | number;
+    d12?: string | number;
+    d13?: string | number;
+    d14?: string | number;
+    d15?: string | number;
+    d16?: string | number;
+    d17?: string | number;
+    d18?: string | number;
+    d19?: string | number;
+    d20?: string | number;
+    d21?: string | number;
+    d22?: string | number;
+    d23?: string | number;
+    d24?: string | number;
+    d25?: string | number;
+    d26?: string | number;
+    d27?: string | number;
+    d28?: string | number;
+    d29?: string | number;
+    d30?: string | number;
+    d31?: string | number;
+}
+
+
+export interface MStatusSale {
+    year?: string;
+    month?: string;
+    rev?: number;
+    isDistribution?: boolean;
+}
