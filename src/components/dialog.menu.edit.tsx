@@ -1,18 +1,25 @@
 import { Dialog, DialogTitle, List, ListItem, ListItemButton, ListItemAvatar, Avatar, ListItemText, DialogContent } from '@mui/material'
-import { blue } from '@mui/material/colors'
-import AddIcon from '@mui/icons-material/Add';
-import PersonIcon from '@mui/icons-material/Person';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import EditIcon from '@mui/icons-material/Edit';
 import { useNavigate } from 'react-router-dom';
 import moment from 'moment';
+import { MRedux } from '../Interface';
 function DialogMenuEdit(props: any) {
+    const dispatch = useDispatch();
     const navigate = useNavigate();
     const { open, close } = props;
-    const year = useSelector((state: any) => state.reducer.select.year);
-    const month: number = useSelector((state: any) => state.reducer.select.month);
+    const reducer = useSelector((state: MRedux) => state.reducer);
+    let year: string = moment().format('YYYY');
+    if (typeof reducer.select !== 'undefined' && typeof reducer.select.year !== 'undefined') {
+        year = reducer.select.year;
+    }
+    let month: number = 1;
+    if (typeof reducer.select !== 'undefined' && typeof reducer.select.month !== 'undefined' && reducer.select.month != '') {
+        month = reducer.select.month;
+    }
     async function handleEdit() {
-        navigate('/edit')
+        navigate('/dcisaleforecast/edit');
+        dispatch({ type: 'SET-MENU', payload: 'edit' })
     }
     return (
         <Dialog onClose={close} open={open} >

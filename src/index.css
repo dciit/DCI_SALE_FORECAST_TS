@@ -6,11 +6,6 @@
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
-
-  /* color-scheme: light dark; */
-  /* color: rgba(255, 255, 255, 0.87); */
-  /* background-color: #242424; */
-
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -59,18 +54,65 @@ button:focus-visible {
   text-transform: uppercase;
 }
 .toolbar {
-  box-shadow:0 2px 3px -1px rgb(0 0 0 / 20%) !important;
+  /* box-shadow:0 2px 3px -1px rgb(0 0 0 / 20%) !important; */
+  border-bottom:1px solid #d8dee4;
 }
 
 table.tbSaleView,.tbSaleView td, .tbSaleView th {
-  border: 1px solid;
+  border: 1px solid #e8e8e8;
 }
 
 table.tbSaleView {
-  width: 100%;
+  /* width: 100%; */
   border-collapse: collapse;
 }
 
 .text-shadow {
   
+}
+
+.border-mtr {
+  border:1px solid #ddd;
+}
+
+.rg-cell {
+  text-align:right !important;
+}
+
+.border-btn-login {
+  border-right: 1px;
+  border-top: 1px;
+  border-bottom: 1px;
+  border-color: white;
+  border-style: solid;
+  border-top-right-radius: 24px;
+  border-bottom-right-radius: 24px;
+}
+
+.flex-right .MuiOutlinedInput-notchedOutline {
+  border-color: #e4e4e4 !important;
+}
+
+.flex-right .MuiFilledInput-root {
+  border-bottom: 1px solid #e6e6e6 !important;
+}
+
+.flex-right .MuiInput-root {
+  border-bottom: 1px solid #e6e6e6 !important;
+}
+.flex-right .MuiTypography-root,
+.flex-right .MuiFormLabel-root ,
+.flex-right .MuiInputLabel-root{
+  color:white !important;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
 }

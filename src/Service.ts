@@ -1,6 +1,6 @@
 
 import Axios from "axios";
-import { MSale, MStatusSale } from "./Interface";
+import { MCustomer, MGetSale, MLogin, MModel, MResponse, MSale, MStatusSale } from "./Interface";
 const http = Axios.create({
     baseURL: import.meta.env.VITE_API,
     headers: {
@@ -18,7 +18,7 @@ export function API_UPDATE_SALE(param: MSale) {
 }
 
 export function API_GET_SALE(param: MSale) {
-    return new Promise(resolve => {
+    return new Promise<MGetSale>(resolve => {
         http.post(`/get/sale`, param).then((res) => {
             resolve(res.data);
         })
@@ -26,7 +26,7 @@ export function API_GET_SALE(param: MSale) {
 }
 
 export function API_DISTRIBUTION_SALE(param: MSale) {
-    return new Promise<MStatusSale>(resolve => {
+    return new Promise<MResponse>(resolve => {
         http.post(`/distribution/sale`, param).then((res) => {
             resolve(res.data);
         })
@@ -51,16 +51,40 @@ export function API_LIST_STATUS_SALE(param: MSale) {
 }
 
 export function API_STATUS_SALE(param: MSale) {
-    return new Promise<boolean>(resolve => {
+    return new Promise<MStatusSale>(resolve => {
         http.post(`/status/sale`, param).then((res) => {
-            resolve(res.data.isDistribution);
+            resolve(res.data);
         })
     })
 }
 
 export function API_CHANGE_STATUS(param: MSale) {
-    return new Promise(resolve => {
+    return new Promise<MResponse>(resolve => {
         http.post(`/status/change/sale`, param).then((res) => {
+            resolve(res.data);
+        })
+    })
+}
+export function API_CUSTOMER() {
+    return new Promise<MCustomer[]>(resolve => {
+        http.get(`/sale/customer`).then((res) => {
+            resolve(res.data);
+        })
+    })
+}
+
+
+export function API_MODEL() {
+    return new Promise<MModel[]>(resolve => {
+        http.get(`/sale/model`).then((res) => {
+            resolve(res.data);
+        })
+    })
+}
+
+export function API_LOGIN(param: MLogin) {
+    return new Promise<MResponse>(resolve => {
+        http.post(`/employee/login`,param).then((res) => {
             resolve(res.data);
         })
     })

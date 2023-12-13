@@ -1,21 +1,19 @@
 import { useEffect, useState } from 'react'
 import './App.css'
-import { ReactGrid, Column, Row, TextCell, CellChange, DefaultCellTypes } from "@silevis/reactgrid";
+import { ReactGrid, Column, Row, TextCell, CellChange, DefaultCellTypes, Highlight } from "@silevis/reactgrid";
 import "@silevis/reactgrid/styles.css";
-import { Stack, Button, Card, Box, Typography, TextField, Breadcrumbs, Link, Avatar, Paper } from '@mui/material';
-import { API_CHANGE_STATUS, API_CLEAR_SALE, API_DISTRIBUTION_SALE, API_GET_SALE, API_STATUS_SALE, API_UPDATE_SALE } from './Service';
+import { Stack, Button, Typography, TextField, Badge } from '@mui/material';
+import { API_CHANGE_STATUS, API_CLEAR_SALE, API_CUSTOMER, API_DISTRIBUTION_SALE, API_GET_SALE, API_MODEL, API_STATUS_SALE, API_UPDATE_SALE } from './Service';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import SaveAltIcon from '@mui/icons-material/SaveAlt';
-import HomeIcon from '@mui/icons-material/Home';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
-import Logo from './assets/logo.svg';
-import AutoFixHighIcon from '@mui/icons-material/AutoFixHigh';
-import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import TaskAltIcon from '@mui/icons-material/TaskAlt';
 import moment from 'moment';
-import { MResponse, MStatusSale, Person } from './Interface';
+import { MCustomer, MModel, MRedux, MStatusSale, Person } from './Interface';
 import BorderColorIcon from '@mui/icons-material/BorderColor';
+import { useNavigate } from 'react-router-dom';
+import ExportToExcel from './ExportToExcel';
+// import { DownloadTableExcel } from "react-export-table-to-excel";
 const getColumns = (): Column[] => [
   { columnId: "customer", width: 100 },
   { columnId: "modelCode", width: 150 },
@@ -31,6 +29,27 @@ const getColumns = (): Column[] => [
   { columnId: "d08", width: 75 },
   { columnId: "d09", width: 75 },
   { columnId: "d10", width: 75 },
+  { columnId: "d11", width: 75 },
+  { columnId: "d12", width: 75 },
+  { columnId: "d13", width: 75 },
+  { columnId: "d14", width: 75 },
+  { columnId: "d15", width: 75 },
+  { columnId: "d16", width: 75 },
+  { columnId: "d17", width: 75 },
+  { columnId: "d18", width: 75 },
+  { columnId: "d19", width: 75 },
+  { columnId: "d20", width: 75 },
+  { columnId: "d21", width: 75 },
+  { columnId: "d22", width: 75 },
+  { columnId: "d23", width: 75 },
+  { columnId: "d24", width: 75 },
+  { columnId: "d25", width: 75 },
+  { columnId: "d26", width: 75 },
+  { columnId: "d27", width: 75 },
+  { columnId: "d28", width: 75 },
+  { columnId: "d29", width: 75 },
+  { columnId: "d30", width: 75 },
+  { columnId: "d31", width: 75 },
 ];
 
 const headerRow: Row = {
@@ -50,47 +69,104 @@ const headerRow: Row = {
     { type: "header", text: "d08" },
     { type: "header", text: "d09" },
     { type: "header", text: "d10" },
+    { type: "header", text: "d11" },
+    { type: "header", text: "d12" },
+    { type: "header", text: "d13" },
+    { type: "header", text: "d14" },
+    { type: "header", text: "d15" },
+    { type: "header", text: "d16" },
+    { type: "header", text: "d17" },
+    { type: "header", text: "d18" },
+    { type: "header", text: "d19" },
+    { type: "header", text: "d20" },
+    { type: "header", text: "d21" },
+    { type: "header", text: "d22" },
+    { type: "header", text: "d23" },
+    { type: "header", text: "d24" },
+    { type: "header", text: "d25" },
+    { type: "header", text: "d26" },
+    { type: "header", text: "d27" },
+    { type: "header", text: "d28" },
+    { type: "header", text: "d29" },
+    { type: "header", text: "d30" },
+    { type: "header", text: "d31" },
   ]
 };
 
 const getRows = (people: Person[]): Row[] => [
   headerRow,
-  ...people.map<Row>((person, idx) => ({
+  ...people.map<Row>((sale, idx) => ({
     rowId: idx,
     cells: [
-      { type: "text", text: person.customer },
-      { type: "text", text: person.modelCode },
-      { type: "text", text: person.sebango },
-      { type: "text", text: person.pltype },
-      { type: "text", text: person.d01.toString() },
-      { type: "text", text: person.d02.toString() },
-      { type: "text", text: person.d03.toString() },
-      { type: "text", text: person.d04.toString() },
-      { type: "text", text: person.d05.toString() },
-      { type: "text", text: person.d06.toString() },
-      { type: "text", text: person.d07.toString() },
-      { type: "text", text: person.d08.toString() },
-      { type: "text", text: person.d09.toString() },
-      { type: "text", text: person.d10.toString() }
+      { type: "text", text: sale.customer },
+      { type: "text", text: sale.modelCode },
+      { type: "text", text: sale.sebango },
+      { type: "text", text: sale.pltype },
+      { type: "text", text: sale.d01.toString() },
+      { type: "text", text: sale.d02.toString() },
+      { type: "text", text: sale.d03.toString() },
+      { type: "text", text: sale.d04.toString() },
+      { type: "text", text: sale.d05.toString() },
+      { type: "text", text: sale.d06.toString() },
+      { type: "text", text: sale.d07.toString() },
+      { type: "text", text: sale.d08.toString() },
+      { type: "text", text: sale.d09.toString() },
+      { type: "text", text: sale.d10.toString() },
+      { type: "text", text: sale.d11.toString() },
+      { type: "text", text: sale.d12.toString() },
+      { type: "text", text: sale.d13.toString() },
+      { type: "text", text: sale.d14.toString() },
+      { type: "text", text: sale.d15.toString() },
+      { type: "text", text: sale.d16.toString() },
+      { type: "text", text: sale.d17.toString() },
+      { type: "text", text: sale.d18.toString() },
+      { type: "text", text: sale.d19.toString() },
+      { type: "text", text: sale.d20.toString() },
+      { type: "text", text: sale.d21.toString() },
+      { type: "text", text: sale.d22.toString() },
+      { type: "text", text: sale.d23.toString() },
+      { type: "text", text: sale.d24.toString() },
+      { type: "text", text: sale.d25.toString() },
+      { type: "text", text: sale.d26.toString() },
+      { type: "text", text: sale.d27.toString() },
+      { type: "text", text: sale.d28.toString() },
+      { type: "text", text: sale.d29.toString() },
+      { type: "text", text: sale.d30.toString() },
+      { type: "text", text: sale.d31.toString() }
     ]
   }))
 ]
 
 function App() {
-  let empcode = "41256";
-  let year = useSelector((state: any) => state.reducer.select.year);
-  let month: number = useSelector((state: any) => state.reducer.select.month);
-  const navigate = useNavigate();
+  let BASE = import.meta.env.VITE_PATH;
+  const reducer = useSelector((state: MRedux) => state.reducer);
+  let empcode = "";
+  if (typeof reducer.empcode !== 'undefined' && reducer.empcode != '') {
+    empcode = reducer.empcode;
+  }
+  let year = useSelector((state: MRedux) => state.reducer.select.year);
+  let month: number | string = useSelector((state: MRedux) => state.reducer.select.month);
+  const [highlights, setHighlights] = useState<Highlight[]>([
+  ]);
   const [distribution, setDistribution] = useState<boolean>(false);
   const [rowAdd, setRowAdd] = useState<number>(10);
-  const [rowCount, setRowCount] = useState<number>(10);
+  const [customer, setCustomer] = useState<MCustomer[]>([]);
+  const [model, setModel] = useState<MModel[]>([]);
   const [people, setPeople] = useState<Person[]>([]);
   const [rows, setRows] = useState<Row<DefaultCellTypes>[]>([]);
+  const [width, setWidth] = useState<number>(0);
   const columns = getColumns();
+  const [rev, setRev] = useState<number>(0);
+  const navigate = useNavigate();
   let once = false;
   useEffect(() => {
     if (!once) {
       init();
+      let w = 0;
+      columns.map((v: Column) => {
+        w += v.width!;
+      })
+      setWidth(w);
       once = true;
     }
     return;
@@ -100,28 +176,69 @@ function App() {
     if (people.length) {
       let oPeople = getRows(people);
       setRows(oPeople);
+      setHighlights([...highlights])
     }
   }, [people]);
 
+  useEffect(() => {
+    initHighlight();
+  }, [rows]);
+  // useEffect(() => {
+  //   setRows(getRows(people));
+  //   console.log('set ')
+  // },[highlights])
   async function calApi() {
-    return await API_GET_SALE({ ym: `${year}${month.toLocaleString('en', { minimumIntegerDigits: 2 })}` });
+    const temp = await API_GET_SALE({ ym: `${year}${month.toLocaleString('en', { minimumIntegerDigits: 2 })}` });
+    return temp;
   }
   async function calStatusSale() {
     return await API_STATUS_SALE({ ym: `${year}${month.toLocaleString('en', { minimumIntegerDigits: 2 })}` });
   }
   async function init() {
+    const apiCustomer = await API_CUSTOMER();
+    setCustomer(apiCustomer);
+    const apiModel = await API_MODEL();
+    setModel(apiModel);
     const apiSale = await calApi();
-    const statusSale = await calStatusSale();
-    console.log(statusSale)
-    setDistribution(statusSale);
-    const objSale = await defSale(apiSale);
+    const detailSale: MStatusSale = await calStatusSale();
+    setDistribution(detailSale!.isDistribution!);
+    setRev(detailSale!.rev!);
+    const objSale = await defSale(apiSale.data);
     setPeople(objSale);
+  }
+  async function initHighlight() {
+    if (Object.keys(people).length) {
+      let cloneHighlight = highlights;
+      await people.map((v: Person, i: number) => {
+        let itemCustomer = (v.customer).substring(0, 15);
+        const hasCustomer = customer.filter((vCustomer) => vCustomer.customerNameShort == itemCustomer);
+        if (Object.keys(hasCustomer).length == 0 && itemCustomer != '') {
+          const exist = cloneHighlight.filter((vCus) => {
+            return vCus.columnId == 'customer' && vCus.rowId == i
+          });
+          if (Object.keys(exist).length == 0) {
+            cloneHighlight.push({ columnId: 'customer', rowId: i, borderColor: "#ff0000" });
+          }
+        }
+        let itemModelCode = v.modelCode;
+        const hasModel = model.filter((vModel) => vModel.model == itemModelCode);
+        if (Object.keys(hasModel).length == 0 && itemModelCode != '') {
+          const exist = cloneHighlight.filter((vMod) => {
+            return vMod.columnId == 'modelCode' && vMod.rowId == i
+          });
+          if (Object.keys(exist).length == 0) {
+            cloneHighlight.push({ columnId: 'modelCode', rowId: i, borderColor: "#ff0000" });
+          }
+        }
+      });
+      setHighlights([...cloneHighlight]);
+    }
   }
   async function defSale(apiSale: any = []) {
     if (apiSale.length < 10) {
       [...Array(10)].map((i: number) => {
         if (typeof apiSale[i] == 'undefined') {
-          apiSale.push({ customer: "", modelCode: "", sebango: "", pltype: "", d01: 0, d02: 0, d03: 0, d04: 0, d05: 0, d06: 0, d07: 0, d08: 0, d09: 0, d10: 0 });
+          apiSale.push({ customer: "", modelCode: "", sebango: "", pltype: "", d01: 0, d02: 0, d03: 0, d04: 0, d05: 0, d06: 0, d07: 0, d08: 0, d09: 0, d10: 0, d11: 0, d12: 0, d13: 0, d14: 0, d15: 0, d16: 0, d17: 0, d18: 0, d19: 0, d20: 0, d21: 0, d22: 0, d23: 0, d24: 0, d25: 0, d26: 0, d27: 0, d28: 0, d29: 0, d30: 0, d31: 0 });
         }
       });
     }
@@ -131,135 +248,241 @@ function App() {
     changes: CellChange<TextCell>[],
     prevPeople: Person[]
   ): Person[] => {
+    if (Object.keys(changes).length > 1) {
+      changes.pop();
+    }
+    const cloneHighlight = highlights;
     changes.forEach((change) => {
-      const personIndex = change.rowId;
-      const fieldName = change.columnId;
-      if (fieldName != 'customer' && fieldName != 'modelCode' && fieldName != 'sebango' && fieldName != 'pltype') {
-        change.newCell.text = change.newCell.text.replace(/\D/g, '')
-        prevPeople[personIndex][fieldName] = change.newCell.text == '' ? 0 : parseInt(change.newCell.text);
+      const personIndex: number = parseInt(change.rowId.toString());
+      const fieldName: string | number = change.columnId;
+      if ((fieldName != 'customer' && fieldName != 'modelCode' && fieldName != 'sebango' && fieldName != 'pltype') && (fieldName == 'd01' || fieldName == 'd02' || fieldName == 'd03' || fieldName == 'd04' || fieldName == 'd05' || fieldName == 'd06' || fieldName == 'd07' || fieldName == 'd08' || fieldName == 'd09' || fieldName == 'd10' || fieldName == 'd11' || fieldName == 'd12' || fieldName == 'd13' || fieldName == 'd14' || fieldName == 'd15' || fieldName == 'd16' || fieldName == 'd17' || fieldName == 'd18' || fieldName == 'd19' || fieldName == 'd20' || fieldName == 'd21' || fieldName == 'd22' || fieldName == 'd23' || fieldName == 'd24' || fieldName == 'd25' || fieldName == 'd26' || fieldName == 'd27' || fieldName == 'd28' || fieldName == 'd29' || fieldName == 'd30' || fieldName == 'd31')) {
+        change.newCell.text = change.newCell.text.replace(/\D/g, '');
+        prevPeople[personIndex][fieldName] = change.newCell.text == '' ? "0" : change.newCell.text;
       } else {
-        prevPeople[personIndex][fieldName] = change.newCell.text.toString();
-      }
+        if (fieldName == 'customer') {
+          change.newCell.text = change.newCell.text.substring(0, 15);
+          const hasCustomer = customer.filter((v, i: number) => v.customerNameShort == change.newCell.text && i > -1);
+          if (Object.keys(hasCustomer).length == 0) { // ไม่พบ Customer Code ?
+            const exist = cloneHighlight.filter((v, i: number) => {
 
+              return v.columnId == fieldName && v.rowId == personIndex && i != -1
+            });
+            if (Object.keys(exist).length == 0) {
+              cloneHighlight.push({ columnId: fieldName, rowId: personIndex, borderColor: "#ff0000" })
+            }
+          } else { // พบ Customer Code !
+            const exist = cloneHighlight.filter((v) => {
+              return v.columnId == fieldName && v.rowId == personIndex
+            });
+            if (Object.keys(exist).length > 0) {
+              const index: number = cloneHighlight.indexOf(exist[0]);
+              cloneHighlight.splice(index, 1);
+            }
+          }
+        }
+        if (fieldName == 'modelCode') {
+          const hasModel = model.filter((v) => v.model == change.newCell.text);
+          if (Object.keys(hasModel).length == 0) { // ไม่พบ Customer Code ?
+            const exist = cloneHighlight.filter((v, i: number) => {
+              return v.columnId == fieldName && v.rowId == personIndex && i > -1
+            });
+            if (Object.keys(exist).length == 0) {
+              cloneHighlight.push({ columnId: fieldName, rowId: personIndex, borderColor: "#ff0000" })
+            }
+          } else { // พบ Customer Code !
+            const exist = cloneHighlight.filter((v) => {
+              return v.columnId == fieldName && v.rowId == personIndex
+            });
+            if (Object.keys(exist).length > 0) {
+              const index: number = cloneHighlight.indexOf(exist[0]);
+              cloneHighlight.splice(index, 1);
+            }
+            prevPeople[personIndex]['sebango'] = hasModel[0].modelCode;
+          }
+        }
+        if (fieldName == 'sebango') {
+          let modelCode = '';
+          if (typeof prevPeople[personIndex] != 'undefined') {
+            modelCode = prevPeople[personIndex]['modelCode'];
+            const hasModel = model.filter((v) => v.model == modelCode);
+            if (Object.keys(hasModel).length) {
+              change.newCell.text = hasModel[0].modelCode;
+            }
+          }
+        }
+        if (fieldName == 'pltype') {
+          let pltype = '';
+          if (typeof prevPeople[personIndex] != 'undefined') {
+            pltype = prevPeople[personIndex]['pltype'];
+            const hasModel: any = model.filter((v) => v.model == pltype);
+            if (Object.keys(hasModel).length) {
+              change.newCell.text = hasModel[0].pltype!;
+            }
+          }
+        }
+        if (fieldName == 'customer' || fieldName == 'modelCode' || fieldName == 'pltype' || fieldName == 'sebango') {
+          prevPeople[personIndex][fieldName] = change.newCell.text.toString();
+        }
+      }
     });
+    setHighlights([...cloneHighlight])
     return [...prevPeople];
   };
   async function handleChanges(changes: CellChange<TextCell>[]) {
     await setPeople((prevPeople) => applyChangesToPeople(changes, prevPeople));
-    const update = await API_UPDATE_SALE({ listSale: people, ym: `${year}${month.toLocaleString('en', { minimumIntegerDigits: 2 })}`, empcode: empcode });
-    console.log(update)
+    await API_UPDATE_SALE({ listSale: people, ym: `${year}${month.toLocaleString('en', { minimumIntegerDigits: 2 })}`, empcode: empcode });
   };
   async function handleAddRow() {
     let newRow: Person[] = [];
     [...Array(rowAdd)].map(() => {
-      newRow.push({ customer: "", modelCode: "", sebango: "", pltype: "", d01: 0, d02: 0, d03: 0, d04: 0, d05: 0, d06: 0, d07: 0, d08: 0, d09: 0, d10: 0 })
+      newRow.push({ customer: "", modelCode: "", sebango: "", pltype: "", d01: 0, d02: 0, d03: 0, d04: 0, d05: 0, d06: 0, d07: 0, d08: 0, d09: 0, d10: 0, d11: 0, d12: 0, d13: 0, d14: 0, d15: 0, d16: 0, d17: 0, d18: 0, d19: 0, d20: 0, d21: 0, d22: 0, d23: 0, d24: 0, d25: 0, d26: 0, d27: 0, d28: 0, d29: 0, d30: 0, d31: 0 })
     })
     setPeople([...people, ...newRow])
   }
-
   async function handleChangeEdit() {
     if (confirm('คุณต้องการปรับจาก "แจกจ่าย" => "แก้ไข" ใช่หรือไม่ ?')) {
       const changeStatus = await API_CHANGE_STATUS({ ym: `${year}${month.toLocaleString('en', { minimumIntegerDigits: 2 })}` });
-      console.log(changeStatus)
+      if (typeof changeStatus.status != 'undefined' && changeStatus.status) {
+        navigate(`/${BASE}/home`)
+      }
     }
   }
-
   async function handleDistribution() {
+    if (highlights.length > 0) {
+      alert('พบข้อมูลไม่ถูกต้องตามที่ระบบต้องการ !')
+      return;
+    }
     if (confirm('คุณต้องการที่จะแจกจ่ายข้อมูลฉบับนี้ ใช่หรือไม่ ? ')) {
       const distribution = await API_DISTRIBUTION_SALE({ ym: `${year}${month.toLocaleString('en', { minimumIntegerDigits: 2 })}` });
-      console.log(distribution)
+      if (typeof distribution.status != 'undefined' && distribution.status) {
+        // location.reload();
+        console.log(`/${BASE}/home`)
+        navigate(`/${BASE}/home`)
+      }
     }
   }
   async function handleClear() {
     try {
-      const clear: any = await API_CLEAR_SALE({ ym: `${year}${month.toLocaleString('en', { minimumIntegerDigits: 2 })}` });
-      console.log(clear)
-      if (typeof clear.status != 'undefined' && clear.status) {
-        console.log('success');
-      } else {
-        alert(`${clear.error}`)
+      if (confirm(`คุณต้องการลบข้อมูลประจำวันเดือน ${moment(month, 'M').format('MMMM').toUpperCase()} ปี ${year} ใช่หรือไม่ ?`)) {
+        const clear: any = await API_CLEAR_SALE({ ym: `${year}${month.toLocaleString('en', { minimumIntegerDigits: 2 })}` });
+        console.log(clear)
+        if (typeof clear.status != 'undefined' && clear.status) {
+          location.reload();
+        } else {
+          alert(`${clear.error}`)
+        }
       }
     } catch (e) {
       alert(`ไม่สามารถลบข้อมูลได้ เนื่องจาก ${e}`)
     }
   }
-
-  return <Stack className='page'>
-    <Stack p={6} className='bg-[#e1e1e1] h-[92%]' spacing={1}>
-      <div role="presentation" >
+  return <Stack >
+    {/* {
+      JSON.stringify(highlights)
+    } */}
+    <Stack p={6} className='h-[800px]' spacing={1}>
+      {/* <div role="presentation" >
         <Breadcrumbs aria-label="breadcrumb">
           <Link underline="hover" color="inherit" href="/home">
             หน้าหลัก
           </Link>
           <Typography color="text.primary">แก้ไข</Typography>
         </Breadcrumbs>
-      </div>
-      <Card>
-        <Stack spacing={1} p={3} className='h-[100%]'>
-          <Stack direction={'row'} spacing={1} alignItems={'center'} className='select-none' title="ปีและเดือนนี้กำลังอยู่ในระหว่างแก้ไข">
-            <span className='text-[36px]'>{`${year}-${moment(month, 'M').format('MMM').toUpperCase()}`}</span>
-            <Paper elevation={3} className={`h-[35px] flex justify-center items-center px-3 rounded-xl ${distribution ? 'bg-green-600' : 'bg-orange-500'} text-white gap-2`}  >
-              {
-                distribution ? <Stack direction={'row'} gap={1}>
-                  <TaskAltIcon />
-                  <Typography>แจกจ่าย</Typography>
-                </Stack> : <Stack direction={'row'} gap={1}>
-                  <AutoFixHighIcon />
-                  <Typography>ระหว่างแก้ไข</Typography>
-                </Stack>
-              }
-            </Paper>
+      </div> */}
+      <Stack spacing={2} className='h-[100%] '>
+        <Stack direction={'row'} spacing={1} alignItems={'center'} justifyContent={'space-between'} className='select-none py-3 pl-5 pr-6 rounded-[8px] border-mtr bg-[#f6f8fa]' title="ปีและเดือนนี้กำลังอยู่ในระหว่างแก้ไข" >
+          <Stack spacing={1} direction={'row'}>
+            <div className='bg-white border-mtr rounded-[8px] px-6 py-1 font-semibold cursor-pointer' >
+              <span>{`${moment(month, 'M').format('MMMM').toUpperCase()} - ${year}`} </span>
+            </div>
+            <div className='bg-white border-mtr rounded-[8px] px-6 py-1 font-semibold cursor-pointer' >
+              <span>เวอร์ชั่น : {rev.toLocaleString('en', { minimumIntegerDigits: 2 })}</span>
+            </div>
           </Stack>
-          <Stack direction={'row'} justifyContent={'space-between'} spacing={1} >
-            <Stack direction={'row'} spacing={1}>
-              <Button variant='outlined' startIcon={<HomeIcon />} onClick={() => navigate('../home')}>หน้าหลัก</Button>
-              <Button onClick={handleChangeEdit} variant='contained' startIcon={<BorderColorIcon />} disabled={!distribution ? true : false}>แก้ไข</Button>
-              <Button onClick={handleDistribution} variant='contained' startIcon={<ArrowUpwardIcon />} disabled={distribution ? true : false}>แจกจ่าย</Button>
-              <Button onClick={handleClear} variant='contained' color="error" startIcon={<DeleteOutlineIcon />} disabled={distribution ? true : false}>ล้าง</Button>
-            </Stack>
-            <Stack direction={'row'} spacing={1}>
-              <TextField size='small' value={rowAdd} onChange={(e) => setRowAdd(parseInt(e.target.value))} />
-              <Button variant='contained' onClick={handleAddRow} startIcon={<SaveAltIcon />} disabled={distribution ? true : false}>เพิ่มรายการ</Button>
-            </Stack>
+
+          {/* <Stack direction={'row'} spacing={1}>
+            <div className='rounded-[8px] px-4 pb-1 pt-[.5px] h-fit text-white bg-white' style={{ border: '1px solid #ddd' }}>
+              <Typography className={`text-[#323232] text-[14px]`} variant='caption'>
+                สถานะ
+              </Typography>
+            </div>
+            <div className={`rounded-[8px] px-4 pb-1 pt-[.5px] h-fit  ${distribution ? 'bg-blue-600' : 'bg-gray-600'}`} style={{ border: '1px solid #ddd' }}>
+              <Typography className={`text-[14px] ${distribution ? 'text-white' : 'text-white'}`} variant='caption'>
+                {
+                  distribution ? 'แจกจ่ายแล้ว' : 'ระหว่างแก้ไขข้อมูล'
+                }
+              </Typography>
+            </div>
+          </Stack> */}
+
+          <Badge badgeContent="">
+            <span className="relative flex h-3 w-3">
+              <span className={`animate-ping absolute inline-flex h-full w-full rounded-full ${distribution ? 'bg-blue-400' : 'bg-gray-400'} opacity-50`}></span>
+              <span className={`relative inline-flex rounded-full h-3 w-3 ${distribution ? 'bg-blue-500' : 'bg-gray-500'}`}></span>
+            </span>
+            <div className={`rounded-[8px] px-4 pb-1 pt-[.5px] h-fit  ${distribution ? 'bg-blue-600' : 'bg-gray-600'}`} style={{ border: '1px solid #ddd' }}>
+              <Typography className={`text-[14px] ${distribution ? 'text-white' : 'text-white'}`} variant='caption'>
+                {
+                  distribution ? 'แจกจ่ายแล้ว' : 'ระหว่างแก้ไขข้อมูล'
+                }
+              </Typography>
+            </div>
+          </Badge>
+        </Stack>
+        <Stack mb={2} direction={'row'} justifyContent={'space-between'} spacing={1} >
+          <Stack direction={'row'} spacing={1}>
+            {/* <Button variant='outlined' startIcon={<HomeIcon />} onClick={() => {
+                dispatch({ type: 'SET-MENU', payload: 'home' })
+                navigate('../home');
+              }}>หน้าหลัก</Button> */}
+
+            <Button onClick={handleChangeEdit} variant='contained' startIcon={<BorderColorIcon />} disabled={!distribution ? true : false}>แก้ไข</Button>
+            <Button onClick={handleDistribution} variant='contained' startIcon={<ArrowUpwardIcon />} disabled={distribution ? true : false}>แจกจ่าย</Button>
+            <Button onClick={handleClear} variant='contained' color="error" startIcon={<DeleteOutlineIcon />} disabled={distribution ? true : false}>ล้าง</Button>
+            <ExportToExcel year={`${year}`} month={parseInt(month).toLocaleString('en', { minimumIntegerDigits: 2 })} rows={rows} column={columns} />
           </Stack>
-          <div className='wrapper'>
-            {
-              distribution ? <div>
-                <table className='w-full tbSaleView select-none'>
-                  <thead>
-                    <tr>
-                      {
-                        columns.map((vCol: any, iCol: number) => {
-                          return <th key={iCol} className={`w-[${vCol.width}px]`}>{vCol.columnId.toUpperCase()}</th>
-                        })
-                      }
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {/* {
-                      rows.map((vRow: any, iRow: number) => {
-                        console.log(vRow)
-                        return vRow.rowId != 'header' ? <tr key={iRow}>
-                          {
-                            vRow.map((vData: string, iData: number) => {
-                              return <td key={iData}>{vData}</td>
-                            })
-                          }
-                        </tr> : <tr></tr>
-                      })
-                    } */}
-                  </tbody>
-                </table>
-              </div> : <ReactGrid rows={rows} className="select-none" columns={columns} onCellsChanged={handleChanges} enableRowSelection enableFillHandle />
-            }
-          </div>
-          <Stack>
-            <Typography variant='caption'>จำนวน {rowCount} รายการ</Typography>
+          <Stack direction={'row'} spacing={1}>
+            <TextField size='small' value={rowAdd} onChange={(e) => setRowAdd(parseInt(e.target.value))} />
+            <Button variant='contained' onClick={handleAddRow} startIcon={<SaveAltIcon />} disabled={distribution ? true : false}>เพิ่มรายการ</Button>
           </Stack>
         </Stack>
-      </Card>
+        <div className='wrapper'>
+          {
+            (distribution && width > 0) ?
+              <table className={`tbSaleView w-[2800px] text-[#000000] select-none `} >
+                <thead className={`bg-[#f2f2f2]`}>
+                  <tr>
+                    {
+                      columns.map((vCol: any, iCol: number) => {
+                        return <th key={iCol} style={{ width: parseInt(vCol.width) }}>{vCol.columnId.toUpperCase()}</th>
+                      })
+                    }
+                  </tr>
+                </thead>
+                <tbody>
+                  {
+                    rows.map((vRow: any) => {
+                      return vRow.rowId != 'header' ? <tr  >
+                        {
+                          vRow.cells.map((vData: any, iData: number) => {
+                            return <td key={iData} className={`${iData > 3 ? 'text-right' : ''} ${vData.text != '0' ? 'text-black' : 'text-[#ddd]'}`}>{vData.text}</td>
+                          })
+                        }
+                      </tr> : <tr></tr>
+                    })
+                  }
+                </tbody>
+              </table>
+              : <div className='bg-white  select-none'>
+                <ReactGrid rows={rows} columns={columns} highlights={highlights} onCellsChanged={handleChanges} enableFillHandle />
+              </div>
+          }
+        </div>
+        <Stack>
+          <Typography variant='caption'>จำนวน {rows.length} รายการ</Typography>
+        </Stack>
+      </Stack>
     </Stack>
-
   </Stack>
 }
 

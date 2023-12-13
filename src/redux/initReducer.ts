@@ -1,19 +1,27 @@
 const initialState = {
     login: false,
     username: '',
+    name: '',
     select: {
         year: '',
         month: ''
-    }
+    },
+    menuActive: 'home'
 }
 
 const IndexReducer = (state = initialState, action: any) => {
     switch (action.type) {
         case 'LOGIN':
-            console.log(action.payload)
+            console.log(action)
             return {
                 ...state,
-                ...action.payload
+                login: true,
+                name: action.payload.name
+            }
+        case 'LOGOUT':
+            return {
+                ...state,
+                login: false
             }
         case 'EDIT-INIT':
             return {
@@ -22,6 +30,11 @@ const IndexReducer = (state = initialState, action: any) => {
                     year: action.payload.year,
                     month: action.payload.month
                 }
+            }
+        case 'SET-MENU':
+            return {
+                ...state,
+                menuActive: action.payload
             }
         default:
             return state
