@@ -1,5 +1,6 @@
 const initialState = {
     login: false,
+    empcode: '',
     username: '',
     name: '',
     select: {
@@ -12,10 +13,10 @@ const initialState = {
 const IndexReducer = (state = initialState, action: any) => {
     switch (action.type) {
         case 'LOGIN':
-            console.log(action)
             return {
                 ...state,
                 login: true,
+                empcode: action.payload.empcode,
                 name: action.payload.name
             }
         case 'LOGOUT':

@@ -4,11 +4,22 @@ export interface MSale {
     listSale?: Person[];
     year?: string;
     month?: string;
+    customer?: string;
+    model?: string;
+    modelCode?: string;
+    data?: Person[]
 }
 export interface MResponse {
     status: boolean;
     error: string;
     name?: string;
+}
+export interface MFilter {
+    customer?: string;
+    model?: string;
+    modelCode?: string;
+    sebango?: string;
+    pltype?: string;
 }
 export interface Person {
     customer: string;
@@ -46,6 +57,8 @@ export interface Person {
     d29: string | number;
     d30: string | number;
     d31: string | number;
+    id?: number;
+    ym?:string;
 }
 
 
@@ -108,7 +121,7 @@ export interface MRedux {
             year: '',
             month: ''
         },
-        menuActive: 'home'
+        menuActive: ""
     }
 }
 

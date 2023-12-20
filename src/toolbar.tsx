@@ -4,6 +4,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
 import { MRedux } from './Interface';
+import AutoAwesomeMosaicIcon from '@mui/icons-material/AutoAwesomeMosaic';
+
 function ToolbarComponent() {
     const reducer = useSelector((state: MRedux) => state.reducer);
     // let oEmpcode = '';
@@ -40,14 +42,14 @@ function ToolbarComponent() {
                 </Stack>
             </Stack>
             <Stack className='select-none flex-1' direction={'row'} justifyContent={'start'} alignItems={'center'}>
-                <Stack className={`${activeMenu.menuActive == 'home' ? 'border-b-2 border-b-[#fd8c73]' : ''}  cursor-pointer h-[100%] hover:border-b-2 hover:border-b-[#fd8c73] px-3 transform-all duration-100`} direction={'row'} alignItems={'center'} justifyItems={'center'} justifyContent={'center'} spacing={1} onClick={() => handleActiveMenu('home')}>
+                <Stack className={`${activeMenu.menuActive.toString() == "home" ? 'border-b-2 border-b-[#fd8c73]' : ''}  cursor-pointer h-[100%] hover:border-b-2 hover:border-b-[#fd8c73] px-3 transform-all duration-100`} direction={'row'} alignItems={'center'} justifyItems={'center'} justifyContent={'center'} spacing={1} onClick={() => handleActiveMenu('home')}>
                     <HouseSidingIcon className='text-gray-500' />
                     <Typography color="initial" className='font-semibold text-gray-600'>Home</Typography>
                 </Stack>
-                {/* <Stack className={`${activeMenu == 'edit' ? 'border-b-2 border-b-[#fd8c73]' : ''}  cursor-pointer h-[100%] hover:border-b-2 hover:border-b-[#fd8c73] px-3 transform-all duration-100`} direction={'row'} alignItems={'center'} justifyItems={'center'} justifyContent={'center'} spacing={1} onClick={() => handleActiveMenu('edit')}>
-                    <DriveFileRenameOutlineIcon className='text-gray-500' />
-                    <Typography color="initial" className='font-semibold text-gray-600'>Edit</Typography>
-                </Stack> */}
+                <Stack className={`${activeMenu.menuActive.toString() == "customerMaster" ? 'border-b-2 border-b-[#fd8c73]' : ''}  cursor-pointer h-[100%] hover:border-b-2 hover:border-b-[#fd8c73] px-3 transform-all duration-100`} direction={'row'} alignItems={'center'} justifyItems={'center'} justifyContent={'center'} spacing={1} onClick={() => handleActiveMenu('customerMaster')}>
+                    <AutoAwesomeMosaicIcon className='text-gray-500' />
+                    <Typography color="initial" className='font-semibold text-gray-600'>Customer Master</Typography>
+                </Stack>
             </Stack>
         </Stack>
     )

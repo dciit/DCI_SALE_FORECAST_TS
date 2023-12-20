@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react'
 import './App.css'
 import { ReactGrid, Column, Row, TextCell, CellChange, DefaultCellTypes, Highlight } from "@silevis/reactgrid";
 import "@silevis/reactgrid/styles.css";
-import { Stack, Button, Typography, TextField, Badge } from '@mui/material';
-import { API_CHANGE_STATUS, API_CLEAR_SALE, API_CUSTOMER, API_DISTRIBUTION_SALE, API_GET_SALE, API_MODEL, API_STATUS_SALE, API_UPDATE_SALE } from './Service';
+import { Stack, Button, Typography, TextField, Badge, MenuItem, styled, Menu, alpha, MenuProps } from '@mui/material';
+import { API_CHANGE_STATUS, API_CLEAR_SALE, API_CUSTOMER, API_DISTRIBUTION_SALE, API_GET_SALE, API_MODEL, API_NEW_ROW, API_STATUS_SALE, API_UPDATE_SALE } from './Service';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import SaveAltIcon from '@mui/icons-material/SaveAlt';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
@@ -13,7 +13,7 @@ import { MCustomer, MModel, MRedux, MStatusSale, Person } from './Interface';
 import BorderColorIcon from '@mui/icons-material/BorderColor';
 import { useNavigate } from 'react-router-dom';
 import ExportToExcel from './ExportToExcel';
-// import { DownloadTableExcel } from "react-export-table-to-excel";
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 const getColumns = (): Column[] => [
   { columnId: "customer", width: 100 },
   { columnId: "modelCode", width: 150 },
@@ -137,8 +137,54 @@ const getRows = (people: Person[]): Row[] => [
   }))
 ]
 
+const StyledMenu = styled((props: MenuProps) => (
+  <Menu
+    elevation={0}
+    anchorOrigin={{
+      vertical: 'bottom',
+      horizontal: 'right',
+    }}
+    transformOrigin={{
+      vertical: 'top',
+      horizontal: 'right',
+    }}
+    {...props}
+  />
+))(({ theme }) => ({
+  '& .MuiPaper-root': {
+    borderRadius: 6,
+    marginTop: theme.spacing(1),
+    minWidth: 180,
+    color:
+      theme.palette.mode === 'light' ? 'rgb(55, 65, 81)' : theme.palette.grey[300],
+    boxShadow:
+      'rgb(255, 255, 255) 0px 0px 0px 0px, rgba(0, 0, 0, 0.05) 0px 0px 0px 1px, rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.05) 0px 4px 6px -2px',
+    '& .MuiMenu-list': {
+      padding: '4px 0',
+    },
+    '& .MuiMenuItem-root': {
+      '& .MuiSvgIcon-root': {
+        fontSize: 18,
+        color: theme.palette.text.secondary,
+        marginRight: theme.spacing(1.5),
+      },
+      '&:active': {
+        backgroundColor: alpha(
+          theme.palette.primary.main,
+          theme.palette.action.selectedOpacity,
+        ),
+      },
+    },
+  },
+}));
+
 function App() {
   let BASE = import.meta.env.VITE_PATH;
+  const [typeFilter, setTypeFilter] = useState<string>('');
+  const [, setInvisibleCustomer] = useState<boolean>(true);
+  const [invisibleModelCode] = useState<boolean>(true);
+  const [modelCodeSelect] = useState<string>('');
+  const [customerSelect, setCustomerSelect] = useState<string>('');
   const reducer = useSelector((state: MRedux) => state.reducer);
   let empcode = "";
   if (typeof reducer.empcode !== 'undefined' && reducer.empcode != '') {
@@ -159,6 +205,33 @@ function App() {
   const [rev, setRev] = useState<number>(0);
   const navigate = useNavigate();
   let once = false;
+  const [menuFilter, setMenuFilter] = useState<string[]>([]);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
+  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuCustomer = (event: React.MouseEvent<HTMLElement>) => {
+    setTypeFilter('customer');
+    const newMenu = customer.map((v: MCustomer) => { return `${v.customerCode}:${v.customerNameShort}`.replace(/(\r\n|\n|\r)/gm, "") });
+    setMenuFilter(newMenu);
+    setAnchorEl(event.currentTarget);
+  }
+
+  const handleMenuModelCode = (event: React.MouseEvent<HTMLElement>) => {
+    setTypeFilter('modelCode');
+    const newMenu = model.map((v: MModel) => { return `${v.model}`.replace(/(\r\n|\n|\r)/gm, "") });
+    setMenuFilter(newMenu);
+    setAnchorEl(event.currentTarget);
+  }
+  const handleClose = (choice: string, type: string) => {
+    if (type == 'customer') {
+      setCustomerSelect(choice);
+      setInvisibleCustomer(false);
+    }
+    setAnchorEl(null);
+  };
   useEffect(() => {
     if (!once) {
       init();
@@ -188,7 +261,7 @@ function App() {
   //   console.log('set ')
   // },[highlights])
   async function calApi() {
-    const temp = await API_GET_SALE({ ym: `${year}${month.toLocaleString('en', { minimumIntegerDigits: 2 })}` });
+    const temp = await API_GET_SALE({ empcode: empcode, ym: `${year}${month.toLocaleString('en', { minimumIntegerDigits: 2 })}` });
     return temp;
   }
   async function calStatusSale() {
@@ -264,7 +337,6 @@ function App() {
           const hasCustomer = customer.filter((v, i: number) => v.customerNameShort == change.newCell.text && i > -1);
           if (Object.keys(hasCustomer).length == 0) { // ไม่พบ Customer Code ?
             const exist = cloneHighlight.filter((v, i: number) => {
-
               return v.columnId == fieldName && v.rowId == personIndex && i != -1
             });
             if (Object.keys(exist).length == 0) {
@@ -297,7 +369,9 @@ function App() {
               const index: number = cloneHighlight.indexOf(exist[0]);
               cloneHighlight.splice(index, 1);
             }
+            // if(hasModel[0].modelCode != ''){
             prevPeople[personIndex]['sebango'] = hasModel[0].modelCode;
+            // }
           }
         }
         if (fieldName == 'sebango') {
@@ -306,7 +380,9 @@ function App() {
             modelCode = prevPeople[personIndex]['modelCode'];
             const hasModel = model.filter((v) => v.model == modelCode);
             if (Object.keys(hasModel).length) {
-              change.newCell.text = hasModel[0].modelCode;
+              if (hasModel[0].modelCode != '') {
+                change.newCell.text = hasModel[0].modelCode;
+              }
             }
           }
         }
@@ -325,19 +401,37 @@ function App() {
         }
       }
     });
-    setHighlights([...cloneHighlight])
+    let group = cloneHighlight.reduce((r: any, a: any) => {
+      r[a.rowId] = [...r[a.rowId] || [], a];
+      return r;
+    }, {});
+    let distinctRowId = Object.keys(group);
+    let finalHighlight = cloneHighlight;
+    finalHighlight.map((oHighlight: Highlight) => {
+      if (distinctRowId.indexOf(oHighlight.rowId.toString()) > -1) {
+        finalHighlight = finalHighlight.filter(x => x.rowId != oHighlight.rowId);
+      }
+    })
+    setHighlights([...finalHighlight])
     return [...prevPeople];
   };
+ 
   async function handleChanges(changes: CellChange<TextCell>[]) {
     await setPeople((prevPeople) => applyChangesToPeople(changes, prevPeople));
-    await API_UPDATE_SALE({ listSale: people, ym: `${year}${month.toLocaleString('en', { minimumIntegerDigits: 2 })}`, empcode: empcode });
+    const update = await API_UPDATE_SALE({ listSale: people, ym: `${year}${month.toLocaleString('en', { minimumIntegerDigits: 2 })}`, empcode: empcode });
+    console.log(update)
   };
   async function handleAddRow() {
+    let ym = `${year}${month.toLocaleString('en', { minimumIntegerDigits: 2 })}`;
     let newRow: Person[] = [];
     [...Array(rowAdd)].map(() => {
-      newRow.push({ customer: "", modelCode: "", sebango: "", pltype: "", d01: 0, d02: 0, d03: 0, d04: 0, d05: 0, d06: 0, d07: 0, d08: 0, d09: 0, d10: 0, d11: 0, d12: 0, d13: 0, d14: 0, d15: 0, d16: 0, d17: 0, d18: 0, d19: 0, d20: 0, d21: 0, d22: 0, d23: 0, d24: 0, d25: 0, d26: 0, d27: 0, d28: 0, d29: 0, d30: 0, d31: 0 })
-    })
-    setPeople([...people, ...newRow])
+      newRow.push({ ym: ym, customer: "", modelCode: "", sebango: "", pltype: "", d01: 0, d02: 0, d03: 0, d04: 0, d05: 0, d06: 0, d07: 0, d08: 0, d09: 0, d10: 0, d11: 0, d12: 0, d13: 0, d14: 0, d15: 0, d16: 0, d17: 0, d18: 0, d19: 0, d20: 0, d21: 0, d22: 0, d23: 0, d24: 0, d25: 0, d26: 0, d27: 0, d28: 0, d29: 0, d30: 0, d31: 0 })
+    });
+    const apiNewRow = await API_NEW_ROW({ data: newRow, ym: ym });
+    if(apiNewRow.status){
+      location.reload();
+    }
+    // setPeople([...people, ...newRow])
   }
   async function handleChangeEdit() {
     if (confirm('คุณต้องการปรับจาก "แจกจ่าย" => "แก้ไข" ใช่หรือไม่ ?')) {
@@ -429,6 +523,30 @@ function App() {
             </div>
           </Badge>
         </Stack>
+        <Stack className='select-none py-3 pl-5 pr-6 rounded-[8px] border-mtr bg-[#f6f8fa]'>
+          <Stack alignItems={'start'} spacing={1}>
+            <Typography>ค้นหา</Typography>
+            <Stack direction={'row'} spacing={1}>
+
+              <Badge badgeContent={customerSelect} color="primary" invisible={customerSelect.length ? false : true} >
+                <Stack className='bg-white rounded-full pl-4 pr-2 pt-1 pb-1 cursor-pointer' direction={'row'} style={{ border: '1px solid #ddd' }} onClick={handleMenuCustomer}>
+                  <Typography>Customer</Typography>
+                  <ArrowDropDownIcon />
+                </Stack>
+              </Badge>
+              <Badge badgeContent={modelCodeSelect} color="primary" invisible={invisibleModelCode} >
+                <Stack className='bg-white rounded-full pl-4 pr-2 pt-1 pb-1 cursor-pointer' direction={'row'} style={{ border: '1px solid #ddd' }} onClick={handleMenuModelCode}>
+                  <Typography>ModelCode</Typography>
+                  <ArrowDropDownIcon />
+                </Stack>
+              </Badge>
+              <Stack className='bg-white rounded-full pl-4 pr-2 pt-1 pb-1 cursor-pointer' direction={'row'} style={{ border: '1px solid #ddd' }} onClick={handleClick}>
+                <Typography>Pallet Type</Typography>
+                <ArrowDropDownIcon />
+              </Stack>
+            </Stack>
+          </Stack>
+        </Stack>
         <Stack mb={2} direction={'row'} justifyContent={'space-between'} spacing={1} >
           <Stack direction={'row'} spacing={1}>
             {/* <Button variant='outlined' startIcon={<HomeIcon />} onClick={() => {
@@ -446,6 +564,7 @@ function App() {
             <Button variant='contained' onClick={handleAddRow} startIcon={<SaveAltIcon />} disabled={distribution ? true : false}>เพิ่มรายการ</Button>
           </Stack>
         </Stack>
+
         <div className='wrapper'>
           {
             (distribution && width > 0) ?
@@ -483,6 +602,23 @@ function App() {
         </Stack>
       </Stack>
     </Stack>
+    <StyledMenu
+      id="demo-customized-menu"
+      MenuListProps={{
+        'aria-labelledby': 'demo-customized-button',
+      }}
+      anchorEl={anchorEl}
+      open={open}
+      onClose={handleClose}
+    >
+      {
+        menuFilter.map((v: string) => {
+          return <MenuItem onClick={() => handleClose(v, typeFilter)} disableRipple >
+            {v}
+          </MenuItem>
+        })
+      }
+    </StyledMenu>
   </Stack>
 }
 

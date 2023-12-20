@@ -18,7 +18,7 @@ function Login() {
     async function handleLogin() {
         let login = await API_LOGIN({ empcode: empcode });
         if (login.status) {
-            dispatch({ type: 'LOGIN', payload: { name: login.name } })
+            dispatch({ type: 'LOGIN', payload: { name: login.name, empcode: empcode } })
             navigate('/dcisaleforecast/home');
             setEmpcode('');
         } else {
@@ -29,7 +29,7 @@ function Login() {
 
 
     const handleKeyPress = (e: KeyboardEvent<HTMLInputElement>) => {
-        if(e.key == 'Enter'){
+        if (e.key == 'Enter') {
             handleLogin()
         }
     };

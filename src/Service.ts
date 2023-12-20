@@ -1,6 +1,6 @@
 
 import Axios from "axios";
-import { MCustomer, MGetSale, MLogin, MModel, MResponse, MSale, MStatusSale } from "./Interface";
+import { MCustomer, MGetSale, MLogin, MModel, MResponse, MSale, MStatusSale} from "./Interface";
 const http = Axios.create({
     baseURL: import.meta.env.VITE_API,
     headers: {
@@ -20,6 +20,14 @@ export function API_UPDATE_SALE(param: MSale) {
 export function API_GET_SALE(param: MSale) {
     return new Promise<MGetSale>(resolve => {
         http.post(`/get/sale`, param).then((res) => {
+            resolve(res.data);
+        })
+    })
+}
+
+export function API_NEW_ROW(param: MSale) {
+    return new Promise<MResponse>(resolve => {
+        http.post(`/newrow/sale`, param).then((res) => {
             resolve(res.data);
         })
     })
