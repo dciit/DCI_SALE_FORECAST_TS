@@ -23,7 +23,8 @@ export interface MFilter {
 }
 export interface Person {
     customer: string;
-    modelCode: string;
+    // modelCode: string;
+    modelName:string;
     sebango: string;
     pltype: string;
     d01: string | number;

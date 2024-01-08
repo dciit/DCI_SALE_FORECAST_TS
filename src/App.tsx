@@ -16,7 +16,7 @@ import ExportToExcel from './ExportToExcel';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 const getColumns = (): Column[] => [
   { columnId: "customer", width: 100 },
-  { columnId: "modelCode", width: 150 },
+  { columnId: "modelName", width: 150 },
   { columnId: "sebango", width: 75 },
   { columnId: "pltype", width: 150 },
   { columnId: "d01", width: 75 },
@@ -56,7 +56,7 @@ const headerRow: Row = {
   rowId: "header",
   cells: [
     { type: "header", text: "customer" },
-    { type: "header", text: "modelCode" },
+    { type: "header", text: "modelName" },
     { type: "header", text: "sebango" },
     { type: "header", text: "pltype" },
     { type: "header", text: "d01" },
@@ -99,7 +99,7 @@ const getRows = (people: Person[]): Row[] => [
     rowId: idx,
     cells: [
       { type: "text", text: sale.customer },
-      { type: "text", text: sale.modelCode },
+      { type: "text", text: sale.modelName },
       { type: "text", text: sale.sebango },
       { type: "text", text: sale.pltype },
       { type: "text", text: sale.d01.toString() },
@@ -286,6 +286,7 @@ function App() {
         let itemCustomer = (v.customer).substring(0, 15);
         const hasCustomer = customer.filter((vCustomer) => vCustomer.customerNameShort == itemCustomer);
         if (Object.keys(hasCustomer).length == 0 && itemCustomer != '') {
+          console.log('customer ' ,i)
           const exist = cloneHighlight.filter((vCus) => {
             return vCus.columnId == 'customer' && vCus.rowId == i
           });
@@ -293,14 +294,14 @@ function App() {
             cloneHighlight.push({ columnId: 'customer', rowId: i, borderColor: "#ff0000" });
           }
         }
-        let itemModelCode = v.modelCode;
-        const hasModel = model.filter((vModel) => vModel.model == itemModelCode);
-        if (Object.keys(hasModel).length == 0 && itemModelCode != '') {
+        let itemModelName = v.modelName;
+        const hasModel = model.filter((vModel) => vModel.model == itemModelName);
+        if (Object.keys(hasModel).length == 0 && itemModelName != '') {
           const exist = cloneHighlight.filter((vMod) => {
-            return vMod.columnId == 'modelCode' && vMod.rowId == i
+            return vMod.columnId == 'modelName' && vMod.rowId == i
           });
           if (Object.keys(exist).length == 0) {
-            cloneHighlight.push({ columnId: 'modelCode', rowId: i, borderColor: "#ff0000" });
+            cloneHighlight.push({ columnId: 'modelName', rowId: i, borderColor: "#ff0000" });
           }
         }
       });
@@ -326,6 +327,7 @@ function App() {
     }
     const cloneHighlight = highlights;
     changes.forEach((change) => {
+      change.newCell.text = change.newCell.text.replace(/(\r\n|\n|\r)/gm, "");
       const personIndex: number = parseInt(change.rowId.toString());
       const fieldName: string | number = change.columnId;
       if ((fieldName != 'customer' && fieldName != 'modelCode' && fieldName != 'sebango' && fieldName != 'pltype') && (fieldName == 'd01' || fieldName == 'd02' || fieldName == 'd03' || fieldName == 'd04' || fieldName == 'd05' || fieldName == 'd06' || fieldName == 'd07' || fieldName == 'd08' || fieldName == 'd09' || fieldName == 'd10' || fieldName == 'd11' || fieldName == 'd12' || fieldName == 'd13' || fieldName == 'd14' || fieldName == 'd15' || fieldName == 'd16' || fieldName == 'd17' || fieldName == 'd18' || fieldName == 'd19' || fieldName == 'd20' || fieldName == 'd21' || fieldName == 'd22' || fieldName == 'd23' || fieldName == 'd24' || fieldName == 'd25' || fieldName == 'd26' || fieldName == 'd27' || fieldName == 'd28' || fieldName == 'd29' || fieldName == 'd30' || fieldName == 'd31')) {
@@ -352,8 +354,9 @@ function App() {
             }
           }
         }
-        if (fieldName == 'modelCode') {
+        if (fieldName == 'modelName') {
           const hasModel = model.filter((v) => v.model == change.newCell.text);
+          console.log(hasModel)
           if (Object.keys(hasModel).length == 0) { // ไม่พบ Customer Code ?
             const exist = cloneHighlight.filter((v, i: number) => {
               return v.columnId == fieldName && v.rowId == personIndex && i > -1
@@ -361,6 +364,7 @@ function App() {
             if (Object.keys(exist).length == 0) {
               cloneHighlight.push({ columnId: fieldName, rowId: personIndex, borderColor: "#ff0000" })
             }
+            prevPeople[personIndex]['sebango'] = '';
           } else { // พบ Customer Code !
             const exist = cloneHighlight.filter((v) => {
               return v.columnId == fieldName && v.rowId == personIndex
@@ -375,10 +379,10 @@ function App() {
           }
         }
         if (fieldName == 'sebango') {
-          let modelCode = '';
+          let sebango = '';
           if (typeof prevPeople[personIndex] != 'undefined') {
-            modelCode = prevPeople[personIndex]['modelCode'];
-            const hasModel = model.filter((v) => v.model == modelCode);
+            sebango = prevPeople[personIndex]['sebango'];
+            const hasModel = model.filter((v) => v.model == sebango);
             if (Object.keys(hasModel).length) {
               if (hasModel[0].modelCode != '') {
                 change.newCell.text = hasModel[0].modelCode;
@@ -396,7 +400,7 @@ function App() {
             }
           }
         }
-        if (fieldName == 'customer' || fieldName == 'modelCode' || fieldName == 'pltype' || fieldName == 'sebango') {
+        if (fieldName == 'customer' || fieldName == 'modelName' || fieldName == 'pltype' || fieldName == 'sebango') {
           prevPeople[personIndex][fieldName] = change.newCell.text.toString();
         }
       }
@@ -415,7 +419,7 @@ function App() {
     setHighlights([...finalHighlight])
     return [...prevPeople];
   };
- 
+
   async function handleChanges(changes: CellChange<TextCell>[]) {
     await setPeople((prevPeople) => applyChangesToPeople(changes, prevPeople));
     const update = await API_UPDATE_SALE({ listSale: people, ym: `${year}${month.toLocaleString('en', { minimumIntegerDigits: 2 })}`, empcode: empcode });
@@ -425,10 +429,10 @@ function App() {
     let ym = `${year}${month.toLocaleString('en', { minimumIntegerDigits: 2 })}`;
     let newRow: Person[] = [];
     [...Array(rowAdd)].map(() => {
-      newRow.push({ ym: ym, customer: "", modelCode: "", sebango: "", pltype: "", d01: 0, d02: 0, d03: 0, d04: 0, d05: 0, d06: 0, d07: 0, d08: 0, d09: 0, d10: 0, d11: 0, d12: 0, d13: 0, d14: 0, d15: 0, d16: 0, d17: 0, d18: 0, d19: 0, d20: 0, d21: 0, d22: 0, d23: 0, d24: 0, d25: 0, d26: 0, d27: 0, d28: 0, d29: 0, d30: 0, d31: 0 })
+      newRow.push({ ym: ym, customer: "", modelName: "", sebango: "", pltype: "", d01: 0, d02: 0, d03: 0, d04: 0, d05: 0, d06: 0, d07: 0, d08: 0, d09: 0, d10: 0, d11: 0, d12: 0, d13: 0, d14: 0, d15: 0, d16: 0, d17: 0, d18: 0, d19: 0, d20: 0, d21: 0, d22: 0, d23: 0, d24: 0, d25: 0, d26: 0, d27: 0, d28: 0, d29: 0, d30: 0, d31: 0 })
     });
     const apiNewRow = await API_NEW_ROW({ data: newRow, ym: ym });
-    if(apiNewRow.status){
+    if (apiNewRow.status) {
       location.reload();
     }
     // setPeople([...people, ...newRow])
@@ -549,18 +553,13 @@ function App() {
         </Stack>
         <Stack mb={2} direction={'row'} justifyContent={'space-between'} spacing={1} >
           <Stack direction={'row'} spacing={1}>
-            {/* <Button variant='outlined' startIcon={<HomeIcon />} onClick={() => {
-                dispatch({ type: 'SET-MENU', payload: 'home' })
-                navigate('../home');
-              }}>หน้าหลัก</Button> */}
-
             <Button onClick={handleChangeEdit} variant='contained' startIcon={<BorderColorIcon />} disabled={!distribution ? true : false}>แก้ไข</Button>
             <Button onClick={handleDistribution} variant='contained' startIcon={<ArrowUpwardIcon />} disabled={distribution ? true : false}>แจกจ่าย</Button>
             <Button onClick={handleClear} variant='contained' color="error" startIcon={<DeleteOutlineIcon />} disabled={distribution ? true : false}>ล้าง</Button>
             <ExportToExcel year={`${year}`} month={parseInt(month).toLocaleString('en', { minimumIntegerDigits: 2 })} rows={rows} column={columns} />
           </Stack>
           <Stack direction={'row'} spacing={1}>
-            <TextField size='small' value={rowAdd} onChange={(e) => setRowAdd(parseInt(e.target.value))} />
+            <TextField size='small' value={rowAdd} onChange={(e) => setRowAdd(e.target.value != '' ? parseInt(e.target.value) : 0)} />
             <Button variant='contained' onClick={handleAddRow} startIcon={<SaveAltIcon />} disabled={distribution ? true : false}>เพิ่มรายการ</Button>
           </Stack>
         </Stack>

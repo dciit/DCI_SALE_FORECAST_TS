@@ -42,11 +42,11 @@ function ToolbarComponent() {
                 </Stack>
             </Stack>
             <Stack className='select-none flex-1' direction={'row'} justifyContent={'start'} alignItems={'center'}>
-                <Stack className={`${activeMenu.menuActive.toString() == "home" ? 'border-b-2 border-b-[#fd8c73]' : ''}  cursor-pointer h-[100%] hover:border-b-2 hover:border-b-[#fd8c73] px-3 transform-all duration-100`} direction={'row'} alignItems={'center'} justifyItems={'center'} justifyContent={'center'} spacing={1} onClick={() => handleActiveMenu('home')}>
+                <Stack className={`${typeof activeMenu.menuActive != 'undefined' && activeMenu.menuActive.toString() == "home" ? 'border-b-2 border-b-[#fd8c73]' : ''}  cursor-pointer h-[100%] hover:border-b-2 hover:border-b-[#fd8c73] px-3 transform-all duration-100`} direction={'row'} alignItems={'center'} justifyItems={'center'} justifyContent={'center'} spacing={1} onClick={() => handleActiveMenu('home')}>
                     <HouseSidingIcon className='text-gray-500' />
                     <Typography color="initial" className='font-semibold text-gray-600'>Home</Typography>
                 </Stack>
-                <Stack className={`${activeMenu.menuActive.toString() == "customerMaster" ? 'border-b-2 border-b-[#fd8c73]' : ''}  cursor-pointer h-[100%] hover:border-b-2 hover:border-b-[#fd8c73] px-3 transform-all duration-100`} direction={'row'} alignItems={'center'} justifyItems={'center'} justifyContent={'center'} spacing={1} onClick={() => handleActiveMenu('customerMaster')}>
+                <Stack className={`${typeof activeMenu.menuActive != 'undefined' && activeMenu.menuActive.toString() == "customerMaster" ? 'border-b-2 border-b-[#fd8c73]' : ''}  cursor-pointer h-[100%] hover:border-b-2 hover:border-b-[#fd8c73] px-3 transform-all duration-100`} direction={'row'} alignItems={'center'} justifyItems={'center'} justifyContent={'center'} spacing={1} onClick={() => handleActiveMenu('customerMaster')}>
                     <AutoAwesomeMosaicIcon className='text-gray-500' />
                     <Typography color="initial" className='font-semibold text-gray-600'>Customer Master</Typography>
                 </Stack>
