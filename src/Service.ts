@@ -10,6 +10,7 @@ const http = Axios.create({
 });
 
 export function API_UPDATE_SALE(param: MSale) {
+    console.log(param)
     return new Promise(resolve => {
         http.post(`/update/sale`, param).then((res) => {
             resolve(res.data);
@@ -48,7 +49,6 @@ export function API_CLEAR_SALE(param: MSale) {
         })
     })
 }
-
 
 export function API_LIST_STATUS_SALE(param: MSale) {
     return new Promise<MStatusSale[]>(resolve => {
@@ -93,6 +93,14 @@ export function API_MODEL() {
 export function API_LOGIN(param: MLogin) {
     return new Promise<MResponse>(resolve => {
         http.post(`/employee/login`,param).then((res) => {
+            resolve(res.data);
+        })
+    })
+}
+
+export function API_CLEAR_EMPTY(param: MSale) {
+    return new Promise(resolve => {
+        http.post(`/clearempty/sale`, param).then((res) => {
             resolve(res.data);
         })
     })

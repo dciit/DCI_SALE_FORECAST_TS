@@ -14,11 +14,12 @@ function Login() {
     // if (typeof reducer.empcode !== 'undefined') {
     //     empcodeRedux = reducer.empcode;
     // }
+    const rev = import.meta.env.VITE_VERSION;
     const [empcode, setEmpcode] = useState<string>('');
     async function handleLogin() {
         let login = await API_LOGIN({ empcode: empcode });
         if (login.status) {
-            dispatch({ type: 'LOGIN', payload: { name: login.name, empcode: empcode } })
+            dispatch({ type: 'LOGIN', payload: { name: login.name, empcode: empcode, rev: rev } })
             navigate('/dcisaleforecast/home');
             setEmpcode('');
         } else {

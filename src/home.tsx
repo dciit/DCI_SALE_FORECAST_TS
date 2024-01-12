@@ -36,7 +36,7 @@ function Home() {
         setListSale(grid);
     }
     async function initYear() {
-        let y = moment().format('YYYY');
+        let y = moment().add('year',-1).format('YYYY');
         const listYear = await [...Array(3)].map((v: any, i: number) => {
             console.log(v)
             return parseInt(y) + i;

@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
 import { MRedux } from './Interface';
 import AutoAwesomeMosaicIcon from '@mui/icons-material/AutoAwesomeMosaic';
-
+import { persistor } from '../src/redux/store';
 function ToolbarComponent() {
     const reducer = useSelector((state: MRedux) => state.reducer);
     // let oEmpcode = '';
@@ -24,9 +24,10 @@ function ToolbarComponent() {
         navigate(`/dcisaleforecast/${menu}`)
     }
     async function handleLogout() {
-        if (confirm('คุณต้องการออกจากระบบใช่หรือไม่ ?')) {
+        if (confirm('คุณต้องการออกจากระบบใช่หรือไม่ ? ...')) {
             dispatch({ type: 'LOGOUT' });
-            navigate('/dcisaleforecast/login');
+            persistor.purge();
+            location.reload();
         }
     }
     return (

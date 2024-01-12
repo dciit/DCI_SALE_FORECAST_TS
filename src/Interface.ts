@@ -7,7 +7,9 @@ export interface MSale {
     customer?: string;
     model?: string;
     modelCode?: string;
-    data?: Person[]
+    data?: Person[];
+    filterCustomer?: MFitlerEdit[];
+    filterSBU?: MFitlerEdit[];
 }
 export interface MResponse {
     status: boolean;
@@ -24,7 +26,7 @@ export interface MFilter {
 export interface Person {
     customer: string;
     // modelCode: string;
-    modelName:string;
+    modelName: string;
     sebango: string;
     pltype: string;
     d01: string | number;
@@ -59,7 +61,7 @@ export interface Person {
     d30: string | number;
     d31: string | number;
     id?: number;
-    ym?:string;
+    ym?: string;
 }
 
 
@@ -122,10 +124,18 @@ export interface MRedux {
             year: '',
             month: ''
         },
-        menuActive: ""
+        menuActive: "",
+        filterCustomer: [],
+        filterSBU: [],
+        rev: 0
     }
 }
 
 export interface MLogin {
     empcode?: string;
+}
+
+export interface MFitlerEdit {
+    value: string | number;
+    label: string
 }

@@ -7,7 +7,10 @@ const initialState = {
         year: '',
         month: ''
     },
-    menuActive: 'home'
+    menuActive: 'home',
+    filterCustomer: [],
+    filterSBU: [],
+    rev: 0
 }
 
 const IndexReducer = (state = initialState, action: any) => {
@@ -17,12 +20,21 @@ const IndexReducer = (state = initialState, action: any) => {
                 ...state,
                 login: true,
                 empcode: action.payload.empcode,
-                name: action.payload.name
+                name: action.payload.name,
+                rev: action.payload.rev
+            }
+        case 'SET_REV':
+            return {
+                ...state,
+                login:false,
+                rev: action.payload
             }
         case 'LOGOUT':
             return {
                 ...state,
-                login: false
+                login: false,
+                filterCustomer: [],
+                filterSBU: []
             }
         case 'EDIT-INIT':
             return {
@@ -36,6 +48,17 @@ const IndexReducer = (state = initialState, action: any) => {
             return {
                 ...state,
                 menuActive: action.payload
+            }
+        case 'SET_FILTER_CUSTOMER':
+            return {
+                ...state,
+                // filterCustomer: [...state.filterCustomer,...action.payload]
+                filterCustomer: action.payload
+            }
+        case 'SET_FILTER_SBU':
+            return {
+                ...state,
+                filterSBU: action.payload
             }
         default:
             return state
