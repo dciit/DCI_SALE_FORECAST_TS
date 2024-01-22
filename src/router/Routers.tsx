@@ -4,6 +4,7 @@ import App from "../App";
 import Home from "../home";
 import Login from "../login";
 import CustomerMaster from "../customerMaster";
+import Report from "../report";
 const Routers = () => {
     let BASE = import.meta.env.VITE_PATH;
     return (
@@ -17,6 +18,7 @@ const Routers = () => {
                 </Route>                            
                 <Route path={`/*`} element={<Login />} />
                 <Route path={`${BASE}/login`} element={<Login />} />
+                <Route path={`${BASE}/report/:ym`} element={<Report />} />
             </Routes>
         </BrowserRouter>
     );

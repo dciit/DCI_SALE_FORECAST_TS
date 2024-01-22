@@ -4,6 +4,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import { useNavigate } from 'react-router-dom';
 import moment from 'moment';
 import { MRedux } from '../Interface';
+import SearchIcon from '@mui/icons-material/Search';
 function DialogMenuEdit(props: any) {
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -21,6 +22,9 @@ function DialogMenuEdit(props: any) {
         navigate('/dcisaleforecast/edit');
         dispatch({ type: 'SET-MENU', payload: 'edit' })
     }
+    async function handleReport() {
+        navigate(`/dcisaleforecast/report/${year + '' + month.toLocaleString('en', { minimumIntegerDigits: 2 })}`)
+    }
     return (
         <Dialog onClose={close} open={open} >
             <DialogTitle>{`${year} : ${moment(month, 'M').format('MMM').toUpperCase()}`}</DialogTitle>
@@ -34,6 +38,16 @@ function DialogMenuEdit(props: any) {
                                 </Avatar>
                             </ListItemAvatar>
                             <ListItemText primary="แก้ไข" />
+                        </ListItemButton>
+                    </ListItem>
+                    <ListItem disableGutters onClick={handleReport}>
+                        <ListItemButton autoFocus >
+                            <ListItemAvatar>
+                                <Avatar>
+                                    <SearchIcon />
+                                </Avatar>
+                            </ListItemAvatar>
+                            <ListItemText primary="ดูรายงาน" />
                         </ListItemButton>
                     </ListItem>
                 </List>

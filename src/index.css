@@ -1,7 +1,7 @@
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
 :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
@@ -12,10 +12,14 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-body,html,#root,.page{
+body,
+html,
+#root,
+.page {
   height: 100% !important;
   width: 100% !important;
 }
+
 h1 {
   font-size: 3.2em;
   line-height: 1.1;
@@ -32,9 +36,11 @@ button {
   cursor: pointer;
   transition: border-color 0.25s;
 }
+
 button:hover {
   border-color: #646cff;
 }
+
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
@@ -49,16 +55,19 @@ button:focus-visible {
   padding: 16px 0px;
 }
 
-.rg-header-cell { 
+.rg-header-cell {
   text-align: center !important;
   text-transform: uppercase;
 }
+
 .toolbar {
   /* box-shadow:0 2px 3px -1px rgb(0 0 0 / 20%) !important; */
-  border-bottom:1px solid #d8dee4;
+  border-bottom: 1px solid #d8dee4;
 }
 
-table.tbSaleView,.tbSaleView td, .tbSaleView th {
+table.tbSaleView,
+.tbSaleView td,
+.tbSaleView th {
   border: 1px solid #e8e8e8;
 }
 
@@ -67,16 +76,14 @@ table.tbSaleView {
   border-collapse: collapse;
 }
 
-.text-shadow {
-  
-}
+.text-shadow {}
 
 .border-mtr {
-  border:1px solid #ddd;
+  border: 1px solid #ddd;
 }
 
 .rg-cell {
-  text-align:right !important;
+  text-align: right !important;
 }
 
 .border-btn-login {
@@ -100,10 +107,11 @@ table.tbSaleView {
 .flex-right .MuiInput-root {
   border-bottom: 1px solid #e6e6e6 !important;
 }
+
 .flex-right .MuiTypography-root,
-.flex-right .MuiFormLabel-root ,
-.flex-right .MuiInputLabel-root{
-  color:white !important;
+.flex-right .MuiFormLabel-root,
+.flex-right .MuiInputLabel-root {
+  color: white !important;
 }
 
 input::-webkit-outer-spin-button,
@@ -115,4 +123,24 @@ input::-webkit-inner-spin-button {
 /* Firefox */
 input[type=number] {
   -moz-appearance: textfield;
+}
+
+.page-report table,
+.page-report td,
+.page-report th {
+  border: 1px solid #ddd;
+  padding: 4px;
+}
+.page-report td:nth-child(n+5){
+  text-align: right;
+}
+.page-report td:first-child,
+.page-report td:nth-child(2),
+.page-report td:nth-child(3),
+.page-report td:nth-child(4){
+  font-weight: bold;
+}
+.page-report table {
+  width: 100%;
+  border-collapse: collapse;
 }
