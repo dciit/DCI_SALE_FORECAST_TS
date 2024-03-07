@@ -1,8 +1,9 @@
+//@ts-nocheck
 import { useEffect, useState } from 'react'
 import './App.css'
 import { ReactGrid, Column, Row, TextCell, CellChange, DefaultCellTypes, Highlight } from "@silevis/reactgrid";
 import "@silevis/reactgrid/styles.css";
-import { Stack, Button, Typography, TextField, Badge, MenuItem, styled, Menu, alpha, MenuProps } from '@mui/material';
+import { Stack, Button, Typography, TextField, Badge, MenuItem, styled, Menu, alpha, MenuProps, Backdrop, CircularProgress } from '@mui/material';
 import { API_CHANGE_STATUS, API_CLEAR_EMPTY, API_CLEAR_SALE, API_CUSTOMER, API_DISTRIBUTION_SALE, API_GET_SALE, API_MODEL, API_NEW_ROW, API_STATUS_SALE, API_UPDATE_SALE } from './Service';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import SaveAltIcon from '@mui/icons-material/SaveAlt';
@@ -198,7 +199,6 @@ function App() {
   const [rowAdd, setRowAdd] = useState<number>(10);
   const [customer, setCustomer] = useState<MCustomer[]>([]);
   const [itemSelectCustomer, setItemSelectCustomer] = useState<MFitlerEdit[]>([]);
-  // const [selectCustomer, setSelectCustomer] = useState<MFitlerEdit[]>([]);
   const reducerFilterCustomer = useSelector((state: MRedux) => state.reducer.filterCustomer);
   const reducerFilterSBU = useSelector((state: MRedux) => state.reducer.filterSBU);
   const [itemSelectSBU] = useState<MFitlerEdit[]>([
@@ -207,7 +207,6 @@ function App() {
     { value: 'J', label: 'SCR' },
     { value: '%', label: 'ODM' }
   ]);
-  // const [selectSBU, setSelectSBU] = useState<MFitlerEdit[]>([]);
   const [model, setModel] = useState<MModel[]>([]);
   const [people, setPeople] = useState<Person[]>([]);
   const [rows, setRows] = useState<Row<DefaultCellTypes>[]>([]);
@@ -219,27 +218,12 @@ function App() {
   const [menuFilter] = useState<string[]>([]);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
-  // const handleClick = (event: React.MouseEvent<HTMLElement>) => {
-  //   setAnchorEl(event.currentTarget);
-  // };
-
-  // const handleMenuCustomer = (event: React.MouseEvent<HTMLElement>) => {
-  //   setTypeFilter('customer');
-  //   const newMenu = customer.map((v: MCustomer) => { return `${v.customerCode}:${v.customerNameShort}`.replace(/(\r\n|\n|\r)/gm, "") });
-  //   setMenuFilter(newMenu);
-  //   setAnchorEl(event.currentTarget);
-  // }
-
-  // const handleMenuModelCode = (event: React.MouseEvent<HTMLElement>) => {
-  //   setTypeFilter('modelCode');
-  //   const newMenu = model.map((v: MModel) => { return `${v.model}`.replace(/(\r\n|\n|\r)/gm, "") });
-  //   setMenuFilter(newMenu);
-  //   setAnchorEl(event.currentTarget);
-  // }
+  const [loadAddRow, setLoadAddRow] = useState<boolean>(false);
+  const [loadFirst, setLoadFirst] = useState<boolean>(true);
+  const [load, setLoad] = useState<boolean>(true);
+  const [msgBackdrop, setMsgBackdrop] = useState<string>('กำลังเพิ่มรายการให้คุณ');
   const handleClose = (choice: string, type: string) => {
     if (type == 'customer') {
-      console.log(choice)
-      // setCustomerSelect(choice);
       setInvisibleCustomer(false);
     }
     setAnchorEl(null);
@@ -257,13 +241,7 @@ function App() {
     return;
   }, []);
 
-  useEffect(() => {
-    if (people.length) {
-      let oPeople = getRows(people);
-      setRows(oPeople);
-      setHighlights([...highlights])
-    }
-  }, [people]);
+
 
   useEffect(() => {
     initHighlight();
@@ -277,6 +255,7 @@ function App() {
     return await API_STATUS_SALE({ ym: `${year}${month.toLocaleString('en', { minimumIntegerDigits: 2 })}` });
   }
   async function init() {
+    setLoad(true);
     let apiCustomer: MCustomer[] = await API_CUSTOMER();
     setItemSelectCustomer(apiCustomer.map((v: MCustomer) => {
       var codeCustomer = v.customerCode.replace(/(\r\n|\n|\r)/gm, "")
@@ -293,7 +272,6 @@ function App() {
     setRev(detailSale!.rev!);
     // const objSale = await defSale(apiSale.data);
     // setPeople(objSale);
-    console.log(apiSale.data)
     setPeople(apiSale.data);
   }
   async function initHighlight() {
@@ -325,16 +303,6 @@ function App() {
       setHighlights([...cloneHighlight]);
     }
   }
-  // async function defSale(apiSale: any = []) {
-  //   if (apiSale.length < 10) {
-  //     [...Array(10)].map((i: number) => {
-  //       if (typeof apiSale[i] == 'undefined') {
-  //         apiSale.push({ customer: "", modelName: "", modelCode: "", sebango: "", pltype: "", d01: 0, d02: 0, d03: 0, d04: 0, d05: 0, d06: 0, d07: 0, d08: 0, d09: 0, d10: 0, d11: 0, d12: 0, d13: 0, d14: 0, d15: 0, d16: 0, d17: 0, d18: 0, d19: 0, d20: 0, d21: 0, d22: 0, d23: 0, d24: 0, d25: 0, d26: 0, d27: 0, d28: 0, d29: 0, d30: 0, d31: 0 });
-  //       }
-  //     });
-  //   }
-  //   return apiSale;
-  // }
   const applyChangesToPeople = (
     changes: CellChange<TextCell>[],
     prevPeople: Person[]
@@ -373,7 +341,6 @@ function App() {
         }
         if (fieldName == 'modelName') {
           const hasModel = model.filter((v) => v.model == change.newCell.text);
-          console.log(hasModel)
           if (Object.keys(hasModel).length == 0) { // ไม่พบ Customer Code ?
             const exist = cloneHighlight.filter((v, i: number) => {
               return v.columnId == fieldName && v.rowId == personIndex && i > -1
@@ -433,14 +400,33 @@ function App() {
         finalHighlight = finalHighlight.filter(x => x.rowId != oHighlight.rowId);
       }
     })
+    setLoadFirst(false);
     setHighlights([...finalHighlight])
     return [...prevPeople];
   };
   async function handleChanges(changes: CellChange<TextCell>[]) {
+    setMsgBackdrop('กำลังแก้ไขข้อมูลของคุณ');
+    setLoadAddRow(true);
     await setPeople((prevPeople) => applyChangesToPeople(changes, prevPeople));
-    await API_UPDATE_SALE({ listSale: people, ym: `${year}${month.toLocaleString('en', { minimumIntegerDigits: 2 })}`, empcode: empcode });
   };
+
+  useEffect(() => {
+    setLoadAddRow(false);
+    if (people.length) {
+      let oPeople = getRows(people);
+      setLoad(false);
+      if (rows.length > 0 && loadFirst == false) {
+        API_UPDATE_SALE({ listSale: people, ym: `${year}${month.toLocaleString('en', { minimumIntegerDigits: 2 })}`, empcode: empcode });
+      }
+      setRows(oPeople);
+      setHighlights([...highlights])
+    }
+  }, [people]);
+
+
   async function handleAddRow() {
+    setMsgBackdrop('กำลังเพิ่มรายการให้กับคุณ')
+    setLoadAddRow(true);
     let ym = `${year}${month.toLocaleString('en', { minimumIntegerDigits: 2 })}`;
     let newRow: Person[] = [];
     [...Array(rowAdd)].map(() => {
@@ -466,17 +452,23 @@ function App() {
       return;
     }
     if (confirm('คุณต้องการที่จะแจกจ่ายข้อมูลฉบับนี้ ใช่หรือไม่ ? ')) {
-      const distribution = await API_DISTRIBUTION_SALE({ ym: `${year}${month.toLocaleString('en', { minimumIntegerDigits: 2 })}` });
+      setMsgBackdrop(`กำลังปรับสถานะไปยัง "แจกจ่าย"`);
+      setLoadAddRow(true);
+      const distribution = await API_DISTRIBUTION_SALE({ ym: `${year}${month.toLocaleString('en', { minimumIntegerDigits: 2 })}`, empcode: empcode });
       if (typeof distribution.status != 'undefined' && distribution.status) {
-        navigate(`/${BASE}/home`)
+        navigate(`/${BASE}/home`);
+        setLoadAddRow(false);
       }
     }
   }
   async function handleClear() {
     try {
       if (confirm(`คุณต้องการลบข้อมูลประจำวันเดือน ${moment(month, 'M').format('MMMM').toUpperCase()} ปี ${year} ใช่หรือไม่ ?`)) {
+        setMsgBackdrop(`กำลังล้างประจำวันเดือน ${moment(month, 'M').format('MMMM').toUpperCase()} ปี ${year}`);
+        setLoadAddRow(true);
         const clear: any = await API_CLEAR_SALE({ ym: `${year}${month.toLocaleString('en', { minimumIntegerDigits: 2 })}` });
         if (typeof clear.status != 'undefined' && clear.status) {
+          setLoadAddRow(false);
           location.reload();
         } else {
           alert(`${clear.error}`)
@@ -488,29 +480,30 @@ function App() {
   }
   async function handleChangeCustomer(e: any) {
     dispatch({ type: 'SET_FILTER_CUSTOMER', payload: e })
-    // setSelectCustomer(e);
   }
   async function handleChangeSBU(e: any) {
     dispatch({ type: 'SET_FILTER_SBU', payload: e })
-    // setSelectSBU(e);
   }
   async function handleSearch() {
     init();
   }
   async function handleClearEmpty() {
+    setMsgBackdrop('กำลังล้างข้อมูลที่ว่าง')
+    setLoadAddRow(true);
     var clearEmpty: any = await API_CLEAR_EMPTY({ listSale: people, ym: `${year}${month.toLocaleString('en', { minimumIntegerDigits: 2 })}`, empcode: empcode });
-    if (clearEmpty.status) {
+    if (clearEmpty.status > 0 && clearEmpty != 9999) {
       location.reload();
+      setLoadAddRow(false);
     } else {
-      alert('เกิดข้อมูลผิดพลาดกับการล้างข้อมูลที่ว่างเปล่า');
+      setLoadAddRow(false);
+      if (clearEmpty == 9999) {
+        alert('เกิดข้อมูลผิดพลาดกับการล้างข้อมูลที่ว่างเปล่า');
+      }
       location.reload();
     }
   }
   return <Stack >
     <Stack p={6} className='h-[800px]' spacing={1}>
-      {/* {
-        JSON.stringify(reducerFilterCustomer)
-      } */}
       <Stack spacing={2} className='h-[100%] '>
         <Stack direction={'row'} spacing={1} alignItems={'center'} justifyContent={'space-between'} className='select-none py-3 pl-5 pr-6 rounded-[8px] border-mtr bg-[#f6f8fa]' title="ปีและเดือนนี้กำลังอยู่ในระหว่างแก้ไข" >
           <Stack spacing={1} direction={'row'}>
@@ -521,21 +514,6 @@ function App() {
               <span>เวอร์ชั่น : {rev.toLocaleString('en', { minimumIntegerDigits: 2 })}</span>
             </div>
           </Stack>
-
-          {/* <Stack direction={'row'} spacing={1}>
-            <div className='rounded-[8px] px-4 pb-1 pt-[.5px] h-fit text-white bg-white' style={{ border: '1px solid #ddd' }}>
-              <Typography className={`text-[#323232] text-[14px]`} variant='caption'>
-                สถานะ
-              </Typography>
-            </div>
-            <div className={`rounded-[8px] px-4 pb-1 pt-[.5px] h-fit  ${distribution ? 'bg-blue-600' : 'bg-gray-600'}`} style={{ border: '1px solid #ddd' }}>
-              <Typography className={`text-[14px] ${distribution ? 'text-white' : 'text-white'}`} variant='caption'>
-                {
-                  distribution ? 'แจกจ่ายแล้ว' : 'ระหว่างแก้ไขข้อมูล'
-                }
-              </Typography>
-            </div>
-          </Stack> */}
 
           <Badge badgeContent="">
             <span className="relative flex h-3 w-3">
@@ -558,22 +536,6 @@ function App() {
               <SelectReact className='max-w-[60%] min-w-[60%]' isMulti options={itemSelectCustomer} value={reducerFilterCustomer} closeMenuOnSelect={false} components={animatedComponents} placeholder={'เลือก Customer ของคุณ'} onChange={(e: any) => handleChangeCustomer(e)} />
               <SelectReact className='max-w-[30%] min-w-[30%]' isMulti options={itemSelectSBU} value={reducerFilterSBU} closeMenuOnSelect={false} components={animatedComponents} placeholder={'เลือก SBU ของคุณ '} onChange={(e: any) => handleChangeSBU(e)} isDisabled={false} />
               <Button startIcon={<SearchIcon />} className='w-[10%]' variant='contained' onClick={handleSearch}>ค้นหา</Button>
-              {/* <Badge badgeContent={customerSelect} color="primary" invisible={customerSelect.length ? false : true} >
-                <Stack className='bg-white rounded-full pl-4 pr-2 pt-1 pb-1 cursor-pointer' direction={'row'} style={{ border: '1px solid #ddd' }} onClick={handleMenuCustomer}>
-                  <Typography>Customer</Typography>
-                  <ArrowDropDownIcon />
-                </Stack>
-              </Badge> */}
-              {/* <Badge badgeContent={modelCodeSelect} color="primary" invisible={invisibleModelCode} >
-                <Stack className='bg-white rounded-full pl-4 pr-2 pt-1 pb-1 cursor-pointer' direction={'row'} style={{ border: '1px solid #ddd' }} onClick={handleMenuModelCode}>
-                  <Typography>ModelCode</Typography>
-                  <ArrowDropDownIcon />
-                </Stack>
-              </Badge> */}
-              {/* <Stack className='bg-white rounded-full pl-4 pr-2 pt-1 pb-1 cursor-pointer' direction={'row'} style={{ border: '1px solid #ddd' }} onClick={handleClick}>
-                <Typography>Pallet Type</Typography>
-                <ArrowDropDownIcon />
-              </Stack> */}
             </Stack>
           </Stack>
         </Stack>
@@ -581,53 +543,55 @@ function App() {
           <Stack direction={'row'} spacing={1}>
             <Button onClick={handleChangeEdit} variant='contained' startIcon={<BorderColorIcon />} disabled={!distribution ? true : false}>แก้ไข</Button>
             <Button onClick={handleDistribution} variant='contained' startIcon={<ArrowUpwardIcon />} disabled={distribution ? true : false}>แจกจ่าย</Button>
-            <Button onClick={handleClear} variant='contained' color="error" startIcon={<DeleteOutlineIcon />} disabled={distribution ? true : false}>ล้าง</Button>
-
+            <Button onClick={handleClearEmpty} variant='contained' color="warning" startIcon={<CleaningServicesIcon />} disabled={distribution ? true : false}>ล้างรายการที่ว่างเปล่า</Button>
+            <Button onClick={handleClear} variant='contained' color="error" startIcon={<DeleteOutlineIcon />} disabled={distribution ? true : false}>ล้างข้อมูลทั้งหมด</Button>
             <ExportToExcel year={`${year}`} month={parseInt(month).toLocaleString('en', { minimumIntegerDigits: 2 })} rows={rows} column={columns} />
           </Stack>
           <Stack direction={'row'} spacing={1}>
-            <Button onClick={handleClearEmpty} variant='contained' color="error" startIcon={<CleaningServicesIcon />} disabled={distribution ? true : false}>ล้างรายการที่ว่างเปล่า</Button>
             <TextField size='small' value={rowAdd} onChange={(e) => setRowAdd(e.target.value != '' ? parseInt(e.target.value) : 0)} />
             <Button variant='contained' onClick={handleAddRow} startIcon={<SaveAltIcon />} disabled={distribution ? true : false}>เพิ่มรายการ</Button>
           </Stack>
         </Stack>
-
         <div className='wrapper'>
           {
-            (distribution && width > 0) ?
-              <table className={`tbSaleView w-[2800px] text-[#000000] select-none `} >
-                <thead className={`bg-[#f2f2f2]`}>
-                  <tr>
+            load ? <Stack direction={'column'} alignItems={'center'} className='h-full' justifyContent={'center'}>
+              <CircularProgress />
+              <Typography>กำลังโหลดข้อมูล</Typography>
+            </Stack> :
+              (distribution && width > 0) ?
+                <table className={`tbSaleView w-[2800px] text-[#692525] select-none `} >
+                  <thead className={`bg-[#f2f2f2]`}>
+                    <tr>
+                      {
+                        columns.map((vCol: any, iCol: number) => {
+                          return <th key={iCol} style={{ width: parseInt(vCol.width) }}>{vCol.columnId.toUpperCase()}</th>
+                        })
+                      }
+                    </tr>
+                  </thead>
+                  <tbody>
                     {
-                      columns.map((vCol: any, iCol: number) => {
-                        return <th key={iCol} style={{ width: parseInt(vCol.width) }}>{vCol.columnId.toUpperCase()}</th>
+                      rows.map((vRow: any) => {
+                        return vRow.rowId != 'header' ? <tr  >
+                          {
+                            vRow.cells.map((vData: any, iData: number) => {
+                              return <td key={iData} className={`${iData > 3 ? 'text-right' : ''} ${vData.text != '0' ? 'text-black' : 'text-[#ddd]'}`}>{vData.text}</td>
+                            })
+                          }
+                        </tr> : <tr></tr>
                       })
                     }
-                  </tr>
-                </thead>
-                <tbody>
-                  {
-                    rows.map((vRow: any) => {
-                      return vRow.rowId != 'header' ? <tr  >
-                        {
-                          vRow.cells.map((vData: any, iData: number) => {
-                            return <td key={iData} className={`${iData > 3 ? 'text-right' : ''} ${vData.text != '0' ? 'text-black' : 'text-[#ddd]'}`}>{vData.text}</td>
-                          })
-                        }
-                      </tr> : <tr></tr>
-                    })
-                  }
-                </tbody>
-              </table>
-              : <div className='bg-white  select-none'>
-                <Stack direction={'row'}>
-                  <ReactGrid rows={rows} columns={columns} highlights={highlights} onCellsChanged={handleChanges} enableRowSelection enableColumnSelection />
-                </Stack>
-              </div>
+                  </tbody>
+                </table>
+                : <div className='bg-white  select-none'>
+                  <Stack direction={'row'}>
+                    <ReactGrid rows={rows} columns={columns} highlights={highlights} onCellsChanged={handleChanges} enableRowSelection enableColumnSelection stickyTopRows={1} />
+                  </Stack>
+                </div>
           }
         </div>
         <Stack>
-          <Typography variant='caption'>จำนวน {rows.length} รายการ</Typography>
+          <Typography variant='caption'>จำนวน {(rows.length > 0) ? (rows.length - 1) : 0} รายการ</Typography>
         </Stack>
       </Stack>
     </Stack>
@@ -648,6 +612,15 @@ function App() {
         })
       }
     </StyledMenu>
+    <Backdrop
+      sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+      open={loadAddRow}
+    >
+      <Stack direction={'column'} alignItems={'center'} gap={2}>
+        <Typography>{msgBackdrop} กรุณารอสักครู่ ...</Typography>
+        <CircularProgress color="inherit" />
+      </Stack>
+    </Backdrop>
   </Stack>
 }
 

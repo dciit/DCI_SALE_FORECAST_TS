@@ -131,16 +131,51 @@ input[type=number] {
   border: 1px solid #ddd;
   padding: 4px;
 }
-.page-report td:nth-child(n+5){
+
+.page-report td:nth-child(n+5) {
   text-align: right;
 }
+
 .page-report td:first-child,
 .page-report td:nth-child(2),
 .page-report td:nth-child(3),
-.page-report td:nth-child(4){
+.page-report td:nth-child(4) {
   font-weight: bold;
 }
+
 .page-report table {
   width: 100%;
   border-collapse: collapse;
+}
+
+body {
+  margin: 0;
+  padding: 0rem !important;
+}
+
+table {
+  text-align: left;
+  position: relative;
+  border-collapse: collapse; 
+}
+th, td {
+  padding: 0.25rem;
+}
+tr.red th {
+  background: red;
+  color: white;
+}
+tr.green th {
+  background: green;
+  color: white;
+}
+tr.purple th {
+  background: purple;
+  color: white;
+}
+th {
+  background: white;
+  position: sticky;
+  top: 0; 
+  box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.4);
 }

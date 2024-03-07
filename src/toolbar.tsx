@@ -4,8 +4,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
 import { MRedux } from './Interface';
-import AutoAwesomeMosaicIcon from '@mui/icons-material/AutoAwesomeMosaic';
 import { persistor } from '../src/redux/store';
+import { useState } from 'react';
+import CustomerMaster from './customerMaster';
+import SearchIcon from '@mui/icons-material/Search';
 function ToolbarComponent() {
     const reducer = useSelector((state: MRedux) => state.reducer);
     // let oEmpcode = '';
@@ -18,6 +20,7 @@ function ToolbarComponent() {
     }
     const navigate = useNavigate();
     const activeMenu = useSelector((state: MRedux) => state.reducer);
+    const [openCustomerMaster, setOpenCustomerMaster] = useState<boolean>(false);
     const dispatch = useDispatch();
     function handleActiveMenu(menu: string) {
         dispatch({ type: 'SET-MENU', payload: menu });
@@ -29,6 +32,9 @@ function ToolbarComponent() {
             persistor.purge();
             location.reload();
         }
+    }
+    async function handleShowCustomerMaster() {
+        setOpenCustomerMaster(true);
     }
     return (
         <Stack className='toolbar h-[10%] bg-[#f6f8fa]' justifyContent={'space-between'} px={2}>
@@ -47,11 +53,12 @@ function ToolbarComponent() {
                     <HouseSidingIcon className='text-gray-500' />
                     <Typography color="initial" className='font-semibold text-gray-600'>Home</Typography>
                 </Stack>
-                <Stack className={`${typeof activeMenu.menuActive != 'undefined' && activeMenu.menuActive.toString() == "customerMaster" ? 'border-b-2 border-b-[#fd8c73]' : ''}  cursor-pointer h-[100%] hover:border-b-2 hover:border-b-[#fd8c73] px-3 transform-all duration-100`} direction={'row'} alignItems={'center'} justifyItems={'center'} justifyContent={'center'} spacing={1} onClick={() => handleActiveMenu('customerMaster')}>
-                    <AutoAwesomeMosaicIcon className='text-gray-500' />
+                <Stack className={`${typeof activeMenu.menuActive != 'undefined' && activeMenu.menuActive.toString() == "customerMaster" ? 'border-b-2 border-b-[#fd8c73]' : ''}  cursor-pointer h-[100%] hover:border-b-2 hover:border-b-[#fd8c73] px-3 transform-all duration-100`} direction={'row'} alignItems={'center'} justifyItems={'center'} justifyContent={'center'} spacing={1} onClick={() => handleShowCustomerMaster()}>
+                    <SearchIcon className='text-gray-500' />
                     <Typography color="initial" className='font-semibold text-gray-600'>Customer Master</Typography>
                 </Stack>
             </Stack>
+            <CustomerMaster open={openCustomerMaster} close={setOpenCustomerMaster} />
         </Stack>
     )
 }

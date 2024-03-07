@@ -9,14 +9,12 @@ function Layout() {
     const dispatch = useDispatch();
     const VITE_REV = parseFloat(import.meta.env.VITE_VERSION);
     const reducer = useSelector((state: MRedux) => state.reducer);
-    console.log(reducer)
     const redexRev = reducer.rev;
     let oLogin = false;
     if (typeof reducer.login !== 'undefined') {
         oLogin = reducer.login;
     }
     try {
-        console.log(redexRev, VITE_REV)
         if (redexRev != VITE_REV) {
             persistor.purge();
             dispatch({ type: 'SET_REV', payload: VITE_REV });
@@ -25,7 +23,6 @@ function Layout() {
         persistor.purge();
         location.reload();
     }
-    console.log(redexRev, VITE_REV)
     return <Stack className='h-[100%] w-[100%] bg-[#e7ebee++]'>
         {
             !oLogin ? <Login /> : <Stack className='h-[100%] w-[100%] bg-[#e7ebee++]'>

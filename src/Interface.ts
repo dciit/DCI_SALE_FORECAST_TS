@@ -122,7 +122,8 @@ export interface MRedux {
         name: '',
         select: {
             year: '',
-            month: ''
+            month: '',
+            distribution: false
         },
         menuActive: "",
         filterCustomer: [],

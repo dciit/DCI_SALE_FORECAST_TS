@@ -36,7 +36,7 @@ function Home() {
         setListSale(grid);
     }
     async function initYear() {
-        let y = moment().add('year',-1).format('YYYY');
+        let y = moment().add('year', -1).format('YYYY');
         const listYear = await [...Array(3)].map((v: any, i: number) => {
             console.log(v)
             return parseInt(y) + i;
@@ -49,12 +49,12 @@ function Home() {
         setOnce(false);
     }
 
-    async function handleOpenMenu(month: number) {
-        dispatch({ type: 'EDIT-INIT', payload: { year: yearSelected, month: month } })
+    async function handleOpenMenu(month: number, distribution: boolean = false) {
+        dispatch({ type: 'EDIT-INIT', payload: { year: yearSelected, month: month, distribution: distribution } })
         setOpenMenu(true);
     }
     async function handleCloseMenu() {
-        dispatch({ type: 'EDIT-INIT', payload: { year: '', month: '' } });
+        dispatch({ type: 'EDIT-INIT', payload: { year: '', month: '', distribution: false } });
         setOpenMenu(false);
     }
     return (
@@ -80,7 +80,7 @@ function Home() {
                                     let ymd: string = moment(v.dt).format('DD/MM/YYYY HH:mm:ss');
                                     let month: number = i + 1;
                                     let monthName: string = moment(month, 'M').format('MMMM').toUpperCase();
-                                    return <Grid item xs={12} sm={6} md={4} lg={3} xl={3} className='select-none cursor-pointer hover:scale-105 transform-all duration-300 ' onClick={() => handleOpenMenu(month)}>
+                                    return <Grid item xs={12} sm={6} md={4} lg={3} xl={3} className='select-none cursor-pointer hover:scale-105 transform-all duration-300 ' onClick={() => handleOpenMenu(month, v.isDistribution)}>
                                         <div className={`rounded-[8px] p-4 ${v.isDistribution && 'bg-[#eff8ff]'}`} style={{ border: '1px solid #d0d7de' }}>
                                             <Stack direction={'row'} justifyContent={'space-between'} alignItems={'top'}>
                                                 <Stack>
@@ -103,7 +103,7 @@ function Home() {
                                                 {
                                                     ymd != DtNoActive ? <Typography variant='caption'>Updated {ymd != DtNoActive ? ymd : '-'}</Typography> : ''
                                                 }
-                                                
+
                                             </Stack>
                                         </div>
                                     </Grid>
@@ -112,34 +112,6 @@ function Home() {
                         </Grid>
                     }
 
-                </Grid>
-
-                <Grid item xs={12}>
-                    {/* {
-                        loading ? <Stack spacing={1} justifyContent={'center'} alignItems={'center'}><CircularProgress /><Typography>กำลังโหลดข้อมูล</Typography></Stack> : <Grid container spacing={3} p={3} pl={0} >
-                            {
-                                listSale.map((v: MStatusSale, i: number) => {
-                                    let month: number = i + 1;
-                                    let monthName: string = moment(month, 'M').format('MMM').toUpperCase();
-                                    return <Grid item key={i} xs={3} className='cursor-pointer select-none' onClick={() => handleOpenMenu(month)}>
-                                        <Card className='h-[75px]'>
-                                            <Stack className={`h-full`} alignItems={'center'} justifyContent={'start'} direction={'row'} spacing={3}>
-                                                <div className={`h-full px-6 flex w-[40%] items-center justify-center ${v.isDistribution ? 'bg-[#29bdff] ' : 'bg-[#535353]'} text-white shadow-lg`}>
-                                                    <Typography className='text-shadow' variant='h4'>{monthName}</Typography>
-                                                </div>
-                                                <Stack spacing={0} className='w-[60%]'>
-                                                    <Typography>Rev : {v.rev?.toLocaleString('en', { minimumIntegerDigits: 2 })}</Typography>
-                                                    <Typography className={`font-semibold ${v.isDistribution ? 'text-green-600' : 'text-red-400'}`}>{
-                                                        v.isDistribution ? 'แจกจ่าย' : 'ดำเนินการ'
-                                                    }</Typography>
-                                                </Stack>
-                                            </Stack>
-                                        </Card>
-                                    </Grid>
-                                })
-                            }
-                        </Grid>
-                    } */}
                 </Grid>
             </Grid>
             <DialogMenuEdit open={openMenu} close={handleCloseMenu} />

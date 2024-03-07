@@ -18,6 +18,10 @@ function DialogMenuEdit(props: any) {
     if (typeof reducer.select !== 'undefined' && typeof reducer.select.month !== 'undefined' && reducer.select.month != '') {
         month = reducer.select.month;
     }
+    let distribution: boolean = false;
+    if (typeof reducer.select !== 'undefined' && typeof reducer.select.distribution !== 'undefined' && reducer.select.distribution != null) {
+        distribution = reducer.select.distribution;
+    }
     async function handleEdit() {
         navigate('/dcisaleforecast/edit');
         dispatch({ type: 'SET-MENU', payload: 'edit' })
@@ -40,16 +44,18 @@ function DialogMenuEdit(props: any) {
                             <ListItemText primary="แก้ไข" />
                         </ListItemButton>
                     </ListItem>
-                    <ListItem disableGutters onClick={handleReport}>
-                        <ListItemButton autoFocus >
-                            <ListItemAvatar>
-                                <Avatar>
-                                    <SearchIcon />
-                                </Avatar>
-                            </ListItemAvatar>
-                            <ListItemText primary="ดูรายงาน" />
-                        </ListItemButton>
-                    </ListItem>
+                    {
+                        distribution && <ListItem disableGutters onClick={handleReport}>
+                            <ListItemButton autoFocus >
+                                <ListItemAvatar>
+                                    <Avatar>
+                                        <SearchIcon />
+                                    </Avatar>
+                                </ListItemAvatar>
+                                <ListItemText primary="ดูรายงาน" />
+                            </ListItemButton>
+                        </ListItem>
+                    }
                 </List>
             </DialogContent>
         </Dialog>

@@ -26,7 +26,7 @@ const IndexReducer = (state = initialState, action: any) => {
         case 'SET_REV':
             return {
                 ...state,
-                login:false,
+                login: false,
                 rev: action.payload
             }
         case 'LOGOUT':
@@ -41,7 +41,8 @@ const IndexReducer = (state = initialState, action: any) => {
                 ...state,
                 select: {
                     year: action.payload.year,
-                    month: action.payload.month
+                    month: action.payload.month,
+                    distribution: action.payload.distribution
                 }
             }
         case 'SET-MENU':

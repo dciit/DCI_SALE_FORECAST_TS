@@ -10,7 +10,6 @@ const http = Axios.create({
 });
 
 export function API_UPDATE_SALE(param: MSale) {
-    console.log(param)
     return new Promise(resolve => {
         http.post(`/update/sale`, param).then((res) => {
             resolve(res.data);
