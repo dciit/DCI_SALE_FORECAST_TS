@@ -431,7 +431,7 @@ function App() {
     [...Array(rowAdd)].map(() => {
       newRow.push({ ym: ym, customer: "", modelName: "", sebango: "", pltype: "", d01: 0, d02: 0, d03: 0, d04: 0, d05: 0, d06: 0, d07: 0, d08: 0, d09: 0, d10: 0, d11: 0, d12: 0, d13: 0, d14: 0, d15: 0, d16: 0, d17: 0, d18: 0, d19: 0, d20: 0, d21: 0, d22: 0, d23: 0, d24: 0, d25: 0, d26: 0, d27: 0, d28: 0, d29: 0, d30: 0, d31: 0 })
     });
-    const apiNewRow = await API_NEW_ROW({ data: newRow, ym: ym });
+    const apiNewRow = await API_NEW_ROW({ data: newRow, ym: ym, empcode: empcode });
     if (apiNewRow.status) {
       location.reload();
     }
@@ -454,6 +454,7 @@ function App() {
       setMsgBackdrop(`กำลังปรับสถานะไปยัง "แจกจ่าย"`);
       setLoadAddRow(true);
       const distribution = await API_DISTRIBUTION_SALE({ ym: `${year}${month.toLocaleString('en', { minimumIntegerDigits: 2 })}`, empcode: empcode });
+      console.log(distribution)
       if (typeof distribution.status != 'undefined' && distribution.status) {
         navigate(`/${BASE}/home`);
         setLoadAddRow(false);
