@@ -10,7 +10,14 @@ const initialState = {
     menuActive: 'home',
     filterCustomer: [],
     filterSBU: [],
-    rev: 0
+    rev: 0,
+    reportFilter: {
+        customer: [],
+        modelGroup: [],
+        model: [],
+        sebango: [],
+        pltype: []
+    }
 }
 
 const IndexReducer = (state = initialState, action: any) => {
@@ -30,11 +37,14 @@ const IndexReducer = (state = initialState, action: any) => {
                 rev: action.payload
             }
         case 'LOGOUT':
+            // return {
+            //     ...state,
+            //     login: false,
+            //     filterCustomer: [],
+            //     filterSBU: []
+            // }
             return {
-                ...state,
-                login: false,
-                filterCustomer: [],
-                filterSBU: []
+                ...initialState
             }
         case 'EDIT-INIT':
             return {
@@ -60,6 +70,27 @@ const IndexReducer = (state = initialState, action: any) => {
             return {
                 ...state,
                 filterSBU: action.payload
+            }
+        case 'SET_FILTER_REPORT':
+            return {
+                ...state,
+                reportFilter: action.payload
+            }
+        case 'CLEAR_FILTER':
+            return {
+                ...state,
+                reportFilter: {
+                    customer: [],
+                    modelGroup: [],
+                    model: [],
+                    sebango: [],
+                    pltype: []
+                }
+            }
+        case 'SET_VERSION':
+            return {
+                ...state,
+                rev: action.payload
             }
         default:
             return state

@@ -25,10 +25,11 @@ export interface MFilter {
 }
 export interface Person {
     customer: string;
-    // modelCode: string;
     modelName: string;
     sebango: string;
+    modelGroup:string;
     pltype: string;
+    total: number;
     d01: string | number;
     d02: string | number;
     d03: string | number;
@@ -112,6 +113,7 @@ export interface MGetSale {
     data: Person[];
     customer: MCustomer[];
     model: MModel[];
+    modelName:string;
 }
 
 export interface MRedux {
@@ -139,4 +141,8 @@ export interface MLogin {
 export interface MFitlerEdit {
     value: string | number;
     label: string
+}
+export interface MReactSelect {
+    value: string;
+    label: string;
 }

@@ -281,7 +281,6 @@ function App() {
         let itemCustomer = (v.customer).substring(0, 15);
         const hasCustomer = customer.filter((vCustomer) => vCustomer.customerNameShort == itemCustomer);
         if (Object.keys(hasCustomer).length == 0 && itemCustomer != '') {
-          console.log('customer ', i)
           const exist = cloneHighlight.filter((vCus) => {
             return vCus.columnId == 'customer' && vCus.rowId == i
           });

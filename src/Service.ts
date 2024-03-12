@@ -1,6 +1,6 @@
 
 import Axios from "axios";
-import { MCustomer, MGetSale, MLogin, MModel, MResponse, MSale, MStatusSale} from "./Interface";
+import { MCustomer, MGetSale, MLogin, MModel, MResponse, MSale, MStatusSale } from "./Interface";
 const http = Axios.create({
     baseURL: import.meta.env.VITE_API,
     headers: {
@@ -91,7 +91,7 @@ export function API_MODEL() {
 
 export function API_LOGIN(param: MLogin) {
     return new Promise<MResponse>(resolve => {
-        http.post(`/employee/login`,param).then((res) => {
+        http.post(`/employee/login`, param).then((res) => {
             resolve(res.data);
         })
     })
@@ -100,6 +100,36 @@ export function API_LOGIN(param: MLogin) {
 export function API_CLEAR_EMPTY(param: MSale) {
     return new Promise(resolve => {
         http.post(`/clearempty/sale`, param).then((res) => {
+            resolve(res.data);
+        })
+    })
+}
+
+export function API_GET_CUSTOMER() {
+    return new Promise(resolve => {
+        http.get(`/get/customer`).then((res) => {
+            resolve(res.data);
+        })
+    })
+}
+export function API_GET_MODELS() {
+    return new Promise(resolve => {
+        http.get(`/get/model`).then((res) => {
+            resolve(res.data);
+        })
+    })
+}
+
+export function API_GET_PLTYPE() {
+    return new Promise(resolve => {
+        http.get(`/get/pltype`).then((res) => {
+            resolve(res.data);
+        })
+    })
+}
+export function API_GET_SEBANGO() {
+    return new Promise(resolve => {
+        http.get(`/get/sebango`).then((res) => {
             resolve(res.data);
         })
     })

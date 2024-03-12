@@ -1,15 +1,14 @@
 //@ts-nocheck
-import { useEffect, useMemo, useRef, useState } from 'react';
-import {
-    MaterialReactTable,
-    useMaterialReactTable,
-    type MRT_ColumnDef,
-    MRT_RowVirtualizer,
-} from 'material-react-table';
+import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { API_GET_SALE } from './Service';
-import { Box, Button, CircularProgress, Stack, Typography } from '@mui/material';
+import { Button, ButtonGroup, Stack, Typography } from '@mui/material';
 import HomeIcon from '@mui/icons-material/Home';
+import FilterAltIcon from '@mui/icons-material/FilterAlt';
+import DialogReportFilter from './dialog.report.fitler';
+import { MFitlerEdit, MReactSelect, Person } from './Interface';
+import { useDispatch, useSelector } from 'react-redux';
+import SearchOffIcon from '@mui/icons-material/SearchOff';
 type Sale = {
     customer: string;
     modelName: string;
@@ -46,106 +45,104 @@ type Sale = {
     d29: string | number;
     d30: string | number;
     d31: string | number;
+    total: number;
+    modelGroup: string;
 };
 function Report() {
-    const [loading, setLoading] = useState<boolean>(true);
+    const [filterCustomer, setFilterCustomer] = useState<MReactSelect[]>([]);
     var monthNames = ["January", "February", "March", "April", "May", "June",
         "July", "August", "September", "October", "November", "December"
     ];
     const navigate = useNavigate();
     const [data, setData] = useState<Sale[]>([]);
+    const [dataDef, setDataDef] = useState<Sale[]>([]);
     const { ym } = useParams();
     const _year: string = typeof ym == 'string' ? ym?.substring(0, 4) : '';
     const _month: string = typeof ym == 'string' ? ym?.substring(4, 6) : '';
-    const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
     const [isLoading, setIsLoading] = useState(true);
-    const [sorting, setSorting] = useState<MRT_SortingState>([]);
-    let cols: MRT_ColumnDef<Sale>[] = [
-        {
-            accessorKey: 'customer', //access nested data with dot notation
-            header: 'Customer',
-            size: 150,
-        },
-        {
-            accessorKey: 'modelName', //access nested data with dot notation
-            header: 'ModelName',
-            size: 150,
-        },
-        {
-            accessorKey: 'sebango', //access nested data with dot notation
-            header: 'Sebango',
-            size: 150,
-        },
-        {
-            accessorKey: 'pltype', //access nested data with dot notation
-            header: 'Pltype',
-            size: 150,
-        },
-    ];
-    [...Array(31)].map((oDay: any, iDay: number) => {
-        let day = iDay + 1;
-        cols.push({
-            accessorKey: `d${day.toLocaleString('en', { minimumIntegerDigits: 2 })}`,
-            header: `D${day.toLocaleString('en', { minimumIntegerDigits: 2 })}`,
-            size: 75,
-            enableSorting: false,
-            showGlobalFilter: true,
-            enableColumnOrdering: false,
-            enableColumnFilter: false,
-            enableColumnFilterModes: false,
-            showColumnFilters: false,
-            Cell: (cell: any) => {
-                let SaleOfDay = cell.cell.getValue();
-                return <span className={`${oDay} ${SaleOfDay > 0 ? 'font-bold' : 'text-[#ddd]'}`}>{SaleOfDay}</span>
-            }
-        })
-    })
-    useEffect(() => {
-        //scroll to the top of the table when the sorting changes
-        try {
-            rowVirtualizerInstanceRef.current?.scrollToIndex?.(0);
-        } catch (error) {
-            console.error(error);
-        }
-    }, [sorting]);
-    const columns = useMemo<MRT_ColumnDef<Sale>[]>(
-        () => cols,
-        [],
-    );
     let once = true;
     useEffect(() => {
         if (once) {
+            handleClearFilter();
             init();
             once = false;
         }
-    }, [once])
+    }, [once]);
     async function init() {
-        setLoading(true);
         let apiData = await API_GET_SALE({ ym: ym });
+        apiData.data.map((oData: Person, iData: number) => {
+            let sum = 0;
+            [...Array(31)].map((oNum: any, iNum: number) => {
+                let strDay: string = `d${((iNum + 1).toLocaleString('en', { minimumIntegerDigits: 2 }))}`;
+                if (typeof oData[strDay] != 'undefined') {
+                    sum += oData[strDay];
+                }
+            });
+            apiData.data[iData]['total'] = sum;
+            let modelGroup = oData.modelName.substring(0, 1);
+            if (modelGroup == '1' || modelGroup == '2') {
+                modelGroup = `${modelGroup}YC`;
+            } else if (modelGroup == 'J') {
+                modelGroup = 'SCR';
+            } else {
+                modelGroup = 'ODM';
+            }
+            apiData.data[iData]['modelGroup'] = modelGroup;
+        });
+        setDataDef(apiData.data);
         setData(apiData.data);
-        setLoading(false);
     }
     useEffect(() => {
-        setIsLoading(false);
+        if (Object.keys(data).length) {
+            setIsLoading(false);
+        }
     }, [data]);
-
-    const table = useMaterialReactTable({
-        columns,
-        data,
-        enableBottomToolbar: false,
-        enableGlobalFilterModes: true,
-        enablePagination: false,
-        enableRowVirtualization: true,
-        muiTableContainerProps: { sx: { maxHeight: '600px' } },
-        onSortingChange: setSorting,
-        state: { isLoading, sorting },
-        rowVirtualizerInstanceRef, //optional
-        rowVirtualizerOptions: { overscan: 5 }, //optionally customize the row virtualizer
-        enableRowNumbers: true
-    });
     let BASE_PATH = import.meta.env.VITE_PATH;
+    const [openFilter, setOpenFilter] = useState<boolean>(false);
+    const [columnFilter, setColumnFilter] = useState<string>('');
+    const [defVal, setDefVal] = useState<any[]>([]);
+    const reduxFilterReport = useSelector((state: any) => state.reducer?.reportFilter);
+    const dispatch = useDispatch();
     function handleHome() {
         navigate(`/${BASE_PATH}/home`);
+    }
+    function handleOpenFilter(colFilter = '') {
+        setColumnFilter(colFilter);
+    }
+    useEffect(() => {
+        if (columnFilter != '') {
+            setOpenFilter(true);
+        }
+    }, [columnFilter]);
+    function handleCloseDialogFilter() {
+        setColumnFilter('');
+        setOpenFilter(false);
+        setDefVal([]);
+    }
+    function filterReport() {
+        let dataDefault = dataDef;
+        if (reduxFilterReport.customer.length > 0) {
+            dataDefault = dataDefault.filter((o => reduxFilterReport.customer.map((x: MFitlerEdit) => x.value).includes(o.customer)));
+        }
+        if (reduxFilterReport.modelGroup.length > 0) {
+            dataDefault = dataDefault.filter((o => reduxFilterReport.modelGroup.map((x: MFitlerEdit) => x.value).includes(o.modelGroup)));
+        }
+        if (reduxFilterReport.model.length > 0) {
+            dataDefault = dataDefault.filter((o => reduxFilterReport.model.map((x: MFitlerEdit) => x.value).includes(o.modelName)));
+        }
+        if (reduxFilterReport.sebango.length > 0) {
+            dataDefault = dataDefault.filter((o => reduxFilterReport.sebango.map((x: MFitlerEdit) => x.value).includes(o.sebango)));
+        }
+        if (reduxFilterReport.pltype.length > 0) {
+            dataDefault = dataDefault.filter((o => reduxFilterReport.pltype.map((x: MFitlerEdit) => x.value).includes(o.pltype)));
+        }
+        setData([...dataDefault])
+    }
+    useEffect(() => {
+        filterReport();
+    }, [reduxFilterReport])
+    async function handleClearFilter() {
+        await dispatch({ type: 'CLEAR_FILTER' });
     }
     return <div className='page-report'>
         <Stack p={3} gap={2}>
@@ -156,17 +153,105 @@ function Report() {
             <Stack justifyContent={'start'} justifyItems={'start'} alignContent={'start'} alignItems={'start'}>
                 <Button variant='contained' onClick={handleHome} startIcon={<HomeIcon />}>กลับหน้าแรก</Button>
             </Stack>
-            <Typography>ทั้งหมด : {data.length} รายการ</Typography>
-            {
-                loading ? <Box>
-                    <Stack gap={2} direction={'column'} alignItems={'center'}>
-                        <CircularProgress />
-                        <Typography>กำลังโหลดข้อมูล ...</Typography>
-                    </Stack>
-                </Box> : <MaterialReactTable table={table} />
-            }
+            <Stack direction={'row'} alignItems={'center'} justifyContent={'space-between'}>
+                <Typography>ทั้งหมด : {data.length} รายการ</Typography>
+                <ButtonGroup
+                    disableElevation
+                    variant="contained"
+                    aria-label="Disabled button group"
+                >
+                    <Button variant='outlined' startIcon={<SearchOffIcon />} onClick={handleClearFilter}>Clear Filter</Button>
+                </ButtonGroup>
+            </Stack>
+            <div className='wrapper h-[600px] pt-0'>
+                <table id='tb-report' className='w-full'>
+                    <thead>
+                        <tr >
+                            <th className='w-[50px] text-center'>#</th>
+                            <th >
+                                <Stack direction={'row'} alignItems={'center'} gap={1}>
+                                    <span>Customer</span>
+                                    <FilterAltIcon onClick={() => handleOpenFilter('customer')} className={`cursor-pointer ${Object.keys(reduxFilterReport?.customer).length ? 'text-red-500' : 'text-gray-400'}`} />
+                                </Stack>
+                            </th>
+                            <th >
+                                <Stack direction={'row'} alignItems={'center'} gap={1}>
+                                    <span>M.Grp</span>
+                                    <FilterAltIcon onClick={() => handleOpenFilter('modelGroup')} className={`cursor-pointer ${Object.keys(reduxFilterReport?.modelGroup).length ? 'text-red-500' : 'text-gray-400'}`} />
+                                </Stack>
+                            </th>
+                            <th >
+                                <Stack direction={'row'} alignItems={'center'} gap={1}>
+                                    <span>Model</span>
+                                    <FilterAltIcon onClick={() => handleOpenFilter('model')} className={`cursor-pointer ${Object.keys(reduxFilterReport?.model).length ? 'text-red-500' : 'text-gray-400'}`} />
+                                </Stack>
+                            </th>
+                            <th >
+                                <Stack direction={'row'} alignItems={'center'} gap={1}>
+                                    <span>Sebango</span>
+                                    <FilterAltIcon onClick={() => handleOpenFilter('sebango')} className={`cursor-pointer ${Object.keys(reduxFilterReport?.sebango).length ? 'text-red-500' : 'text-gray-400'}`} />
+                                </Stack>
+                            </th>
+                            <th >
+                                <Stack direction={'row'} alignItems={'center'} gap={1}>
+                                    <span>Ptype</span>
+                                    <FilterAltIcon onClick={() => handleOpenFilter('pltype')} className={`cursor-pointer ${Object.keys(reduxFilterReport?.pltype).length ? 'text-red-500' : 'text-gray-400'}`} />
+                                </Stack>
+                            </th>
+                            <th >
+                                <Stack direction={'row'} alignItems={'center'} gap={1}>
+                                    <span>Total</span>
+                                </Stack>
+                            </th>
+                            {
+                                [...Array(31)].map((o: any, i: number) => {
+                                    return <th key={i} className='text-center w-[50px]'>{`D${(i + 1).toLocaleString('en', { minimumIntegerDigits: 2 })}`}</th>
+                                })
+                            }
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {
+                            isLoading ? <tr><th colSpan={38} className='text-center'>
+                                <Typography className='text-[1.5em]'>กำลังโหลดข้อมูล . . . </Typography>
+                            </th></tr> : (
+                                data.length == 0 ? <tr><td colSpan={38} className='text-center bg-white'>    <Typography className='text-[1.5em]'>ไม่พบข้อมูล</Typography></td></tr> :
+                                    data.map((oData: Sale, iData: number) => {
+                                        let num: number = iData + 1;
+                                        let total: string = oData.total > 0 ? oData.total.toLocaleString('en', { minimumIntegerDigits: 2 }) : '';
+                                        let modelGroup: string = oData.modelName.substring(0, 1);
+                                        if (modelGroup == '1' || modelGroup == '2') {
+                                            modelGroup += 'YC';
+                                        } else if (modelGroup == 'J') {
+                                            modelGroup = 'SCR';
+                                        } else {
+                                            modelGroup = 'ODM';
+                                        }
+                                        return <tr key={iData}>
+                                            <td className='text-center'>{num}</td>
+                                            <td>{oData.customer}</td>
+                                            <td className='text-center'>{modelGroup}</td>
+                                            <td>{oData.modelName}</td>
+                                            <td>{oData.sebango}</td>
+                                            <td>{oData.pltype}</td>
+                                            <td className={`${total != '' && 'font-bold'} bg-orange-300 text-right`}>{total}</td>
+                                            {
+                                                [...Array(31)].map((o: any, i: number) => {
+                                                    let txtVal: string = oData[`d${(i + 1).toLocaleString('en', { minimumIntegerDigits: 2 })}`] != '' ? oData[`d${(i + 1).toLocaleString('en', { minimumIntegerDigits: 2 })}`] : '0';
+                                                    let val: number = txtVal != '0' ? parseInt(txtVal) : 0;
+                                                    return <td key={i} className={`${val > 0 ? 'font-bold bg-green-300' : 'bg-gray-400'} text-right`}>{val > 0 ? val.toLocaleString('en', { minimumIntegerDigits: 2 }) : ''}</td>
+                                                })
+                                            }
+                                        </tr>
+                                    })
+                            )
+                        }
+                    </tbody>
+                </table>
+            </div>
         </Stack>
-    </div>;
+        <DialogReportFilter filter={columnFilter} open={openFilter} handleClose={handleCloseDialogFilter} customer={filterCustomer} setCustomer={setFilterCustomer} filterReport={filterReport} setFilter={setColumnFilter} defVal={defVal} setDefVal={setDefVal} />
+    </div>
 }
 
 export default Report
