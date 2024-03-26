@@ -8,6 +8,13 @@ const http = Axios.create({
         // 'Authorization': 'Bearer ' + localStorage.getItem('jwt')
     }
 });
+const httpHR = Axios.create({
+    baseURL: import.meta.env.VITE_API_HR,
+    headers: {
+        'Content-Type': 'application/json;charset=UTF-8;json/html; charset=UTF-8',
+        // 'Authorization': 'Bearer ' + localStorage.getItem('jwt')
+    }
+});
 
 export function API_UPDATE_SALE(param: MSale) {
     return new Promise(resolve => {
@@ -130,6 +137,25 @@ export function API_GET_PLTYPE() {
 export function API_GET_SEBANGO() {
     return new Promise(resolve => {
         http.get(`/get/sebango`).then((res) => {
+            resolve(res.data);
+        })
+    })
+}
+export function API_PRIVILEGE(module = '', component = '') {
+    return new Promise(resolve => {
+        httpHR.get(`/privilege/${module}/${component}`).then((res) => {
+            resolve(res.data);
+        }).catch(() => {
+            resolve([]);
+        })
+    })
+}
+
+
+
+export function API_HR_LOGIN(empcode: string) {
+    return new Promise<MLogin>(resolve => {
+        httpHR.get(`/login/${empcode}`).then((res) => {
             resolve(res.data);
         })
     })

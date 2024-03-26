@@ -16,6 +16,14 @@ export interface MResponse {
     error: string;
     name?: string;
 }
+export interface MLogin {
+    pren: string;
+    name: string;
+    fullName: string;
+    empcode: string;
+    dvcd: string;
+    status: boolean;
+}
 export interface MFilter {
     customer?: string;
     model?: string;
@@ -27,7 +35,7 @@ export interface Person {
     customer: string;
     modelName: string;
     sebango: string;
-    modelGroup:string;
+    modelGroup: string;
     pltype: string;
     total: number;
     d01: string | number;
@@ -113,7 +121,7 @@ export interface MGetSale {
     data: Person[];
     customer: MCustomer[];
     model: MModel[];
-    modelName:string;
+    modelName: string;
 }
 
 export interface MRedux {
@@ -122,6 +130,7 @@ export interface MRedux {
         username: '',
         empcode: '',
         name: '',
+        dvcd: '',
         select: {
             year: '',
             month: '',
@@ -130,13 +139,14 @@ export interface MRedux {
         menuActive: "",
         filterCustomer: [],
         filterSBU: [],
-        rev: 0
+        rev: 0,
+        privilege: MDCIPrivilege[],
     }
 }
 
-export interface MLogin {
-    empcode?: string;
-}
+// export interface MLogin {
+//     empcode?: string;
+// }
 
 export interface MFitlerEdit {
     value: string | number;
@@ -145,4 +155,15 @@ export interface MFitlerEdit {
 export interface MReactSelect {
     value: string;
     label: string;
+}
+export interface MDCIPrivilege {
+    privId: number;
+    privModule: string;
+    privComponent: string;
+    privAction: string;
+    privRef: string;
+    privVal: string;
+    privStatus: string;
+    privCreateDate: Date;
+    privUpdateDate: Date;
 }

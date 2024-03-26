@@ -17,7 +17,8 @@ const initialState = {
         model: [],
         sebango: [],
         pltype: []
-    }
+    },
+    privilege: []
 }
 
 const IndexReducer = (state = initialState, action: any) => {
@@ -28,7 +29,8 @@ const IndexReducer = (state = initialState, action: any) => {
                 login: true,
                 empcode: action.payload.empcode,
                 name: action.payload.name,
-                rev: action.payload.rev
+                rev: action.payload.rev,
+                dvcd:action.payload.dvcd
             }
         case 'SET_REV':
             return {
@@ -91,6 +93,13 @@ const IndexReducer = (state = initialState, action: any) => {
             return {
                 ...state,
                 rev: action.payload
+            }
+        case 'RESET':
+            return initialState
+        case 'SET_PRIVILEGE':
+            return {
+                ...state,
+                privilege: action.payload
             }
         default:
             return state

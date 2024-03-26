@@ -121,19 +121,19 @@ function Report() {
     }
     function filterReport() {
         let dataDefault = dataDef;
-        if (reduxFilterReport.customer.length > 0) {
+        if (typeof reduxFilterReport.customer != 'undefined' && reduxFilterReport.customer.length > 0) {
             dataDefault = dataDefault.filter((o => reduxFilterReport.customer.map((x: MFitlerEdit) => x.value).includes(o.customer)));
         }
-        if (reduxFilterReport.modelGroup.length > 0) {
+        if (typeof reduxFilterReport.modelGroup != 'undefined' && reduxFilterReport.modelGroup.length > 0) {
             dataDefault = dataDefault.filter((o => reduxFilterReport.modelGroup.map((x: MFitlerEdit) => x.value).includes(o.modelGroup)));
         }
-        if (reduxFilterReport.model.length > 0) {
+        if (typeof reduxFilterReport.model != 'undefined' && reduxFilterReport.model.length > 0) {
             dataDefault = dataDefault.filter((o => reduxFilterReport.model.map((x: MFitlerEdit) => x.value).includes(o.modelName)));
         }
-        if (reduxFilterReport.sebango.length > 0) {
+        if (typeof reduxFilterReport.sebango != 'undefined' && reduxFilterReport.sebango.length > 0) {
             dataDefault = dataDefault.filter((o => reduxFilterReport.sebango.map((x: MFitlerEdit) => x.value).includes(o.sebango)));
         }
-        if (reduxFilterReport.pltype.length > 0) {
+        if (typeof reduxFilterReport.pltype != 'undefined' &&  reduxFilterReport.pltype.length > 0) {
             dataDefault = dataDefault.filter((o => reduxFilterReport.pltype.map((x: MFitlerEdit) => x.value).includes(o.pltype)));
         }
         setData([...dataDefault])
@@ -171,31 +171,31 @@ function Report() {
                             <th >
                                 <Stack direction={'row'} alignItems={'center'} gap={1}>
                                     <span>Customer</span>
-                                    <FilterAltIcon onClick={() => handleOpenFilter('customer')} className={`cursor-pointer ${Object.keys(reduxFilterReport?.customer).length ? 'text-red-500' : 'text-gray-400'}`} />
+                                    <FilterAltIcon onClick={() => handleOpenFilter('customer')} className={`cursor-pointer ${Object.keys(typeof reduxFilterReport.customer != 'undefined' ? reduxFilterReport.customer : []).length ? 'text-red-500' : 'text-gray-400'}`} />
                                 </Stack>
                             </th>
                             <th >
                                 <Stack direction={'row'} alignItems={'center'} gap={1}>
                                     <span>M.Grp</span>
-                                    <FilterAltIcon onClick={() => handleOpenFilter('modelGroup')} className={`cursor-pointer ${Object.keys(reduxFilterReport?.modelGroup).length ? 'text-red-500' : 'text-gray-400'}`} />
+                                    <FilterAltIcon onClick={() => handleOpenFilter('modelGroup')} className={`cursor-pointer ${Object.keys(typeof reduxFilterReport.modelGroup != 'undefined' ? reduxFilterReport.modelGroup : []).length ? 'text-red-500' : 'text-gray-400'}`} />
                                 </Stack>
                             </th>
                             <th >
                                 <Stack direction={'row'} alignItems={'center'} gap={1}>
                                     <span>Model</span>
-                                    <FilterAltIcon onClick={() => handleOpenFilter('model')} className={`cursor-pointer ${Object.keys(reduxFilterReport?.model).length ? 'text-red-500' : 'text-gray-400'}`} />
+                                    <FilterAltIcon onClick={() => handleOpenFilter('model')} className={`cursor-pointer ${Object.keys(typeof reduxFilterReport.model != 'undefined' ? reduxFilterReport.model : []).length ? 'text-red-500' : 'text-gray-400'}`} />
                                 </Stack>
                             </th>
                             <th >
                                 <Stack direction={'row'} alignItems={'center'} gap={1}>
                                     <span>Sebango</span>
-                                    <FilterAltIcon onClick={() => handleOpenFilter('sebango')} className={`cursor-pointer ${Object.keys(reduxFilterReport?.sebango).length ? 'text-red-500' : 'text-gray-400'}`} />
+                                    <FilterAltIcon onClick={() => handleOpenFilter('sebango')} className={`cursor-pointer ${Object.keys(typeof reduxFilterReport.sebango != 'undefined' ? reduxFilterReport.sebango : []).length ? 'text-red-500' : 'text-gray-400'}`} />
                                 </Stack>
                             </th>
                             <th >
                                 <Stack direction={'row'} alignItems={'center'} gap={1}>
                                     <span>Ptype</span>
-                                    <FilterAltIcon onClick={() => handleOpenFilter('pltype')} className={`cursor-pointer ${Object.keys(reduxFilterReport?.pltype).length ? 'text-red-500' : 'text-gray-400'}`} />
+                                    <FilterAltIcon onClick={() => handleOpenFilter('pltype')} className={`cursor-pointer ${Object.keys(typeof reduxFilterReport.pltype != 'undefined' ? reduxFilterReport.pltype : []).length ? 'text-red-500' : 'text-gray-400'}`} />
                                 </Stack>
                             </th>
                             <th >

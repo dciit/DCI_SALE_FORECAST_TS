@@ -4,7 +4,7 @@ import './App.css'
 import { ReactGrid, Column, Row, TextCell, CellChange, DefaultCellTypes, Highlight } from "@silevis/reactgrid";
 import "@silevis/reactgrid/styles.css";
 import { Stack, Button, Typography, TextField, Badge, MenuItem, styled, Menu, alpha, MenuProps, Backdrop, CircularProgress } from '@mui/material';
-import { API_CHANGE_STATUS, API_CLEAR_EMPTY, API_CLEAR_SALE, API_CUSTOMER, API_DISTRIBUTION_SALE, API_GET_SALE, API_MODEL, API_NEW_ROW, API_STATUS_SALE, API_UPDATE_SALE } from './Service';
+import { API_CHANGE_STATUS, API_CLEAR_EMPTY, API_CLEAR_SALE, API_CUSTOMER, API_DISTRIBUTION_SALE, API_GET_SALE, API_MODEL, API_NEW_ROW, API_PRIVILEGE, API_STATUS_SALE, API_UPDATE_SALE } from './Service';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import SaveAltIcon from '@mui/icons-material/SaveAlt';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
@@ -241,8 +241,6 @@ function App() {
     return;
   }, []);
 
-
-
   useEffect(() => {
     initHighlight();
   }, [rows]);
@@ -300,8 +298,11 @@ function App() {
         }
       });
       setHighlights([...cloneHighlight]);
+      setLoad(false);
     }
   }
+
+
   const applyChangesToPeople = (
     changes: CellChange<TextCell>[],
     prevPeople: Person[]
@@ -411,14 +412,17 @@ function App() {
 
   useEffect(() => {
     setLoadAddRow(false);
+
     if (people.length) {
       let oPeople = getRows(people);
-      setLoad(false);
-      if (rows.length > 0 && loadFirst == false) {
-        API_UPDATE_SALE({ listSale: people, ym: `${year}${month.toLocaleString('en', { minimumIntegerDigits: 2 })}`, empcode: empcode });
-      }
+      // if (rows.length > 0 && loadFirst == false) {
+      //   API_UPDATE_SALE({ listSale: people, ym: `${year}${month.toLocaleString('en', { minimumIntegerDigits: 2 })}`, empcode: empcode });
+      // }
       setRows(oPeople);
       setHighlights([...highlights])
+    } else {
+      setRows([])
+      setLoad(false);
     }
   }, [people]);
 
@@ -454,7 +458,6 @@ function App() {
       setMsgBackdrop(`กำลังปรับสถานะไปยัง "แจกจ่าย"`);
       setLoadAddRow(true);
       const distribution = await API_DISTRIBUTION_SALE({ ym: `${year}${month.toLocaleString('en', { minimumIntegerDigits: 2 })}`, empcode: empcode });
-      console.log(distribution)
       if (typeof distribution.status != 'undefined' && distribution.status) {
         navigate(`/${BASE}/home`);
         setLoadAddRow(false);
@@ -514,7 +517,6 @@ function App() {
               <span>เวอร์ชั่น : {rev.toLocaleString('en', { minimumIntegerDigits: 2 })}</span>
             </div>
           </Stack>
-
           <Badge badgeContent="">
             <span className="relative flex h-3 w-3">
               <span className={`animate-ping absolute inline-flex h-full w-full rounded-full ${distribution ? 'bg-blue-400' : 'bg-gray-400'} opacity-50`}></span>
@@ -532,7 +534,7 @@ function App() {
         <Stack className='select-none py-3 pl-5 pr-4 rounded-[8px] border-mtr bg-[#f6f8fa]'>
           <Stack alignItems={'start'} spacing={1}>
             <Typography>ค้นหา</Typography>
-            <Stack direction={'row'} spacing={1} className='w-[100%]'>
+            <Stack direction={'row'} spacing={1} className='w-[100%] z-[999]'>
               <SelectReact className='max-w-[60%] min-w-[60%]' isMulti options={itemSelectCustomer} value={reducerFilterCustomer} closeMenuOnSelect={false} components={animatedComponents} placeholder={'เลือก Customer ของคุณ'} onChange={(e: any) => handleChangeCustomer(e)} />
               <SelectReact className='max-w-[30%] min-w-[30%]' isMulti options={itemSelectSBU} value={reducerFilterSBU} closeMenuOnSelect={false} components={animatedComponents} placeholder={'เลือก SBU ของคุณ '} onChange={(e: any) => handleChangeSBU(e)} isDisabled={false} />
               <Button startIcon={<SearchIcon />} className='w-[10%]' variant='contained' onClick={handleSearch}>ค้นหา</Button>
@@ -556,7 +558,7 @@ function App() {
           {
             load ? <Stack direction={'column'} alignItems={'center'} className='h-full' justifyContent={'center'}>
               <CircularProgress />
-              <Typography>กำลังโหลดข้อมูล</Typography>
+              <Typography>กำลังโหลดข้อมูล ...</Typography>
             </Stack> :
               (distribution && width > 0) ?
                 <table className={`tbSaleView w-[2800px] text-[#692525] select-none `} >

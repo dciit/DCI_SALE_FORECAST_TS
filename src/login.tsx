@@ -3,9 +3,10 @@ import { useDispatch } from 'react-redux'
 import { FormControl, InputAdornment, InputLabel, OutlinedInput, Stack, Typography } from '@mui/material';
 import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
 import AccountBoxIcon from '@mui/icons-material/AccountBox';
-import { API_LOGIN } from './Service';
+import { API_HR_LOGIN , API_PRIVILEGE } from './Service';
 import { useNavigate } from 'react-router-dom';
 import { KeyboardEvent } from 'react';
+import { MLogin } from './Interface';
 function Login() {
     // const reducer = useSelector((state: MRedux) => state.reducer);
     const navigate = useNavigate();
@@ -17,9 +18,13 @@ function Login() {
     const rev = import.meta.env.VITE_VERSION;
     const [empcode, setEmpcode] = useState<string>('');
     async function handleLogin() {
-        let login = await API_LOGIN({ empcode: empcode });
+        // let login = await API_LOGIN({ empcode: empcode });
+        let login: MLogin = await API_HR_LOGIN(empcode);
         if (login.status) {
-            dispatch({ type: 'LOGIN', payload: { name: login.name, empcode: empcode, rev: rev } })
+            let privilege = await API_PRIVILEGE('UKEHARAI', 'EDIT');
+            console.log(privilege)
+            dispatch({ type: 'SET_PRIVILEGE', payload: privilege });
+            dispatch({ type: 'LOGIN', payload: { name: login.name, empcode: empcode, rev: rev, dvcd: login.dvcd } })
             navigate('/dcisaleforecast/home');
             setEmpcode('');
         } else {

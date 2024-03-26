@@ -5,11 +5,13 @@ import { useNavigate } from 'react-router-dom';
 import moment from 'moment';
 import { MRedux } from '../Interface';
 import SearchIcon from '@mui/icons-material/Search';
+import CHECK_PRIVILEGE from '../Method';
 function DialogMenuEdit(props: any) {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const { open, close } = props;
     const reducer = useSelector((state: MRedux) => state.reducer);
+    const reduxPrivilege = useSelector((state: MRedux) => state.reducer.privilege);
     let year: string = moment().format('YYYY');
     if (typeof reducer.select !== 'undefined' && typeof reducer.select.year !== 'undefined') {
         year = reducer.select.year;
@@ -23,8 +25,12 @@ function DialogMenuEdit(props: any) {
         distribution = reducer.select.distribution;
     }
     async function handleEdit() {
-        navigate('/dcisaleforecast/edit');
-        dispatch({ type: 'SET-MENU', payload: 'edit' })
+        if (CHECK_PRIVILEGE(reduxPrivilege, 'UKEHARAI', 'EDIT', 'DVCD', 'EDIT', reducer.dvcd).length) {
+            navigate('/dcisaleforecast/edit');
+            dispatch({ type: 'SET-MENU', payload: 'edit' })
+        } else {
+            alert('คุณไม่มีสิทธิในการแก้ไขข้อมูล กรุณาติดต่อ IT (เบียร์ 611)');
+        }
     }
     async function handleReport() {
         navigate(`/dcisaleforecast/report/${year + '' + month.toLocaleString('en', { minimumIntegerDigits: 2 })}`)

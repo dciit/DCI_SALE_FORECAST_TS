@@ -18,6 +18,7 @@ const Routers = () => {
         if (typeof redux.rev == 'undefined' || redux.rev != VER) {
             localStorage.clear();
             persistor.purge();
+            dispatch({ type: 'RESET' });
             dispatch({ type: 'SET_VERSION', payload: VER });
             location.reload();
         }
