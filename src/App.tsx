@@ -415,9 +415,9 @@ function App() {
 
     if (people.length) {
       let oPeople = getRows(people);
-      // if (rows.length > 0 && loadFirst == false) {
-      //   API_UPDATE_SALE({ listSale: people, ym: `${year}${month.toLocaleString('en', { minimumIntegerDigits: 2 })}`, empcode: empcode });
-      // }
+      if (rows.length > 0 && loadFirst == false) {
+        API_UPDATE_SALE({ listSale: people, ym: `${year}${month.toLocaleString('en', { minimumIntegerDigits: 2 })}`, empcode: empcode });
+      }
       setRows(oPeople);
       setHighlights([...highlights])
     } else {
