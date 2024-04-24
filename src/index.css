@@ -198,3 +198,12 @@ table#tb-report tbody td:first-child,
 table#tb-report thead tr th {
   background: #ecfff0;
 }
+
+.page-a3 {
+  width: 29.7cm;
+  height: 42cm;
+}
+
+#tbDeliveryControl td {
+  padding: 0;
+}

@@ -8,7 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import { KeyboardEvent } from 'react';
 import { MLogin } from './Interface';
 function Login() {
-    // const reducer = useSelector((state: MRedux) => state.reducer);
+    const version = import.meta.env.VITE_VERSION;
     const navigate = useNavigate();
     const dispatch = useDispatch();
     // let empcodeRedux = '';
@@ -45,6 +45,7 @@ function Login() {
                 <Stack className='w-full h-full' justifyContent={'center'} alignContent={'center'} alignItems={'center'}>
                     <MonetizationOnIcon className='text-[20em] animate-bounce delay-10000 text-[#292c3d]' />
                     <Typography variant='h3' className='text-[#292c3d] '>SALE FORECAST</Typography>
+                    <span>VERSION : {version}</span>
                 </Stack>
             </div>
             <div className='flex flex-1 bg-[#292c3d] items-center justify-center' onKeyUp={handleKeyPress}>

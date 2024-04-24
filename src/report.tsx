@@ -133,7 +133,7 @@ function Report() {
         if (typeof reduxFilterReport.sebango != 'undefined' && reduxFilterReport.sebango.length > 0) {
             dataDefault = dataDefault.filter((o => reduxFilterReport.sebango.map((x: MFitlerEdit) => x.value).includes(o.sebango)));
         }
-        if (typeof reduxFilterReport.pltype != 'undefined' &&  reduxFilterReport.pltype.length > 0) {
+        if (typeof reduxFilterReport.pltype != 'undefined' && reduxFilterReport.pltype.length > 0) {
             dataDefault = dataDefault.filter((o => reduxFilterReport.pltype.map((x: MFitlerEdit) => x.value).includes(o.pltype)));
         }
         setData([...dataDefault])
@@ -155,13 +155,10 @@ function Report() {
             </Stack>
             <Stack direction={'row'} alignItems={'center'} justifyContent={'space-between'}>
                 <Typography>ทั้งหมด : {data.length} รายการ</Typography>
-                <ButtonGroup
-                    disableElevation
-                    variant="contained"
-                    aria-label="Disabled button group"
-                >
+                <div className='flex gap-1'>
+                    <Button variant='contained'   onClick={() => window.open('../deliverycontrol', '_blank')}>Delivert Control Sheet</Button>&nbsp;
                     <Button variant='outlined' startIcon={<SearchOffIcon />} onClick={handleClearFilter}>Clear Filter</Button>
-                </ButtonGroup>
+                </div>
             </Stack>
             <div className='wrapper h-[600px] pt-0'>
                 <table id='tb-report' className='w-full'>

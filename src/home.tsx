@@ -6,6 +6,7 @@ import DialogMenuEdit from './components/dialog.menu.edit';
 import { API_LIST_STATUS_SALE } from './Service';
 import { MRedux, MStatusSale } from './Interface';
 import CircleIcon from '@mui/icons-material/Circle';
+import { motion } from 'framer-motion'
 function Home() {
     const DtNoActive = "01/01/1900 00:00:00";
     const monthTh = useState<string[]>(["มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน", "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม"])
@@ -29,7 +30,9 @@ function Home() {
         }
     }, [once])
     useEffect(() => {
-        setLoading(false);
+        if (listSale.length > 0) {
+            setLoading(false);
+        }
     }, [listSale])
     async function initData() {
         const grid = await API_LIST_STATUS_SALE({ year: `${yearSelected.toString()}` });
@@ -80,32 +83,36 @@ function Home() {
                                     let ymd: string = moment(v.dt).format('DD/MM/YYYY HH:mm:ss');
                                     let month: number = i + 1;
                                     let monthName: string = moment(month, 'M').format('MMMM').toUpperCase();
-                                    return <Grid item xs={12} sm={6} md={4} lg={3} xl={3} className='select-none cursor-pointer hover:scale-105 transform-all duration-300 ' onClick={() => handleOpenMenu(month, v.isDistribution)}>
-                                        <div className={`rounded-[8px] p-4 ${v.isDistribution && 'bg-[#eff8ff]'}`} style={{ border: '1px solid #d0d7de' }}>
-                                            <Stack direction={'row'} justifyContent={'space-between'} alignItems={'top'}>
-                                                <Stack>
-                                                    <Typography className={` ${v.isDistribution ? 'text-[#0969da]  font-semibold' : 'text-[#a2a2a2]'}`}>{monthName}</Typography>
-                                                    <Typography className='text-[#656d76]' variant='caption'>{`${monthTh[0][i]}  (${moment(month, 'M').format('MM').toUpperCase()}) - ${yearSelected}`} </Typography>
+                                    return <Grid item xs={12} sm={6} md={4} lg={3} xl={3} className='select-none cursor-pointer transform-all duration-300 ' onClick={() => handleOpenMenu(month, v.isDistribution)}>
+                                        <motion.div whileHover={{
+                                            scale: 1.1,
+                                        }}>
+                                            <div className={`rounded-[8px] p-4 ${v.isDistribution && 'bg-[#eff8ff]'}`} style={{ border: '1px solid #d0d7de' }}>
+                                                <Stack direction={'row'} justifyContent={'space-between'} alignItems={'top'}>
+                                                    <Stack>
+                                                        <Typography className={` ${v.isDistribution ? 'text-[#0969da]  font-semibold' : 'text-[#a2a2a2]'}`}>{monthName}</Typography>
+                                                        <Typography className='text-[#656d76]' variant='caption'>{`${monthTh[0][i]}  (${moment(month, 'M').format('MM').toUpperCase()}) - ${yearSelected}`} </Typography>
+                                                    </Stack>
+                                                    <div className={`rounded-[16px] px-2 pb-1 pt-[.5px] h-fit ${v.isDistribution ? 'bg-blue-600' : 'bg-white'}`} style={{ border: '1px solid #ddd' }}>
+                                                        <Typography className={`${v.isDistribution ? 'text-white' : 'text-[#323232]'}`} variant='caption'>
+                                                            {
+                                                                v.isDistribution ? 'แจกจ่าย' : 'ดำเนินการ'
+                                                            }
+                                                        </Typography>
+                                                    </div>
                                                 </Stack>
-                                                <div className={`rounded-[16px] px-2 pb-1 pt-[.5px] h-fit ${v.isDistribution ? 'bg-blue-600' : 'bg-white'}`} style={{ border: '1px solid #ddd' }}>
-                                                    <Typography className={`${v.isDistribution ? 'text-white' : 'text-[#323232]'}`} variant='caption'>
-                                                        {
-                                                            v.isDistribution ? 'แจกจ่าย' : 'ดำเนินการ'
-                                                        }
-                                                    </Typography>
-                                                </div>
-                                            </Stack>
-                                            <Stack direction={'row'} justifyContent={'space-between'} alignItems={'center'} pt={2}>
-                                                <Stack direction={'row'} spacing={1}>
-                                                    <CircleIcon className={`${v.isDistribution ? 'text-[#2196f3]' : 'text-[#ddd]'}`} sx={{ fontSize: 18 }} />
-                                                    <Typography variant='caption' className='text-[#6f6f6f]'>REV : {v.rev?.toLocaleString('en', { minimumIntegerDigits: 2 })}</Typography>
+                                                <Stack direction={'row'} justifyContent={'space-between'} alignItems={'center'} pt={2}>
+                                                    <Stack direction={'row'} spacing={1}>
+                                                        <CircleIcon className={`${v.isDistribution ? 'text-[#2196f3]' : 'text-[#ddd]'}`} sx={{ fontSize: 18 }} />
+                                                        <Typography variant='caption' className='text-[#6f6f6f]'>REV : {v.rev?.toLocaleString('en', { minimumIntegerDigits: 2 })}</Typography>
+                                                    </Stack>
+                                                    {
+                                                        ymd != DtNoActive ? <Typography variant='caption'>Updated {ymd != DtNoActive ? ymd : '-'}</Typography> : ''
+                                                    }
                                                 </Stack>
-                                                {
-                                                    ymd != DtNoActive ? <Typography variant='caption'>Updated {ymd != DtNoActive ? ymd : '-'}</Typography> : ''
-                                                }
+                                            </div>
+                                        </motion.div>
 
-                                            </Stack>
-                                        </div>
                                     </Grid>
                                 })
                             }

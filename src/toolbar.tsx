@@ -39,7 +39,7 @@ function ToolbarComponent() {
     return (
         <Stack className='toolbar h-[10%] bg-[#f6f8fa]' justifyContent={'space-between'} px={2}>
             <Stack className='select-none flex-1 cursor-pointer ' direction={'row'} justifyContent={'space-between'} alignItems={'center'} onClick = {()=>handleActiveMenu('home')}>
-                <Stack className='hover:scale-105  transform-all duration-300' direction={'row'} justifyContent={'center'} alignItems={'center'} gap={1}>
+                <Stack className=' transform-all duration-300' direction={'row'} justifyContent={'center'} alignItems={'center'} gap={1}>
                     <MonetizationOnIcon className='text-blue-500 text-[2em] ' />
                     <Typography className='font-semibold' color="initial">SALE FORECAST</Typography>
                 </Stack>

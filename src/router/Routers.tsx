@@ -9,6 +9,7 @@ import ReactVirtualizedTable from "../test";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { persistor } from "../redux/store";
+import DeliveryControlSheet from "../components/sheet.delivery.control";
 const Routers = () => {
     let BASE = import.meta.env.VITE_PATH;
     let VER = import.meta.env.VITE_VERSION;
@@ -21,6 +22,7 @@ const Routers = () => {
             dispatch({ type: 'RESET' });
             dispatch({ type: 'SET_VERSION', payload: VER });
             location.reload();
+            console.log(redux)
         }
     }, []);
     return (
@@ -36,6 +38,7 @@ const Routers = () => {
                 <Route path={`${BASE}/login`} element={<Login />} />
                 <Route path={`${BASE}/report/:ym`} element={<Report />} />
                 <Route path={`${BASE}/test`} element={<ReactVirtualizedTable />} />
+                <Route path={`${BASE}/deliverycontrol`} element  = {<DeliveryControlSheet/>}/>
             </Routes>
         </BrowserRouter>
     );
