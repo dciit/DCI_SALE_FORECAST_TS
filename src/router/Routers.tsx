@@ -10,6 +10,9 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { persistor } from "../redux/store";
 import DeliveryControlSheet from "../components/sheet.delivery.control";
+import SaleForecase from "../pages/saleforecase";
+import SaleForecaseDev from "../pages/saleforecase-dev";
+import SaleForecaseReactGrid from "../pages/saleforecase.react-grid";
 const Routers = () => {
     let BASE = import.meta.env.VITE_PATH;
     let VER = import.meta.env.VITE_VERSION;
@@ -29,8 +32,10 @@ const Routers = () => {
         <BrowserRouter>
             <Routes>
                 <Route element={<Layout />}>
-                    <Route path={`/${BASE}`} element={<Home />} />
-                    <Route path={`/${BASE}/home`} element={<Home />} />
+                    {/* <Route path={`/${BASE}`} element={<Home />} /> */}
+                    <Route path={`/${BASE}`} element={<SaleForecaseReactGrid />} />
+                    {/* <Route path={`/${BASE}/home`} element={<Home />} /> */}
+                    <Route path={`/${BASE}/home`} element={<SaleForecaseDev />} />
                     <Route path={`/${BASE}/edit`} element={<App />} />
                     <Route path={`/${BASE}/customerMaster`} element={<CustomerMaster />} />
                 </Route>
@@ -38,7 +43,8 @@ const Routers = () => {
                 <Route path={`${BASE}/login`} element={<Login />} />
                 <Route path={`${BASE}/report/:ym`} element={<Report />} />
                 <Route path={`${BASE}/test`} element={<ReactVirtualizedTable />} />
-                <Route path={`${BASE}/deliverycontrol`} element  = {<DeliveryControlSheet/>}/>
+                <Route path={`${BASE}/deliverycontrol`} element={<DeliveryControlSheet />} />
+                <Route path={`${BASE}/saleforecase`} element={<SaleForecase />} />
             </Routes>
         </BrowserRouter>
     );

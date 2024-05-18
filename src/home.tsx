@@ -77,7 +77,7 @@ function Home() {
                 </Grid>
                 <Grid item xs={12}>
                     {
-                        loading ? <Stack spacing={1} justifyContent={'center'} alignItems={'center'}><CircularProgress /><Typography>กำลังโหลดข้อมูล</Typography></Stack> : <Grid container spacing={3} p={3} pl={0} >
+                        loading ? <Stack spacing={1} justifyContent={'center'} alignItems={'center'}><CircularProgress /><Typography>กำลังโหลดข้อมูล</Typography></Stack> : <Grid key={1} container spacing={3} p={3} pl={0} >
                             {
                                 listSale.map((v: MStatusSale, i: number) => {
                                     let ymd: string = moment(v.dt).format('DD/MM/YYYY HH:mm:ss');

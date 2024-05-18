@@ -14,6 +14,7 @@ function ExportToExcel(props: MExcelProps) {
     const tableRef = useRef(null);
     var ExcelName = '';
     ExcelName = `SALE-FORECAST-${year}-${month}`;
+    console.log('first')
     return <>
         <DownloadTableExcel
             filename={ExcelName}

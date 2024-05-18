@@ -96,14 +96,16 @@ function DialogMenuEdit(props: any) {
     }
     const header = ["Customer", "M.Grp", "Model", "Sebango", "Pltype", "Total", "D01", "D02", "D03", "D04", "D05", "D06", "D07", "D08", "D09", "D10", "D11", "D12", "D13", "D14", "D15", "D16", "D17", "D18", "D19", "D20", "D21", "D22", "D23", "D24", "D25", "D26", "D27", "D28", "D29", "D30", "D31"];
     useEffect(() => {
-        downloadExcel({
-            fileName: `saleforecase-${(year + '' + month.toLocaleString('en', { minimumIntegerDigits: 2 }))}`,
-            sheet: (year + '' + month.toLocaleString('en', { minimumIntegerDigits: 2 })),
-            tablePayload: {
-                header,
-                body: excelData,
-            },
-        });
+        if (excelData.length > 0) {
+            downloadExcel({
+                fileName: `saleforecase-${(year + '' + month.toLocaleString('en', { minimumIntegerDigits: 2 }))}`,
+                sheet: (year + '' + month.toLocaleString('en', { minimumIntegerDigits: 2 })),
+                tablePayload: {
+                    header,
+                    body: excelData,
+                },
+            });
+        }
     }, [excelData])
 
 
