@@ -11,18 +11,12 @@ function Login() {
     const version = import.meta.env.VITE_VERSION;
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    // let empcodeRedux = '';
-    // if (typeof reducer.empcode !== 'undefined') {
-    //     empcodeRedux = reducer.empcode;
-    // }
     const rev = import.meta.env.VITE_VERSION;
     const [empcode, setEmpcode] = useState<string>('');
     async function handleLogin() {
-        // let login = await API_LOGIN({ empcode: empcode });
         let login: MLogin = await API_HR_LOGIN(empcode);
         if (login.status) {
             let privilege = await API_PRIVILEGE('UKEHARAI', 'EDIT');
-            console.log(privilege)
             dispatch({ type: 'SET_PRIVILEGE', payload: privilege });
             dispatch({ type: 'LOGIN', payload: { name: login.name, empcode: empcode, rev: rev, dvcd: login.dvcd } })
             navigate('/dcisaleforecast/home');
@@ -72,16 +66,6 @@ function Login() {
                                 />
                             </FormControl>
                         </div>
-                        {/* <div className='px-6'>
-                            <FormControl className='border-white' fullWidth sx={{ m: 1 }}>
-                                <InputLabel htmlFor="outlined-adornment-amount">Amount</InputLabel>
-                                <OutlinedInput
-                                    className='text-white text-[1.5vw]'
-                                    startAdornment={<InputAdornment position="start">$</InputAdornment>}
-                                    label="Amount"
-                                />
-                            </FormControl>
-                        </div> */}
                     </Stack>
                     <Stack direction={'row'}>
                         <div className='w-[60%] font-semibold text-[2vw] hover:text-[2.3vw]  border-btn-login py-3  text-[#36a6ff]  bg-white  pl-[25%] duration-500 transition-all select-none cursor-pointer' onClick={handleLogin} > LOGIN</div>

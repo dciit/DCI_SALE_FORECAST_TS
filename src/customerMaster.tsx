@@ -65,8 +65,8 @@ function CustomerMaster(props: any) {
                                 </TableHead>
                                 <TableBody>
                                     {
-                                        !loading ? (customer.length ? customer.map((v: MCustomer) => {
-                                            return <TableRow>
+                                        !loading ? (customer.length ? customer.map((v: MCustomer, i: number) => {
+                                            return <TableRow key={i}>
                                                 <TableCell>{v.customerCode}</TableCell>
                                                 <TableCell className='font-bold'>{v.customerName}</TableCell>
                                                 <TableCell className='bg-[#009688] text-white'>

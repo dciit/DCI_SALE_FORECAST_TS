@@ -1,6 +1,5 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Layout from "../layout";
-import App from "../App";
 import Home from "../home";
 import Login from "../login";
 import CustomerMaster from "../customerMaster";
@@ -11,7 +10,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { persistor } from "../redux/store";
 import DeliveryControlSheet from "../components/sheet.delivery.control";
 import SaleForecase from "../pages/saleforecase";
-import SaleForecaseDev from "../pages/saleforecase-dev";
+// import SaleForecaseDev from "../pages/saleforecase-dev";
 import SaleForecaseReactGrid from "../pages/saleforecase.react-grid";
 const Routers = () => {
     let BASE = import.meta.env.VITE_PATH;
@@ -19,12 +18,12 @@ const Routers = () => {
     const redux = useSelector((state: any) => state.reducer);
     const dispatch = useDispatch();
     useEffect(() => {
-        if (typeof redux.rev == 'undefined' || redux.rev != VER) {
+        if (typeof redux?.rev == 'undefined' || redux.rev != VER) {
             localStorage.clear();
             persistor.purge();
             dispatch({ type: 'RESET' });
             dispatch({ type: 'SET_VERSION', payload: VER });
-            location.reload();
+            // location.reload();
             console.log(redux)
         }
     }, []);
@@ -32,11 +31,13 @@ const Routers = () => {
         <BrowserRouter>
             <Routes>
                 <Route element={<Layout />}>
-                    {/* <Route path={`/${BASE}`} element={<Home />} /> */}
-                    <Route path={`/${BASE}`} element={<SaleForecaseReactGrid />} />
+                    <Route path={`/${BASE}`} element={<Home />} />
+                    {/* <Route path={`/${BASE}`} element={<SaleForecaseReactGrid />} /> */}
                     {/* <Route path={`/${BASE}/home`} element={<Home />} /> */}
-                    <Route path={`/${BASE}/home`} element={<SaleForecaseDev />} />
-                    <Route path={`/${BASE}/edit`} element={<App />} />
+                    <Route path={`/${BASE}/home`} element={<SaleForecaseReactGrid />} />
+                    <Route path={`/${BASE}/dev`} element={<SaleForecaseReactGrid />} />
+                    {/* <Route path={`/${BASE}/edit`} element={<App />} /> */}
+                    <Route path={`/${BASE}/edit`} element={<SaleForecaseReactGrid />} />
                     <Route path={`/${BASE}/customerMaster`} element={<CustomerMaster />} />
                 </Route>
                 <Route path={`/*`} element={<Login />} />

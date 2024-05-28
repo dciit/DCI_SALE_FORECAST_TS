@@ -9,9 +9,9 @@ function Layout() {
     const dispatch = useDispatch();
     const VITE_REV = parseFloat(import.meta.env.VITE_VERSION);
     const reducer = useSelector((state: MRedux) => state.reducer);
-    const redexRev = reducer.rev;
+    const redexRev = reducer?.rev;
     let oLogin = false;
-    if (typeof reducer.login !== 'undefined') {
+    if (typeof reducer?.login !== 'undefined') {
         oLogin = reducer.login;
     }
     try {

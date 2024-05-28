@@ -45,7 +45,7 @@ function SaleForecase() {
                             <div className='flex justify-around w-full'>
                                 {
                                     [...Array(7)].map((oDay: string, iDay: number) => {
-                                        return <div className='text-[rgb(189,189,189)]'>{moment().add('days', iDay).format('dd').substring(0, 2)}</div>
+                                        return <div key={oDay+iDay} className='text-[rgb(189,189,189)]'>{moment().add('days', iDay).format('dd').substring(0, 2)}</div>
                                     })
                                 }
                             </div>
@@ -53,7 +53,7 @@ function SaleForecase() {
                                 {
                                     [...Array(7)].map((oDay: string, iDay: number) => {
                                         let dayLoop = moment().add('days', iDay).format('DD');
-                                        return today == dayLoop ? <div className={`w-[30px] h-[30px] text-[${textColor}] rounded-full flex  justify-center items-center bg-[#5c5fc835] border-[#5c5fc810] font-semibold border`}>
+                                        return today == dayLoop ? <div key={oDay+iDay} className={`w-[30px] h-[30px] text-[${textColor}] rounded-full flex  justify-center items-center bg-[#5c5fc835] border-[#5c5fc810] font-semibold border`}>
                                             {dayLoop}
                                         </div> : <div className={`w-[30px] h-[30px]  rounded-full flex  justify-center items-center text-[#7e7e7e]  font-semibold`}>
                                             {dayLoop}
@@ -75,7 +75,7 @@ function SaleForecase() {
                     <div id='listSaleForecase ' className='flex flex-col gap-3'>
                         {
                             [...Array(3)].map((o: any, i: number) => {
-                                return <div key={i} className={`p-[4px] rounded-md drop-shadow-lg bg-[#5c5fc8] h-[75px] flex`}>
+                                return <div key={o+i} className={`p-[4px] rounded-md drop-shadow-lg bg-[#5c5fc8] h-[75px] flex`}>
                                     <div className='w-[15px] bg-white rounded-full h-full'></div>
                                     <div>asda</div>
                                     <div></div>

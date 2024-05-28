@@ -207,3 +207,21 @@ table#tb-report thead tr th {
 #tbDeliveryControl td {
   padding: 0;
 }
+
+#reactGrid .tb-distribution .rg-header-cell {
+  background: #009688 !important;
+  color:#fff;
+}
+
+#reactGrid .tb-distribution .rg-text-cell {
+  background: #00968810 !important;
+}
+
+#reactGrid .tb-undistribution .rg-header-cell {
+  background: #5c5fc8 !important;
+  color:#fff;
+}
+
+/* #reactGrid .tb-undistribution .rg-text-cell {
+  background: #5c5fc810 !important;
+} */

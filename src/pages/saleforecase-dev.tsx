@@ -1,10 +1,9 @@
+// @ts-nocheck
 import { useEffect, useMemo, useRef, useState } from 'react';
 import {
     MaterialReactTable,
     // createRow,
     type MRT_ColumnDef,
-    type MRT_Row,
-    type MRT_TableOptions,
     useMaterialReactTable,
     MRT_RowVirtualizer,
 } from 'material-react-table';
