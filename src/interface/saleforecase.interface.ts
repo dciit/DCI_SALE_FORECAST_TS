@@ -89,3 +89,20 @@ export interface MDistribution {
     year: string;
     empcode: string;
 }
+export interface DictMstr {
+    dictId?: string;
+    dictSystem?: string | null;
+    dictType?: string | null;
+    code?: string;
+    description?: string | null;
+    refCode?: string;
+    note?: string | null;
+    createDate?: string;
+    updateDate?: string;
+    dictStatus?: string | null;
+}
+
+export interface Status {
+    status:boolean;
+    message:string;
+}

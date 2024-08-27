@@ -1,6 +1,7 @@
 import Axios from "axios";
 import { api } from "../constant";
-import { MApiGetSale, MChoose, MDistribution, MGetSale, MUpdateSale } from "../interface/saleforecase.interface";
+import { DictMstr, MApiGetSale, MChoose, MDistribution, MGetSale, MUpdateSale, Status } from "../interface/saleforecase.interface";
+import { ParamDelectModelOfCustomer } from "../Interface";
 const http = Axios.create({
     baseURL: api,
     headers: {
@@ -47,6 +48,49 @@ export function API_DISTRIBUTION(param: MDistribution) {
 export function API_UN_DISTRIBUTION(param: MDistribution) {
     return new Promise<any>(resolve => {
         http.post(`/saleforecase/undistribution`, param).then((res) => {
+            resolve(res.data);
+        })
+    })
+}
+
+export function API_GETCUSTOMER_SETTING() {
+    return new Promise<string[]>(resolve => {
+        http.get(`/getCustomerSetting`).then((res) => {
+            resolve(res.data);
+        })
+    })
+}
+
+export function API_GET_MODEL_BY_CUSTOMER(code: string) {
+    return new Promise<any>(resolve => {
+        http.get(`/getModelByCustomerCode/${code}`).then((res) => {
+            resolve(res.data);
+        })
+    })
+}
+export function API_GET_MODEL() {
+    return new Promise<string[]>(resolve => {
+        http.get(`/saleforecase/customersetting/getmodel`).then((res) => {
+            resolve(res.data);
+        })
+    })
+}
+
+
+
+export function API_ADD_MODEL_TO_CUSTOMER(param: DictMstr) {
+    return new Promise<Status>(resolve => {
+        http.post(`/saleforecase/customersetting/addmodeltocustomer`, param).then((res) => {
+            resolve(res.data);
+        })
+    })
+}
+
+
+
+export function API_DEL_MODEL_OF_CUSTOMER(param: ParamDelectModelOfCustomer) {
+    return new Promise<Status>(resolve => {
+        http.post(`/saleforecase/customersetting/delmodelofcustomer`, param).then((res) => {
             resolve(res.data);
         })
     })

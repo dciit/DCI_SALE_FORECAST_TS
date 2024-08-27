@@ -8,13 +8,10 @@ import { persistor } from '../src/redux/store';
 import { useState } from 'react';
 import CustomerMaster from './customerMaster';
 import SearchIcon from '@mui/icons-material/Search';
+import TuneOutlinedIcon from '@mui/icons-material/TuneOutlined';
 function ToolbarComponent() {
     const reducer = useSelector((state: MRedux) => state.reducer);
-    // let oEmpcode = '';
     let oName = '';
-    // if (typeof reducer.empcode !== 'undefined') {
-    //     oEmpcode = reducer.empcode;
-    // }
     if (typeof reducer.name !== 'undefined') {
         oName = reducer.name;
     }
@@ -38,7 +35,7 @@ function ToolbarComponent() {
     }
     return (
         <Stack className='toolbar h-[10%] bg-[#f6f8fa]' justifyContent={'space-between'} px={2}>
-            <Stack className='select-none flex-1 cursor-pointer ' direction={'row'} justifyContent={'space-between'} alignItems={'center'} onClick = {()=>handleActiveMenu('home')}>
+            <Stack className='select-none flex-1 cursor-pointer ' direction={'row'} justifyContent={'space-between'} alignItems={'center'} onClick={() => handleActiveMenu('home')}>
                 <Stack className=' transform-all duration-300' direction={'row'} justifyContent={'center'} alignItems={'center'} gap={1}>
                     <MonetizationOnIcon className='text-blue-500 text-[2em] ' />
                     <Typography className='font-semibold' color="initial">SALE FORECAST</Typography>
@@ -52,6 +49,10 @@ function ToolbarComponent() {
                 <Stack className={`${typeof activeMenu.menuActive != 'undefined' && activeMenu.menuActive.toString() == "home" ? 'border-b-2 border-b-[#fd8c73]' : ''}  cursor-pointer h-[100%] hover:border-b-2 hover:border-b-[#fd8c73] px-3 transform-all duration-100`} direction={'row'} alignItems={'center'} justifyItems={'center'} justifyContent={'center'} spacing={1} onClick={() => handleActiveMenu('home')}>
                     <HouseSidingIcon className='text-gray-500' />
                     <Typography color="initial" className='font-semibold text-gray-600'>Home</Typography>
+                </Stack>
+                <Stack className={`${typeof activeMenu.menuActive != 'undefined' && activeMenu.menuActive.toString() == "customerSetting" ? 'border-b-2 border-b-[#fd8c73]' : ''}  cursor-pointer h-[100%] hover:border-b-2 hover:border-b-[#fd8c73] px-3 transform-all duration-100`} direction={'row'} alignItems={'center'} justifyItems={'center'} justifyContent={'center'} spacing={1} onClick={() => handleActiveMenu('customerSetting')}>
+                    <TuneOutlinedIcon className='text-gray-500' />
+                    <Typography color="initial" className='font-semibold text-gray-600'>ตั้งค่า</Typography>
                 </Stack>
                 <Stack className={`${typeof activeMenu.menuActive != 'undefined' && activeMenu.menuActive.toString() == "customerMaster" ? 'border-b-2 border-b-[#fd8c73]' : ''}  cursor-pointer h-[100%] hover:border-b-2 hover:border-b-[#fd8c73] px-3 transform-all duration-100`} direction={'row'} alignItems={'center'} justifyItems={'center'} justifyContent={'center'} spacing={1} onClick={() => handleShowCustomerMaster()}>
                     <SearchIcon className='text-gray-500' />

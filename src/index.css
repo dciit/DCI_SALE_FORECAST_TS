@@ -48,11 +48,11 @@ button:focus-visible {
 
 
 .wrapper {
-  position: relative;
-  width: 100%;
-  height: 100%;
+  /* position: relative; */
+  /* width: 100%; */
+  /* height: 100%; */
   overflow: scroll;
-  padding: 16px 0px;
+  /* padding: 16px 0px; */
 }
 
 .rg-header-cell {
@@ -210,18 +210,33 @@ table#tb-report thead tr th {
 
 #reactGrid .tb-distribution .rg-header-cell {
   background: #009688 !important;
-  color:#fff;
+  color: #fff;
 }
 
+/* .rg-pane-left */
 #reactGrid .tb-distribution .rg-text-cell {
   background: #00968810 !important;
 }
 
 #reactGrid .tb-undistribution .rg-header-cell {
   background: #5c5fc8 !important;
-  color:#fff;
+  color: #fff;
 }
 
-/* #reactGrid .tb-undistribution .rg-text-cell {
-  background: #5c5fc810 !important;
-} */
+.tb-undistribution .reactgrid-content .rg-pane.rg-pane-left,
+.tb-undistribution .reactgrid-content .rg-pane.rg-pane-right {
+  background: #5c5fc8 !important;
+}
+
+
+.tb-distribution .reactgrid-content .rg-pane.rg-pane-left,
+.tb-distribution .reactgrid-content .rg-pane.rg-pane-right {
+  background: #009688 !important;
+}
+
+.tb-distribution .reactgrid-content .rg-pane.rg-pane-left div,
+.tb-distribution .reactgrid-content .rg-pane.rg-pane-right div,
+.tb-undistribution .reactgrid-content .rg-pane.rg-pane-left div,
+.tb-undistribution .reactgrid-content .rg-pane.rg-pane-right div {
+  color: white !important;
+}

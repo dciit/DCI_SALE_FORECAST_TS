@@ -1,6 +1,6 @@
 // @ts-nocheck
-import { useEffect, useState } from 'react'
-
+import { ChangeEvent, useEffect, useState } from 'react'
+import DataUsageIcon from '@mui/icons-material/DataUsage';
 import ShortcutOutlinedIcon from '@mui/icons-material/ShortcutOutlined';
 import { ReactGrid, Column, Row, CellChange, TextCell } from "@silevis/reactgrid";
 import "@silevis/reactgrid/styles.css";
@@ -8,37 +8,39 @@ import { MFilterSale, MGetSale, MMasterFilter, MSale } from '../interface/salefo
 import { API_GET_SALE, API_UPDATE_SALE } from '../service/saleforecase.service';
 import CleaningServicesIcon from '@mui/icons-material/CleaningServices';
 import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
-import SwapVertOutlinedIcon from '@mui/icons-material/SwapVertOutlined';
 import CelebrationOutlinedIcon from '@mui/icons-material/CelebrationOutlined';
 import FilterAltOutlinedIcon from '@mui/icons-material/FilterAltOutlined';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
-import { Button, CircularProgress, IconButton, MenuItem, Select } from '@mui/material';
+import { Button, CircularProgress, IconButton, MenuItem } from '@mui/material';
 import DialogFilter from '../dialog/saleforecase.filter.dialog';
 import { useDispatch, useSelector } from 'react-redux';
 import moment from 'moment';
 import DialogDistribution from '../dialog/saleforecase.dialog.distribution';
 import DialogUnDistribution from '../dialog/saleforecase.dialog.undistribution';
+import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
+import { getModelGroupOfModelName } from '../function/main.function';
+import { downloadExcel } from 'react-export-table-to-excel';
+import { Select } from 'antd';
 const colWidth: number = 150;
-const colWidthDay: number = 50;
+const colWidthDay: number = 65;
 const getColumns = (): Column[] => [...[
-    { columnId: "ym", width: colWidth },
-    { columnId: "customer", width: colWidth },
-    { columnId: "modelCode", width: colWidth },
+    { columnId: "ym", width: 90 },
+    { columnId: "customer", width: 90 },
+    { columnId: "modelCode", width: 70 },
     { columnId: "modelName", width: colWidth },
-    { columnId: "diameter", width: colWidth },
-    { columnId: "pltype", width: colWidth },
+    { columnId: "diameter", width: 100 },
+
 ], ...[...Array(31)].map((o: any, i: number) => (
     { columnId: `d${(i + 1).toLocaleString('en', { minimumIntegerDigits: 2 })}`, width: colWidthDay }
-))];
+)), ...[{ columnId: "pltype", width: 125 }, { columnId: "total", width: 75 }]];
 const headerRow: Row = {
     rowId: "header",
     cells: [
         { type: "header", text: `MM/YYYY` },
         { type: "header", text: "Customer" },
-        { type: "header", text: "ModelCode" },
-        { type: "header", text: "ModelName" },
+        { type: "header", text: "M.CODE" },
+        { type: "header", text: "M.NAME" },
         { type: "header", text: "Diameter" },
-        { type: "header", text: "PLTYPE" },
         { type: "header", text: "D01" },
         { type: "header", text: "D02" },
         { type: "header", text: "D03" },
@@ -70,8 +72,19 @@ const headerRow: Row = {
         { type: "header", text: "D29" },
         { type: "header", text: "D30" },
         { type: "header", text: "D31" },
+        { type: "header", text: "PLTYPE" },
+        { type: "header", text: "TOTAL" },
     ]
 };
+
+const SaleTotal = (o: MSale) => {
+    let Total: number = 0;
+    [...Array(31)].map((_, i: number) => {
+        let day = (i + 1).toString().padStart(2, '0');
+        Total += Number(o[`d${day}`]);
+    })
+    return Total.toLocaleString('en');
+}
 const getRows = (sale: MSale[]): Row[] => [
     headerRow,
     ...sale.map<Row>((sale, idx) => ({
@@ -82,38 +95,39 @@ const getRows = (sale: MSale[]): Row[] => [
             { type: "text", text: sale.modelCode },
             { type: "text", text: sale.modelName },
             { type: "text", text: sale.diameter },
+            { type: "text", text: (sale.d01 != null && typeof sale.d01 != 'undefined' && sale.d01 != '') ? sale.d01.toString() : '0' },
+            { type: "text", text: (sale.d02 != null && typeof sale.d02 != 'undefined' && sale.d02 != '') ? sale.d02.toString() : '0' },
+            { type: "text", text: (sale.d03 != null && typeof sale.d03 != 'undefined' && sale.d03 != '') ? sale.d03.toString() : '0' },
+            { type: "text", text: (sale.d04 != null && typeof sale.d04 != 'undefined' && sale.d04 != '') ? sale.d04.toString() : '0' },
+            { type: "text", text: (sale.d05 != null && typeof sale.d05 != 'undefined' && sale.d05 != '') ? sale.d05.toString() : '0' },
+            { type: "text", text: (sale.d06 != null && typeof sale.d06 != 'undefined' && sale.d06 != '') ? sale.d06.toString() : '0' },
+            { type: "text", text: (sale.d07 != null && typeof sale.d07 != 'undefined' && sale.d07 != '') ? sale.d07.toString() : '0' },
+            { type: "text", text: (sale.d08 != null && typeof sale.d08 != 'undefined' && sale.d08 != '') ? sale.d08.toString() : '0' },
+            { type: "text", text: (sale.d09 != null && typeof sale.d09 != 'undefined' && sale.d09 != '') ? sale.d09.toString() : '0' },
+            { type: "text", text: (sale.d10 != null && typeof sale.d10 != 'undefined' && sale.d10 != '') ? sale.d10.toString() : '0' },
+            { type: "text", text: (sale.d11 != null && typeof sale.d11 != 'undefined' && sale.d11 != '') ? sale.d11.toString() : '0' },
+            { type: "text", text: (sale.d12 != null && typeof sale.d12 != 'undefined' && sale.d12 != '') ? sale.d12.toString() : '0' },
+            { type: "text", text: (sale.d13 != null && typeof sale.d13 != 'undefined' && sale.d13 != '') ? sale.d13.toString() : '0' },
+            { type: "text", text: (sale.d14 != null && typeof sale.d14 != 'undefined' && sale.d14 != '') ? sale.d14.toString() : '0' },
+            { type: "text", text: (sale.d15 != null && typeof sale.d15 != 'undefined' && sale.d15 != '') ? sale.d15.toString() : '0' },
+            { type: "text", text: (sale.d16 != null && typeof sale.d16 != 'undefined' && sale.d16 != '') ? sale.d16.toString() : '0' },
+            { type: "text", text: (sale.d17 != null && typeof sale.d17 != 'undefined' && sale.d17 != '') ? sale.d17.toString() : '0' },
+            { type: "text", text: (sale.d18 != null && typeof sale.d18 != 'undefined' && sale.d18 != '') ? sale.d18.toString() : '0' },
+            { type: "text", text: (sale.d19 != null && typeof sale.d19 != 'undefined' && sale.d19 != '') ? sale.d19.toString() : '0' },
+            { type: "text", text: (sale.d20 != null && typeof sale.d20 != 'undefined' && sale.d20 != '') ? sale.d20.toString() : '0' },
+            { type: "text", text: (sale.d21 != null && typeof sale.d21 != 'undefined' && sale.d21 != '') ? sale.d21.toString() : '0' },
+            { type: "text", text: (sale.d22 != null && typeof sale.d22 != 'undefined' && sale.d22 != '') ? sale.d22.toString() : '0' },
+            { type: "text", text: (sale.d23 != null && typeof sale.d23 != 'undefined' && sale.d23 != '') ? sale.d23.toString() : '0' },
+            { type: "text", text: (sale.d24 != null && typeof sale.d24 != 'undefined' && sale.d24 != '') ? sale.d24.toString() : '0' },
+            { type: "text", text: (sale.d25 != null && typeof sale.d25 != 'undefined' && sale.d25 != '') ? sale.d25.toString() : '0' },
+            { type: "text", text: (sale.d26 != null && typeof sale.d26 != 'undefined' && sale.d26 != '') ? sale.d26.toString() : '0' },
+            { type: "text", text: (sale.d27 != null && typeof sale.d27 != 'undefined' && sale.d27 != '') ? sale.d27.toString() : '0' },
+            { type: "text", text: (sale.d28 != null && typeof sale.d28 != 'undefined' && sale.d28 != '') ? sale.d28.toString() : '0' },
+            { type: "text", text: (sale.d29 != null && typeof sale.d29 != 'undefined' && sale.d29 != '') ? sale.d29.toString() : '0' },
+            { type: "text", text: (sale.d30 != null && typeof sale.d30 != 'undefined' && sale.d30 != '') ? sale.d30.toString() : '0' },
+            { type: "text", text: (sale.d31 != null && typeof sale.d31 != 'undefined' && sale.d31 != '') ? sale.d31.toString() : '0' },
             { type: "text", text: sale.pltype },
-            { type: "text", text: sale.d01.toString() },
-            { type: "text", text: sale.d02.toString() },
-            { type: "text", text: sale.d03.toString() },
-            { type: "text", text: sale.d04.toString() },
-            { type: "text", text: sale.d05.toString() },
-            { type: "text", text: sale.d06.toString() },
-            { type: "text", text: sale.d07.toString() },
-            { type: "text", text: sale.d08.toString() },
-            { type: "text", text: sale.d09.toString() },
-            { type: "text", text: sale.d10.toString() },
-            { type: "text", text: sale.d11.toString() },
-            { type: "text", text: sale.d12.toString() },
-            { type: "text", text: sale.d13.toString() },
-            { type: "text", text: sale.d14.toString() },
-            { type: "text", text: sale.d15.toString() },
-            { type: "text", text: sale.d16.toString() },
-            { type: "text", text: sale.d17.toString() },
-            { type: "text", text: sale.d18.toString() },
-            { type: "text", text: sale.d19.toString() },
-            { type: "text", text: sale.d20.toString() },
-            { type: "text", text: sale.d21.toString() },
-            { type: "text", text: sale.d22.toString() },
-            { type: "text", text: sale.d23.toString() },
-            { type: "text", text: sale.d24.toString() },
-            { type: "text", text: sale.d25.toString() },
-            { type: "text", text: sale.d26.toString() },
-            { type: "text", text: sale.d27.toString() },
-            { type: "text", text: sale.d28.toString() },
-            { type: "text", text: sale.d29.toString() },
-            { type: "text", text: sale.d30.toString() },
-            { type: "text", text: sale.d31.toString() },
+            { type: "text", text: SaleTotal(sale) },
         ]
     }))
 ];
@@ -124,7 +138,7 @@ function SaleForecaseReactGrid() {
         { column: 'MODEL CODE', field: 'modelCode' },
         { column: 'MODEL NAME', field: 'modelName' },
         { column: 'DIAMETER', field: 'diameter' },
-        { column: 'PLTYPE', field: 'pltype' }
+        { column: 'PLTYPE', field: 'pltype' },
     ]
     const dispatch = useDispatch();
     const reduxFilter: MFilterSale[] = useSelector((state: any) => state.reducer.filter);
@@ -137,12 +151,14 @@ function SaleForecaseReactGrid() {
     const [rows, setRows] = useState<Row[]>([]);
     const [openFilter, setOpenFilter] = useState<boolean>(false);
     const [columnFilter, setColumnFilter] = useState<string>('');
-    const rYear: string[] = [moment().add('year', -1).format('YYYY'), moment().format('YYYY')]
+    // const rYear: string[] = [moment().add('year', -1).format('YYYY'), moment().format('YYYY'), moment().add('year', 1).format('YYYY')]
     const [year, setYear] = useState<string>(moment().format('YYYY'));
     const [change, setChange] = useState<MSale[]>([]);
     const [openDistribution, setOpenDistribution] = useState<boolean>(false);
     const [openUnDistribution, setOpenUnDistribution] = useState<boolean>(false);
     const [lrev, setLrev] = useState<string>("");
+    const [excelData, setExcelData] = useState<any[]>([]);
+    const [loadExcel, setLoadExcel] = useState<boolean>(false);
     useEffect(() => {
         if (once == true) {
             SearchData();
@@ -179,21 +195,8 @@ function SaleForecaseReactGrid() {
                 }
             }
         });
-        // reduxFilter.map((o: MFilterSale) => {
-        //     let sort: boolean = o.sort == 'asc' ? true : false;
-        //     if (o.text == 'MM/YYYY') {
-        //         // console.log('load sort : ', sort ? 'asc' : 'desc')
-        //         ApiSearchData.data = ApiSearchData.data.sort((a, b) => (a.ym < b.ym ? -1 : 1));
-        //         // ApiSearchData.data = getSortedData(ApiSearchData.data, o.text, sort);
-        //     }
-        //     console.log(ApiSearchData.data);
-        //     if (o.text == 'MODEL') {
-        //         ApiSearchData.data = ApiSearchData.data.sort((a, b) => (a.modelName < b.modelName ? -1 : 1));
-        //     }
-        // });
         setLoad(false);
-        setData(ApiSearchData.data);             // data after filter
-        setRows(getRows(ApiSearchData.data));    // row after filter to grid
+        setData(ApiSearchData.data);
     }
 
     const handleFilter = () => {
@@ -204,18 +207,26 @@ function SaleForecaseReactGrid() {
                 if (masterFilter.findIndex((x: MMasterFilter) => x.column == o.text) != -1) {
                     field = masterFilter.filter((x: MMasterFilter) => x.column == o.text)[0].field;
                     if (field != '' && field != null) {
-                        buffData = buffData.filter((oSale: MSale) => o.value.toString().toLowerCase().includes(oSale[field].toString().toLowerCase()));
+                        // buffData = buffData.filter((oSale: MSale) => o.value.toString().toLowerCase().includes(oSale[field].toString().toLowerCase()));
+                        buffData = buffData.filter((oSale: MSale) => {
+                            if (o.value.toString().toLowerCase().includes(oSale[field].toString().toLowerCase())) {
+
+                            }
+                            let have: bool = false;
+                            o.value.map((oValue: string) => {
+                                if (oValue.toLowerCase() == oSale[field].toString().toLowerCase()) {
+                                    have = true;
+                                }
+                            })
+                            if (have == false) {
+                                return false;
+                            }
+                            return o;
+                        });
                     }
                 }
             }
         });
-        // reduxFilter.map((o: MFilterSale) => {
-        //     let sort: string = o.sort;
-        //     if (o.text == 'MM/YYYY' || o.text == 'CUSTOMER') {
-        //         console.log(o.text)
-        //         buffData = getSortedData(buffData, o.text, sort == 'asc' ? true : false);
-        //     }
-        // });
         setData(buffData);
     }
 
@@ -224,12 +235,10 @@ function SaleForecaseReactGrid() {
         handleFilter();
     }
     useEffect(() => {
-        // if (data.length) {
         setRows(getRows(data));
         if (change.length > 0) {
             update(change);
         }
-        // }
     }, [data, change])
 
     const update = async (rowChange: any[]) => {
@@ -250,8 +259,8 @@ function SaleForecaseReactGrid() {
         changes.forEach((change) => {
             const personIndex = change.rowId;
             const fieldName = change.columnId;
-            if (fieldName.toString().startsWith("d")) {
-                prevPeople[personIndex][fieldName] = Number(change.newCell.text.replace('\r', ''));
+            if (fieldName.toString().startsWith("d") && fieldName.toString().toLowerCase() != 'diameter') {
+                prevPeople[personIndex][fieldName] = Number(change.newCell.text.replace('\r', '').replace(',', ''));
                 dataUpdate.push(prevPeople[Number(personIndex)]);
             }
         });
@@ -265,43 +274,105 @@ function SaleForecaseReactGrid() {
         }
     };
 
-    // const handleSort = (textSort: string) => {
-    //     let buffData: MSale[] = data.slice();
-    //     let sort: string = 'asc';
-    //     let rFilter: MFilterSale[] = reduxFilter.filter((x: MFilterSale) => x.text == textSort);
-    //     if (rFilter.length) {
-    //         sort = rFilter[0].sort == '' ? 'asc' : (rFilter[0].sort == 'asc' ? 'desc' : 'asc');
-    //     }
-    //     dispatch({
-    //         type: 'SET_SORT', payload: {
-    //             text: textSort,
-    //             sort: sort
-    //         }
-    //     });
+    async function handleExport() {
+        setLoadExcel(true);
+        const excelFormat = data.map((oExcel: MSale) => {
+            let total = 0;
+            [...Array(31)].map((oo: any, ii: number) => {
+                let day: string = (ii + 1).toLocaleString('en', { minimumIntegerDigits: 2 });
+                total += Number(oExcel[`d${day}`]);
+            })
+            return {
+                ym: oExcel.ym,
+                customer: oExcel.customer,
+                modelGroup: getModelGroupOfModelName(oExcel.modelName),
+                modelName: oExcel.modelName,
+                sebango: oExcel.modelCode,
+                diameter: oExcel.diameter,
+                pltype: oExcel.pltype,
+                total: total,
+                d01: oExcel.d01,
+                d02: oExcel.d02,
+                d03: oExcel.d03,
+                d04: oExcel.d04,
+                d05: oExcel.d05,
+                d06: oExcel.d06,
+                d07: oExcel.d07,
+                d08: oExcel.d08,
+                d09: oExcel.d09,
+                d10: oExcel.d10,
+                d11: oExcel.d11,
+                d12: oExcel.d12,
+                d13: oExcel.d13,
+                d14: oExcel.d14,
+                d15: oExcel.d15,
+                d16: oExcel.d16,
+                d17: oExcel.d17,
+                d18: oExcel.d18,
+                d19: oExcel.d19,
+                d20: oExcel.d20,
+                d21: oExcel.d21,
+                d22: oExcel.d22,
+                d23: oExcel.d23,
+                d24: oExcel.d24,
+                d25: oExcel.d25,
+                d26: oExcel.d26,
+                d27: oExcel.d27,
+                d28: oExcel.d28,
+                d29: oExcel.d29,
+                d30: oExcel.d30,
+                d31: oExcel.d31,
+            }
+        });
+        if (excelFormat.length > 0) {
+            setExcelData(excelFormat);
+        }
+    }
+    const header = ["YYYYMM", "Customer", "M.Grp", "Model", "Sebango", "Diameter", "Pltype", "Total", "D01", "D02", "D03", "D04", "D05", "D06", "D07", "D08", "D09", "D10", "D11", "D12", "D13", "D14", "D15", "D16", "D17", "D18", "D19", "D20", "D21", "D22", "D23", "D24", "D25", "D26", "D27", "D28", "D29", "D30", "D31"];
+    useEffect(() => {
+        if (excelData.length > 0) {
+            downloadExcel({
+                fileName: `saleforecase-${(year)}`,
+                sheet: year,
+                tablePayload: {
+                    header,
+                    body: excelData,
+                },
+            });
+            setExcelData([]);
+            setLoadExcel(false);
+        }
+    }, [excelData])
 
-    // buffData = getSortedData(buffData, textSort, sort == 'asc' ? true : false);
-    //     setData(buffData);
-    // }
-
-    // function getSortedData(data, prop, isAsc) {
-    //     return data.sort((a, b) => {
-    //         return (a[prop] < b[prop] ? -1 : 1) * (isAsc == true ? 1 : -1)
-    //     });
-    // }
-
+    const viewSum = [
+        { text: '1YC', equal: ['1'] },
+        { text: '2YC', equal: ['2'] },
+        { text: 'SCR', equal: ['J'] },
+    ];
+    const [monthSelected, setMonthSelected] = useState<string>('all');
     return <div className='p-6 flex flex-col gap-3' id='reactGrid'>
-        <div className='flex flex-row drop-shadow-lg py-3 border border-[#5c5fc840] rounded-lg px-6'>
+        <div className='flex flex-row  py-3 border border-[#5c5fc840] rounded-lg px-6'>
             <div className='flex grow flex-row items-center gap-3 select-none'>
                 <span>เครื่องมือค้นหา </span>
-                <Select size='small' value={year} className='w-fit' onChange={(e: any) => setYear(e.target.value)}>
-                    {
-                        rYear.map((oYear: string, iYear: number) => {
-                            return <MenuItem key={iYear} value={year}>{oYear}</MenuItem>
-                        })
-                    }
-                </Select>
+                <Select
+                    defaultValue={year}
+                    options={[
+                        { value: moment().subtract(1, 'years').format('YYYY'), label: moment().subtract(1, 'years').format('YYYY') },
+                        { value: moment().format('YYYY'), label: moment().format('YYYY') },
+                        { value: moment().add(1, 'years').format('YYYY'), label: moment().add(1, 'years').format('YYYY') }
+                    ]}
+                    onChange={(value) => setYear(value)}
+                />
             </div>
-            <Button size='small' variant='contained' className={`${lrev == '999' ? 'bg-[#009866]' : 'bg-[#5c5fc8]'} text-white pl-5 pr-6 focus:outline-none`} startIcon={<SearchOutlinedIcon />}>ค้นหา</Button>
+            <div className='flex gap-2'>
+                <Button size='small' variant='contained' className={`${lrev == '999' ? 'bg-[#009866]' : 'bg-[#5c5fc8]'} text-white pl-5 pr-6 focus:outline-none`} startIcon={<SearchOutlinedIcon />} onClick={SearchData} >ค้นหา</Button>
+                <div className={`border border-[#a7a7a7] rounded-md flex items-center pl-4 pr-6 py-1 drop-shadow-md cursor-pointer select-none hover:bg-[#ddd] transition-all duration-300 gap-2 ${loadExcel == true && 'bg-[#ddd]'}`} onClick={handleExport}>
+                    {
+                        loadExcel == true ? <DataUsageIcon className='text-[#6d6d6d] animate-spin' /> : <FileDownloadOutlinedIcon className='text-[#6d6d6d]' />
+                    }
+                    <span>Excel</span>
+                </div>
+            </div>
         </div>
         <div className={`${defData.length == 0 && 'hidden'} flex  items-center gap-3 ${lrev == '999' ? 'bg-[#00986610]' : 'bg-[#5c5fc810]'} py-2 px-6 rounded-md border ${lrev == '999' ? 'border-[#00986610]' : 'border-[#5c5fc810]'} select-none`}>
             <span className="relative flex h-2 w-2">
@@ -315,6 +386,52 @@ function SaleForecaseReactGrid() {
                 {
                     lrev == "999" ? <Button variant='contained' className='focus:outline-none bg-[#5c5fc8]' startIcon={<ShortcutOutlinedIcon />} onClick={() => setOpenUnDistribution(true)}>แก้ไข</Button> : <Button variant='contained' className='focus:outline-none bg-[#009866]' startIcon={<CelebrationOutlinedIcon />} onClick={() => setOpenDistribution(true)}>แจกจ่าย</Button>
                 }
+            </div>
+        </div>
+        <div className='flex justify-between'>
+            <table>
+                <tbody>
+                    <tr className='font-semibold'>
+                        <td className={`border px-3 text-white ${lrev == '999' ? 'bg-[#009866] border-[#009866]' : 'bg-[#5c5fc8] border-[#5c5fc8] '}`}>Summary </td>
+                        <td className={`border text-white ${lrev == '999' ? 'bg-[#009866] border-[#009866]' : 'bg-[#5c5fc8] border-[#5c5fc8]'}`}>
+                            <span>Month : </span>
+                            <select className={`focus:outline-none  border bg-white ${lrev == '999' ? ' text-[#009866]' : ' text-[#5c5fc8] '} p-1 pt-0 rounded-md`} value={monthSelected} onChange={(e: ChangeEvent<HTMLSelectElement>) => setMonthSelected(e.target.value)}>
+                                <option value="all">ALL</option>
+                                {
+                                    [...Array(12)].map((o: any, i: number) => {
+                                        let month = (i + 1).toLocaleString('en', { minimumIntegerDigits: 2 });
+                                        return <option key={i} value={month}>{month}</option>
+                                    })
+                                }
+                            </select>
+                        </td>
+                        {
+                            viewSum.map((o: any, i: number) => {
+                                return <td key={i} className={`border ${lrev == '999' ? 'border-[#009866] bg-[#00986610]' : 'border-[#5c5fc8] bg-[#5c5fc810]'}`}>
+                                    <div className='flex gap-1 px-2'>
+                                        <span>{o.text} :</span>
+                                        <span className={`${lrev == '999' ? 'text-[#009866]' : 'text-[#5c5fc8]'} font-bold`}>{defData.filter(x => x.modelName.substring(0, 1) == o.equal && (monthSelected != 'all' ? x.ym == `${year}${monthSelected}` : true)).reduce((sum, current) => sum + current.d01, 0).toLocaleString('en')}</span>
+                                    </div>
+                                </td>
+                            })
+                        }
+                        <td className={`border ${lrev == '999' ? 'border-[#009866] bg-[#00986610]' : 'border-[#5c5fc8] bg-[#5c5fc810]'}`}>
+                            <div className='flex gap-1 px-2'>
+                                <span>ODM :</span>
+                                <span className={`${lrev == '999' ? 'text-[#009866]' : 'text-[#5c5fc8]'} font-bold`}>{defData.filter(x => (x.modelName.substring(0, 1) != '1' && x.modelName.substring(0, 1) != '2' && x.modelName.substring(0, 1) != 'J') && (monthSelected != 'all' ? x.ym == `${year}${monthSelected}` : true)).reduce((sum, current) => sum + current.d01, 0).toLocaleString('en')}</span>
+                            </div>
+                        </td>
+                        <td className={`border ${lrev == '999' ? 'border-[#009866] bg-[#00986610]' : 'border-[#5c5fc8] bg-[#5c5fc810]'}`}>
+                            <div className='flex gap-1 px-2'>
+                                <span>Total :</span>
+                                <span className={`${lrev == '999' ? 'text-[#009866]' : 'text-[#5c5fc8]'} font-bold`}>{defData.filter(x => (monthSelected != 'all' ? x.ym == `${year}${monthSelected}` : true)).reduce((sum, current) => sum + current.d01, 0).toLocaleString('en')}</span>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div>
+                <div className='border rounded-md px-6 py-2 text-red-500 font-semibold drop-shadow-sm shadow-sm'>Secret</div>
             </div>
         </div>
         <div className='flex '>
@@ -351,14 +468,15 @@ function SaleForecaseReactGrid() {
                 <Button variant='contained' color='error' startIcon={<CleaningServicesIcon />} onClick={handleClearFilter}>ล้างตัวกรอง</Button>
             </div>
         </div>
-        <div className={`h-[500px] wrapper pt-0 gap-3 ${lrev == "999" ? 'tb-distribution' : 'tb-undistribution'}`}>
+        {/* h-[500px] wrapper */}
+        <div className={`w-[100%] overflow-x-auto  h-[500px]  pt-0 gap-3 ${lrev == "999" ? 'tb-distribution' : 'tb-undistribution'}`}>
             {
                 load == true ? <div id='loading' className={`flex flex-col gap-2 items-center justify-center h-full  text-white rounded-lg ${lrev == '999' ? 'bg-[#009866]' : 'bg-[#5c5fc8]'}`}>
                     <CircularProgress sx={{ color: 'white' }} />
                     <span className='drop-shadow-xl'>กำลังโหลดข้อมูล</span>
                 </div> : (rows.length == 0 ? <div id='nodata'>
                     <span className='text-[#5c5fc8]'>ไม่พบข้อมูล</span>
-                </div> : <ReactGrid rows={rows} columns={columns} stickyTopRows={1} stickyLeftColumns={6} onCellsChanged={handleChanges} />)
+                </div> : <ReactGrid rows={rows} columns={columns} stickyTopRows={1} stickyLeftColumns={4} onCellsChanged={handleChanges} stickyRightColumns={2} />)
             }
             {
                 (data.length == 0 && load == false) && <div className='border text-center select-none '>ไม่พบข้อมูลที่คุณค้นหา</div>

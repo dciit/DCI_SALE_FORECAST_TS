@@ -251,3 +251,33 @@ export interface oSale {
     id?: number;
     ym?: string;
 }
+
+export interface PropsCustomer {
+    VenderCode: string;
+    VenderName: string;
+    VenderShortName: string;
+    VenderAddress: string;
+    VenderNation: string;
+    VenderTel: string;
+    CreateBy: string;
+    CreateDT: Date;
+    UpdateBy: string;
+    UpdateDT: Date;
+    VenderActive: string;
+}
+export interface PropsPallet {
+    MODEL: string;
+    PLTYPE: string;
+    ACTIVE: string;
+    CUSTOMER_CODE?: string;
+    CUSTOMER_SHORT_NAME?: string;
+}
+
+export interface PropsStatus {
+    status: boolean;
+    message: string;
+}
+export interface ParamDelectModelOfCustomer {
+    dictId: string;
+    custShortName: string;
+}

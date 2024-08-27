@@ -1,6 +1,5 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Layout from "../layout";
-import Home from "../home";
 import Login from "../login";
 import CustomerMaster from "../customerMaster";
 import Report from "../report";
@@ -12,6 +11,7 @@ import DeliveryControlSheet from "../components/sheet.delivery.control";
 import SaleForecase from "../pages/saleforecase";
 // import SaleForecaseDev from "../pages/saleforecase-dev";
 import SaleForecaseReactGrid from "../pages/saleforecase.react-grid";
+import CustomerSetting from "../pages/customer.setting";
 const Routers = () => {
     let BASE = import.meta.env.VITE_PATH;
     let VER = import.meta.env.VITE_VERSION;
@@ -23,22 +23,18 @@ const Routers = () => {
             persistor.purge();
             dispatch({ type: 'RESET' });
             dispatch({ type: 'SET_VERSION', payload: VER });
-            // location.reload();
-            console.log(redux)
         }
     }, []);
     return (
         <BrowserRouter>
             <Routes>
                 <Route element={<Layout />}>
-                    <Route path={`/${BASE}`} element={<Home />} />
-                    {/* <Route path={`/${BASE}`} element={<SaleForecaseReactGrid />} /> */}
-                    {/* <Route path={`/${BASE}/home`} element={<Home />} /> */}
+                    <Route path={`/${BASE}`} element={<SaleForecaseReactGrid />} />
                     <Route path={`/${BASE}/home`} element={<SaleForecaseReactGrid />} />
                     <Route path={`/${BASE}/dev`} element={<SaleForecaseReactGrid />} />
-                    {/* <Route path={`/${BASE}/edit`} element={<App />} /> */}
                     <Route path={`/${BASE}/edit`} element={<SaleForecaseReactGrid />} />
                     <Route path={`/${BASE}/customerMaster`} element={<CustomerMaster />} />
+                    <Route path={`/${BASE}/customerSetting`} element={<CustomerSetting />} />
                 </Route>
                 <Route path={`/*`} element={<Login />} />
                 <Route path={`${BASE}/login`} element={<Login />} />

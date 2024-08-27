@@ -18,10 +18,10 @@ function DialogUnDistribution(props: any) {
     const handleDistribution = async () => {
         setLoading(true);
         let un_distribution = await API_UN_DISTRIBUTION({ year: year, empcode: empcode });
-        if (un_distribution.status != '0') {
+        if (un_distribution.status == true) {
             location.reload();
         } else {
-            alert(un_distribution.message)
+            alert(un_distribution.messsage)
         }
         setLoading(false);
     }

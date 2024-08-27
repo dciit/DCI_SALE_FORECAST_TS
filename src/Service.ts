@@ -1,6 +1,6 @@
 
 import Axios from "axios";
-import { MCustomer, MGetSale, MLogin, MModel, MResponse, MSale, MStatusSale } from "./Interface";
+import { MCustomer, MGetSale, MLogin, MModel, MResponse, MSale, MStatusSale, PropsCustomer, PropsPallet } from "./Interface";
 const http = Axios.create({
     baseURL: import.meta.env.VITE_API,
     headers: {
@@ -156,6 +156,32 @@ export function API_PRIVILEGE(module = '', component = '') {
 export function API_HR_LOGIN(empcode: string) {
     return new Promise<MLogin>(resolve => {
         httpHR.get(`/login/${empcode}`).then((res) => {
+            resolve(res.data);
+        })
+    })
+}
+
+export function ApiGetPalletOfCustomer(CustCode:string){
+    return new Promise<PropsPallet[]>(resolve => {
+        http.get(`/GetPalletOfCustomer/${CustCode}`).then((res) => {
+            resolve(res.data);
+        })
+    })
+}
+
+export function ApiGetCustomer(){
+    return new Promise<PropsCustomer[]>(resolve => {
+        http.get(`/GetCustomers`).then((res) => {
+            resolve(res.data);
+        })
+    })
+}
+
+
+
+export function ApiUpdatePalletOfCustomer(param: PropsPallet) {
+    return new Promise<any>(resolve => {
+        http.post(`/UpdatePalletOfCustomer`, param).then((res) => {
             resolve(res.data);
         })
     })

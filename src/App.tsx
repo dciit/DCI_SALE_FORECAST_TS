@@ -587,7 +587,7 @@ function App() {
                 </table>
                 : <div className='bg-white  select-none'>
                   <Stack direction={'row'}>
-                    <ReactGrid rows={rows} columns={columns} highlights={highlights} onCellsChanged={handleChanges} enableRowSelection enableColumnSelection stickyTopRows={1} />
+                    <ReactGrid rows={rows} columns={columns} highlights={highlights} onCellsChanged={handleChanges} enableRowSelection enableColumnSelection stickyTopRows={1}  stickyLeftColumns={6}/>
                   </Stack>
                 </div>
           }
