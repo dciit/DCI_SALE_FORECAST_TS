@@ -1,9 +1,12 @@
 import { Autocomplete, Button, IconButton, TextField } from '@mui/material'
 import { useEffect, useState } from 'react'
-import { API_ADD_MODEL_TO_CUSTOMER, API_DEL_MODEL_OF_CUSTOMER, API_GETCUSTOMER_SETTING, API_GET_MODEL, API_GET_MODEL_BY_CUSTOMER } from '../service/saleforecase.service';
+import { API_ADD_MODEL_TO_CUSTOMER, API_DEL_MODEL_OF_CUSTOMER , API_GET_MODEL, API_GET_MODEL_BY_CUSTOMER } from '../service/saleforecase.service';
 import { DictMstr, Status } from '../interface/saleforecase.interface';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import SettingPallet from '../components/setting.pallet';
+import SettingCustomer from '../components/setting.customer';
+import {  ApiGetCustomer } from '../Service';
+import { PropsCustomer } from '../Interface';
 export interface mOption {
     label: string;
     value: string;
@@ -14,7 +17,7 @@ interface PropsTabs {
     active: boolean;
 }
 function CustomerSetting() {
-    const [customers, setCustomers] = useState<string[]>([]);
+    const [customers, setCustomers] = useState<PropsCustomer[]>([]);
     const [customer, setCustomer] = useState<string>('');
     const [modelMaster, setModelMaster] = useState<mOption[]>([]);
     const [modelOfCustomer, setModelOfCustomer] = useState<DictMstr[]>([]);
@@ -27,13 +30,13 @@ function CustomerSetting() {
         }
     }, [once]);
     const init = async () => {
-        let apiGetCustomer = await API_GETCUSTOMER_SETTING();
+        let apiGetCustomer = await ApiGetCustomer();
         setCustomers(apiGetCustomer);
     }
     useEffect(() => {
         if (customers.length) {
             if (customer == '') {
-                setCustomer(customers[0]);
+                setCustomer(customers[0].VenderShortName);
             }
         } else {
             setCustomer('');
@@ -74,22 +77,23 @@ function CustomerSetting() {
     }
     const handleDelModelOfCustomer = async (dictId: string, model: string) => {
         if (confirm(`คุณต้องการลบ Model : ${model} ออกจาก Customer : ${customer} ใช่หรือไม่ ?`)) {
-            let apiDelModelOfCustomer = await API_DEL_MODEL_OF_CUSTOMER({
+            let RESDelModelOfCustomer = await API_DEL_MODEL_OF_CUSTOMER({
                 custShortName: customer,
-                dictId: dictId
+                dictId: dictId.toString()
             });
-            if (apiDelModelOfCustomer.status == true) {
+            if (RESDelModelOfCustomer.status == true) {
                 getModelByCustomerCode(customer);
             } else {
-                alert(apiDelModelOfCustomer.message);
+                alert(RESDelModelOfCustomer.message);
             }
         }
 
     }
 
     const [tabs, setTabs] = useState<PropsTabs[]>([
+        { key: 'customer', title: 'ลูกค้า', active: false },
         { key: 'model', title: 'โมเดลของลูกค้า', active: true },
-        { key: 'pltype', title: 'พาเลทของลูกค้า', active: false }
+        { key: 'pltype', title: 'พาเลทของลูกค้า', active: false },
     ]);
     const handleChangeTabActive = (index: number) => {
         setTabs(tabs.map((oTab: PropsTabs, iTab: number) => {
@@ -128,8 +132,8 @@ function CustomerSetting() {
                             <span>Please Select Customer : </span>
                             <select className='border rounded-md focus:outline-none cursor-pointer px-3 py-2 bg-[#5c5fc810]' onChange={(e: any) => setCustomer(e.target.value)} value={customer}>
                                 {
-                                    customers.map((oCus: string, iCus: number) => {
-                                        return <option value={oCus} key={iCus}>{oCus}</option>
+                                    customers.map((oCus: PropsCustomer, iCus: number) => {
+                                        return <option value={oCus.VenderShortName} key={iCus}>{oCus.VenderShortName}</option>
                                     })
                                 }
                             </select>
@@ -180,7 +184,10 @@ function CustomerSetting() {
                     </div>
                 }
                 {
-                    tabs.find(x => x.active == true)?.key == 'pltype' && <SettingPallet/>
+                    tabs.find(x => x.active == true)?.key == 'pltype' && <SettingPallet />
+                }
+                {
+                    tabs.find(x => x.active == true)?.key == 'customer' && <SettingCustomer />
                 }
             </div>
 

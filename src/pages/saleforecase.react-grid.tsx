@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { ChangeEvent, useEffect, useState } from 'react'
 import DataUsageIcon from '@mui/icons-material/DataUsage';
 import ShortcutOutlinedIcon from '@mui/icons-material/ShortcutOutlined';
@@ -11,7 +10,7 @@ import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
 import CelebrationOutlinedIcon from '@mui/icons-material/CelebrationOutlined';
 import FilterAltOutlinedIcon from '@mui/icons-material/FilterAltOutlined';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
-import { Button, CircularProgress, IconButton, MenuItem } from '@mui/material';
+import { Button, CircularProgress, IconButton } from '@mui/material';
 import DialogFilter from '../dialog/saleforecase.filter.dialog';
 import { useDispatch, useSelector } from 'react-redux';
 import moment from 'moment';
@@ -81,7 +80,7 @@ const SaleTotal = (o: MSale) => {
     let Total: number = 0;
     [...Array(31)].map((_, i: number) => {
         let day = (i + 1).toString().padStart(2, '0');
-        Total += Number(o[`d${day}`]);
+        Total += Number((o as any)[`d${day}`]);
     })
     return Total.toLocaleString('en');
 }
@@ -95,37 +94,37 @@ const getRows = (sale: MSale[]): Row[] => [
             { type: "text", text: sale.modelCode },
             { type: "text", text: sale.modelName },
             { type: "text", text: sale.diameter },
-            { type: "text", text: (sale.d01 != null && typeof sale.d01 != 'undefined' && sale.d01 != '') ? sale.d01.toString() : '0' },
-            { type: "text", text: (sale.d02 != null && typeof sale.d02 != 'undefined' && sale.d02 != '') ? sale.d02.toString() : '0' },
-            { type: "text", text: (sale.d03 != null && typeof sale.d03 != 'undefined' && sale.d03 != '') ? sale.d03.toString() : '0' },
-            { type: "text", text: (sale.d04 != null && typeof sale.d04 != 'undefined' && sale.d04 != '') ? sale.d04.toString() : '0' },
-            { type: "text", text: (sale.d05 != null && typeof sale.d05 != 'undefined' && sale.d05 != '') ? sale.d05.toString() : '0' },
-            { type: "text", text: (sale.d06 != null && typeof sale.d06 != 'undefined' && sale.d06 != '') ? sale.d06.toString() : '0' },
-            { type: "text", text: (sale.d07 != null && typeof sale.d07 != 'undefined' && sale.d07 != '') ? sale.d07.toString() : '0' },
-            { type: "text", text: (sale.d08 != null && typeof sale.d08 != 'undefined' && sale.d08 != '') ? sale.d08.toString() : '0' },
-            { type: "text", text: (sale.d09 != null && typeof sale.d09 != 'undefined' && sale.d09 != '') ? sale.d09.toString() : '0' },
-            { type: "text", text: (sale.d10 != null && typeof sale.d10 != 'undefined' && sale.d10 != '') ? sale.d10.toString() : '0' },
-            { type: "text", text: (sale.d11 != null && typeof sale.d11 != 'undefined' && sale.d11 != '') ? sale.d11.toString() : '0' },
-            { type: "text", text: (sale.d12 != null && typeof sale.d12 != 'undefined' && sale.d12 != '') ? sale.d12.toString() : '0' },
-            { type: "text", text: (sale.d13 != null && typeof sale.d13 != 'undefined' && sale.d13 != '') ? sale.d13.toString() : '0' },
-            { type: "text", text: (sale.d14 != null && typeof sale.d14 != 'undefined' && sale.d14 != '') ? sale.d14.toString() : '0' },
-            { type: "text", text: (sale.d15 != null && typeof sale.d15 != 'undefined' && sale.d15 != '') ? sale.d15.toString() : '0' },
-            { type: "text", text: (sale.d16 != null && typeof sale.d16 != 'undefined' && sale.d16 != '') ? sale.d16.toString() : '0' },
-            { type: "text", text: (sale.d17 != null && typeof sale.d17 != 'undefined' && sale.d17 != '') ? sale.d17.toString() : '0' },
-            { type: "text", text: (sale.d18 != null && typeof sale.d18 != 'undefined' && sale.d18 != '') ? sale.d18.toString() : '0' },
-            { type: "text", text: (sale.d19 != null && typeof sale.d19 != 'undefined' && sale.d19 != '') ? sale.d19.toString() : '0' },
-            { type: "text", text: (sale.d20 != null && typeof sale.d20 != 'undefined' && sale.d20 != '') ? sale.d20.toString() : '0' },
-            { type: "text", text: (sale.d21 != null && typeof sale.d21 != 'undefined' && sale.d21 != '') ? sale.d21.toString() : '0' },
-            { type: "text", text: (sale.d22 != null && typeof sale.d22 != 'undefined' && sale.d22 != '') ? sale.d22.toString() : '0' },
-            { type: "text", text: (sale.d23 != null && typeof sale.d23 != 'undefined' && sale.d23 != '') ? sale.d23.toString() : '0' },
-            { type: "text", text: (sale.d24 != null && typeof sale.d24 != 'undefined' && sale.d24 != '') ? sale.d24.toString() : '0' },
-            { type: "text", text: (sale.d25 != null && typeof sale.d25 != 'undefined' && sale.d25 != '') ? sale.d25.toString() : '0' },
-            { type: "text", text: (sale.d26 != null && typeof sale.d26 != 'undefined' && sale.d26 != '') ? sale.d26.toString() : '0' },
-            { type: "text", text: (sale.d27 != null && typeof sale.d27 != 'undefined' && sale.d27 != '') ? sale.d27.toString() : '0' },
-            { type: "text", text: (sale.d28 != null && typeof sale.d28 != 'undefined' && sale.d28 != '') ? sale.d28.toString() : '0' },
-            { type: "text", text: (sale.d29 != null && typeof sale.d29 != 'undefined' && sale.d29 != '') ? sale.d29.toString() : '0' },
-            { type: "text", text: (sale.d30 != null && typeof sale.d30 != 'undefined' && sale.d30 != '') ? sale.d30.toString() : '0' },
-            { type: "text", text: (sale.d31 != null && typeof sale.d31 != 'undefined' && sale.d31 != '') ? sale.d31.toString() : '0' },
+            { type: "text", text: (sale.d01 != null && typeof sale.d01 !== 'undefined' && !isNaN(sale.d01) ? sale.d01.toString() : '0') },
+            { type: "text", text: (sale.d02 != null && typeof sale.d02 != 'undefined' && !isNaN(sale.d02) ? sale.d02.toString() : '0') },
+            { type: "text", text: (sale.d03 != null && typeof sale.d03 != 'undefined' && !isNaN(sale.d03) ? sale.d03.toString() : '0') },
+            { type: "text", text: (sale.d04 != null && typeof sale.d04 != 'undefined' && !isNaN(sale.d04) ? sale.d04.toString() : '0') },
+            { type: "text", text: (sale.d05 != null && typeof sale.d05 != 'undefined' && !isNaN(sale.d05) ? sale.d05.toString() : '0') },
+            { type: "text", text: (sale.d06 != null && typeof sale.d06 != 'undefined' && !isNaN(sale.d06) ? sale.d06.toString() : '0') },
+            { type: "text", text: (sale.d07 != null && typeof sale.d07 != 'undefined' && !isNaN(sale.d07) ? sale.d07.toString() : '0') },
+            { type: "text", text: (sale.d08 != null && typeof sale.d08 != 'undefined' && !isNaN(sale.d08) ? sale.d08.toString() : '0') },
+            { type: "text", text: (sale.d09 != null && typeof sale.d09 != 'undefined' && !isNaN(sale.d09) ? sale.d09.toString() : '0') },
+            { type: "text", text: (sale.d10 != null && typeof sale.d10 != 'undefined' && !isNaN(sale.d10) ? sale.d10.toString() : '0') },
+            { type: "text", text: (sale.d11 != null && typeof sale.d11 != 'undefined' && !isNaN(sale.d11) ? sale.d11.toString() : '0') },
+            { type: "text", text: (sale.d12 != null && typeof sale.d12 != 'undefined' && !isNaN(sale.d12) ? sale.d12.toString() : '0') },
+            { type: "text", text: (sale.d13 != null && typeof sale.d13 != 'undefined' && !isNaN(sale.d13) ? sale.d13.toString() : '0') },
+            { type: "text", text: (sale.d14 != null && typeof sale.d14 != 'undefined' && !isNaN(sale.d14) ? sale.d14.toString() : '0') },
+            { type: "text", text: (sale.d15 != null && typeof sale.d15 != 'undefined' && !isNaN(sale.d15) ? sale.d15.toString() : '0') },
+            { type: "text", text: (sale.d16 != null && typeof sale.d16 != 'undefined' && !isNaN(sale.d16) ? sale.d16.toString() : '0') },
+            { type: "text", text: (sale.d17 != null && typeof sale.d17 != 'undefined' && !isNaN(sale.d17) ? sale.d17.toString() : '0') },
+            { type: "text", text: (sale.d18 != null && typeof sale.d18 != 'undefined' && !isNaN(sale.d18) ? sale.d18.toString() : '0') },
+            { type: "text", text: (sale.d19 != null && typeof sale.d19 != 'undefined' && !isNaN(sale.d19) ? sale.d19.toString() : '0') },
+            { type: "text", text: (sale.d20 != null && typeof sale.d20 != 'undefined' && !isNaN(sale.d20) ? sale.d20.toString() : '0') },
+            { type: "text", text: (sale.d21 != null && typeof sale.d21 != 'undefined' && !isNaN(sale.d21) ? sale.d21.toString() : '0') },
+            { type: "text", text: (sale.d22 != null && typeof sale.d22 != 'undefined' && !isNaN(sale.d22) ? sale.d22.toString() : '0') },
+            { type: "text", text: (sale.d23 != null && typeof sale.d23 != 'undefined' && !isNaN(sale.d23) ? sale.d23.toString() : '0') },
+            { type: "text", text: (sale.d24 != null && typeof sale.d24 != 'undefined' && !isNaN(sale.d24) ? sale.d24.toString() : '0') },
+            { type: "text", text: (sale.d25 != null && typeof sale.d25 != 'undefined' && !isNaN(sale.d25) ? sale.d25.toString() : '0') },
+            { type: "text", text: (sale.d26 != null && typeof sale.d26 != 'undefined' && !isNaN(sale.d26) ? sale.d26.toString() : '0') },
+            { type: "text", text: (sale.d27 != null && typeof sale.d27 != 'undefined' && !isNaN(sale.d27) ? sale.d27.toString() : '0') },
+            { type: "text", text: (sale.d28 != null && typeof sale.d28 != 'undefined' && !isNaN(sale.d28) ? sale.d28.toString() : '0') },
+            { type: "text", text: (sale.d29 != null && typeof sale.d29 != 'undefined' && !isNaN(sale.d29) ? sale.d29.toString() : '0') },
+            { type: "text", text: (sale.d30 != null && typeof sale.d30 != 'undefined' && !isNaN(sale.d30) ? sale.d30.toString() : '0') },
+            { type: "text", text: (sale.d31 != null && typeof sale.d31 != 'undefined' && !isNaN(sale.d31) ? sale.d31.toString() : '0') },
             { type: "text", text: sale.pltype },
             { type: "text", text: SaleTotal(sale) },
         ]
@@ -151,8 +150,10 @@ function SaleForecaseReactGrid() {
     const [rows, setRows] = useState<Row[]>([]);
     const [openFilter, setOpenFilter] = useState<boolean>(false);
     const [columnFilter, setColumnFilter] = useState<string>('');
+    const [monthSelected, setMonthSelected] = useState<string>('all');
+
     // const rYear: string[] = [moment().add('year', -1).format('YYYY'), moment().format('YYYY'), moment().add('year', 1).format('YYYY')]
-    const [year, setYear] = useState<string>(moment().format('YYYY'));
+    const [year, setYear] = useState<string>((reduxCore.filters != undefined && reduxCore.filters.y != undefined && reduxCore.filters.y != '') ? reduxCore.filters.y : moment().format('YYYY'));
     const [change, setChange] = useState<MSale[]>([]);
     const [openDistribution, setOpenDistribution] = useState<boolean>(false);
     const [openUnDistribution, setOpenUnDistribution] = useState<boolean>(false);
@@ -181,6 +182,7 @@ function SaleForecaseReactGrid() {
     }, [openFilter])
     const SearchData = async () => {
         setLoad(true);
+        dispatch({ type: 'SET_FILTER_SALE_PAGE', payload: { y: year } })
         let ApiSearchData: MGetSale = await API_GET_SALE({ empcode: reduxCore.empcode, year: year });
         setDefData(ApiSearchData.data);  // default data,  initial data
         setLrev(ApiSearchData.status);
@@ -212,7 +214,7 @@ function SaleForecaseReactGrid() {
                             if (o.value.toString().toLowerCase().includes(oSale[field].toString().toLowerCase())) {
 
                             }
-                            let have: bool = false;
+                            let have: boolean = false;
                             o.value.map((oValue: string) => {
                                 if (oValue.toLowerCase() == oSale[field].toString().toLowerCase()) {
                                     have = true;
@@ -257,7 +259,7 @@ function SaleForecaseReactGrid() {
     ): MSale[] => {
         let dataUpdate: MSale[] = [];
         changes.forEach((change) => {
-            const personIndex = change.rowId;
+            const personIndex = change.rowId as number;
             const fieldName = change.columnId;
             if (fieldName.toString().startsWith("d") && fieldName.toString().toLowerCase() != 'diameter') {
                 prevPeople[personIndex][fieldName] = Number(change.newCell.text.replace('\r', '').replace(',', ''));
@@ -268,11 +270,39 @@ function SaleForecaseReactGrid() {
         return [...prevPeople];
     };
 
-    const handleChanges = (changes: CellChange<TextCell>[]) => {
+    const handleChanges = (changes: CellChange<any>[]) => {
         if (lrev != '999') {
             setData((prevPeople) => applyChangesToPeople(changes, prevPeople))
         }
     };
+    const [summarys, setSummarys] = useState<{ [key: string]: any }>({
+        sum1YC: { text: '1YC', value: 0 },
+        sum2YC: { text: '2YC', value: 0 },
+        sumSCR: { text: 'SCR', value: 0 },
+        sumODM: { text: 'ODM', value: 0 },
+        sumTotal: { text: 'Total', value: 0 }
+    });
+    useEffect(() => {
+        if (defData.length > 0) {
+            let clone = summarys;
+            clone.sum1YC.value = defData.filter(x => x.modelName.substring(0, 2) == '1Y' && (monthSelected != 'all' ? x.ym == `${year}${monthSelected}` : true)).reduce((a, b) => a + (b.d01 + b.d02 + b.d03 + b.d04 + b.d05 + b.d06 + b.d07 + b.d08 + b.d09 + b.d10 + b.d11 + b.d12 + b.d13 + b.d14 + b.d15 + b.d16 + b.d17 + b.d18 + b.d19 + b.d20 + b.d21 + b.d22 + b.d23 + b.d24 + b.d25 + b.d26 + b.d27 + b.d28 + b.d29 + b.d30 + b.d31), 0);
+            clone.sum2YC.value = defData.filter(x => x.modelName.substring(0, 2) == '2Y' && (monthSelected != 'all' ? x.ym == `${year}${monthSelected}` : true)).reduce((a, b) => a + (b.d01 + b.d02 + b.d03 + b.d04 + b.d05 + b.d06 + b.d07 + b.d08 + b.d09 + b.d10 + b.d11 + b.d12 + b.d13 + b.d14 + b.d15 + b.d16 + b.d17 + b.d18 + b.d19 + b.d20 + b.d21 + b.d22 + b.d23 + b.d24 + b.d25 + b.d26 + b.d27 + b.d28 + b.d29 + b.d30 + b.d31), 0);
+            clone.sumSCR.value = defData.filter(x => x.modelName.substring(0, 1) == 'J' && (monthSelected != 'all' ? x.ym == `${year}${monthSelected}` : true)).reduce((a, b) => a + (b.d01 + b.d02 + b.d03 + b.d04 + b.d05 + b.d06 + b.d07 + b.d08 + b.d09 + b.d10 + b.d11 + b.d12 + b.d13 + b.d14 + b.d15 + b.d16 + b.d17 + b.d18 + b.d19 + b.d20 + b.d21 + b.d22 + b.d23 + b.d24 + b.d25 + b.d26 + b.d27 + b.d28 + b.d29 + b.d30 + b.d31), 0);
+            clone.sumODM.value = defData.filter(x => x.modelName.substring(0, 1) != 'J' && x.modelName.substring(0, 2) != '1Y' && x.modelName.substring(0, 2) != '2Y' && (monthSelected != 'all' ? x.ym == `${year}${monthSelected}` : true)).reduce((a, b) => a + (b.d01 + b.d02 + b.d03 + b.d04 + b.d05 + b.d06 + b.d07 + b.d08 + b.d09 + b.d10 + b.d11 + b.d12 + b.d13 + b.d14 + b.d15 + b.d16 + b.d17 + b.d18 + b.d19 + b.d20 + b.d21 + b.d22 + b.d23 + b.d24 + b.d25 + b.d26 + b.d27 + b.d28 + b.d29 + b.d30 + b.d31), 0);
+            clone.sumTotal.value = defData.filter(x => (monthSelected != 'all' ? x.ym == `${year}${monthSelected}` : true)).reduce((a, b) => a + (b.d01 + b.d02 + b.d03 + b.d04 + b.d05 + b.d06 + b.d07 + b.d08 + b.d09 + b.d10 + b.d11 + b.d12 + b.d13 + b.d14 + b.d15 + b.d16 + b.d17 + b.d18 + b.d19 + b.d20 + b.d21 + b.d22 + b.d23 + b.d24 + b.d25 + b.d26 + b.d27 + b.d28 + b.d29 + b.d30 + b.d31), 0);
+            setSummarys({
+                ...summarys,
+            })
+        } else {
+            setSummarys({
+                sum1YC: { text: '1YC', value: 0 },
+                sum2YC: { text: '2YC', value: 0 },
+                sumSCR: { text: 'SCR', value: 0 },
+                sumODM: { text: 'ODM', value: 0 },
+                sumTotal: { text: 'Total', value: 0 }
+            })
+        }
+    }, [data, defData, year, monthSelected])
 
     async function handleExport() {
         setLoadExcel(true);
@@ -344,12 +374,7 @@ function SaleForecaseReactGrid() {
         }
     }, [excelData])
 
-    const viewSum = [
-        { text: '1YC', equal: ['1'] },
-        { text: '2YC', equal: ['2'] },
-        { text: 'SCR', equal: ['J'] },
-    ];
-    const [monthSelected, setMonthSelected] = useState<string>('all');
+
     return <div className='p-6 flex flex-col gap-3' id='reactGrid'>
         <div className='flex flex-row  py-3 border border-[#5c5fc840] rounded-lg px-6'>
             <div className='flex grow flex-row items-center gap-3 select-none'>
@@ -406,27 +431,17 @@ function SaleForecaseReactGrid() {
                             </select>
                         </td>
                         {
-                            viewSum.map((o: any, i: number) => {
+                            Object.keys(summarys).map((o: string, i: number) => {
+                                let value: number = (summarys[o] != undefined && summarys[o].value != undefined) ? summarys[o].value : 0;
+                                let text: string = (summarys[o] != undefined && summarys[o].text != undefined) ? summarys[o].text : '-';
                                 return <td key={i} className={`border ${lrev == '999' ? 'border-[#009866] bg-[#00986610]' : 'border-[#5c5fc8] bg-[#5c5fc810]'}`}>
                                     <div className='flex gap-1 px-2'>
-                                        <span>{o.text} :</span>
-                                        <span className={`${lrev == '999' ? 'text-[#009866]' : 'text-[#5c5fc8]'} font-bold`}>{defData.filter(x => x.modelName.substring(0, 1) == o.equal && (monthSelected != 'all' ? x.ym == `${year}${monthSelected}` : true)).reduce((sum, current) => sum + current.d01, 0).toLocaleString('en')}</span>
+                                        <span>{text} :</span>
+                                        <span className={`${lrev == '999' ? 'text-[#009866]' : 'text-[#5c5fc8]'} font-bold`}>{value.toLocaleString('en')}</span>
                                     </div>
                                 </td>
                             })
                         }
-                        <td className={`border ${lrev == '999' ? 'border-[#009866] bg-[#00986610]' : 'border-[#5c5fc8] bg-[#5c5fc810]'}`}>
-                            <div className='flex gap-1 px-2'>
-                                <span>ODM :</span>
-                                <span className={`${lrev == '999' ? 'text-[#009866]' : 'text-[#5c5fc8]'} font-bold`}>{defData.filter(x => (x.modelName.substring(0, 1) != '1' && x.modelName.substring(0, 1) != '2' && x.modelName.substring(0, 1) != 'J') && (monthSelected != 'all' ? x.ym == `${year}${monthSelected}` : true)).reduce((sum, current) => sum + current.d01, 0).toLocaleString('en')}</span>
-                            </div>
-                        </td>
-                        <td className={`border ${lrev == '999' ? 'border-[#009866] bg-[#00986610]' : 'border-[#5c5fc8] bg-[#5c5fc810]'}`}>
-                            <div className='flex gap-1 px-2'>
-                                <span>Total :</span>
-                                <span className={`${lrev == '999' ? 'text-[#009866]' : 'text-[#5c5fc8]'} font-bold`}>{defData.filter(x => (monthSelected != 'all' ? x.ym == `${year}${monthSelected}` : true)).reduce((sum, current) => sum + current.d01, 0).toLocaleString('en')}</span>
-                            </div>
-                        </td>
                     </tr>
                 </tbody>
             </table>
@@ -439,7 +454,6 @@ function SaleForecaseReactGrid() {
                 {
                     reduxFilter.map((o: MFilterSale, i: number) => {
                         let counter: number = o.value.length;
-                        let sort: string = o.sort;
                         return <div key={i} className='py-2 flex flex-col items-center px-3 w-[150px] gap-1 border' >
                             <div className='flex gap-2 items-center'>
                                 <span className={`${counter > 0 && 'text-[#5c5fc8] font-semibold'} transition-all duration-300`}>{o.text} </span>
@@ -449,15 +463,10 @@ function SaleForecaseReactGrid() {
                             </div>
                             <div key={i} className={`   flex items-center justify-center   gap-1`}>
                                 <IconButton onClick={() => setColumnFilter(o.text)} className={`${counter > 0 && 'bg-[#5c5fc820]'}`}>
-                                    {/* FilterAltIcon */}
                                     {
                                         counter == 0 ? <FilterAltOutlinedIcon className='text-[#8b8b8b]' style={{ fontSize: '18px' }} /> : <FilterAltIcon className='text-[#5c5fc8]' style={{ fontSize: '18px' }} />
                                     }
                                 </IconButton>
-                                {/* <IconButton onClick={() => handleSort(o.text)} className='focus:outline-none'>
-                                    <SwapVertOutlinedIcon className='text-[#8b8b8b]' style={{ fontSize: '18px' }} />
-                                    <span className='text-[12px] text-[#5c5fc8]'>{sort == 'asc' ? 'A-Z' : 'Z-A'} </span>
-                                </IconButton> */}
                             </div>
                         </div>
                     })
@@ -468,7 +477,6 @@ function SaleForecaseReactGrid() {
                 <Button variant='contained' color='error' startIcon={<CleaningServicesIcon />} onClick={handleClearFilter}>ล้างตัวกรอง</Button>
             </div>
         </div>
-        {/* h-[500px] wrapper */}
         <div className={`w-[100%] overflow-x-auto  h-[500px]  pt-0 gap-3 ${lrev == "999" ? 'tb-distribution' : 'tb-undistribution'}`}>
             {
                 load == true ? <div id='loading' className={`flex flex-col gap-2 items-center justify-center h-full  text-white rounded-lg ${lrev == '999' ? 'bg-[#009866]' : 'bg-[#5c5fc8]'}`}>

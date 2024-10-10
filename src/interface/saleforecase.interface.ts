@@ -10,6 +10,7 @@ export type User = {
     pltype: string;
 };
 export interface MSale {
+    [key: string]: any;
     ym: string;
     customer: string;
     modelName: string;

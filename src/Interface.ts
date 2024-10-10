@@ -32,6 +32,7 @@ export interface MFilter {
     pltype?: string;
 }
 export interface Person {
+    [key: string]: any;
     customer: string;
     modelName: string;
     sebango: string;
@@ -280,4 +281,15 @@ export interface PropsStatus {
 export interface ParamDelectModelOfCustomer {
     dictId: string;
     custShortName: string;
+}
+export interface PropSummarySale {
+    sum1YC: ItemSummarySale;
+    sum2YC: ItemSummarySale;
+    sumSCR: ItemSummarySale;
+    sumODM: ItemSummarySale;
+    sumTotal: ItemSummarySale;
+}
+export interface ItemSummarySale {
+    text: string;
+    value: number;
 }

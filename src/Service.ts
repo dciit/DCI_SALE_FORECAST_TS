@@ -1,15 +1,16 @@
 
 import Axios from "axios";
 import { MCustomer, MGetSale, MLogin, MModel, MResponse, MSale, MStatusSale, PropsCustomer, PropsPallet } from "./Interface";
+import { api, apiHR } from "./constant";
 const http = Axios.create({
-    baseURL: import.meta.env.VITE_API,
+    baseURL: api,
     headers: {
         'Content-Type': 'application/json;charset=UTF-8;json/html; charset=UTF-8',
         // 'Authorization': 'Bearer ' + localStorage.getItem('jwt')
     }
 });
 const httpHR = Axios.create({
-    baseURL: import.meta.env.VITE_API_HR,
+    baseURL: apiHR,
     headers: {
         'Content-Type': 'application/json;charset=UTF-8;json/html; charset=UTF-8',
         // 'Authorization': 'Bearer ' + localStorage.getItem('jwt')
@@ -161,7 +162,7 @@ export function API_HR_LOGIN(empcode: string) {
     })
 }
 
-export function ApiGetPalletOfCustomer(CustCode:string){
+export function ApiGetPalletOfCustomer(CustCode: string) {
     return new Promise<PropsPallet[]>(resolve => {
         http.get(`/GetPalletOfCustomer/${CustCode}`).then((res) => {
             resolve(res.data);
@@ -169,7 +170,7 @@ export function ApiGetPalletOfCustomer(CustCode:string){
     })
 }
 
-export function ApiGetCustomer(){
+export function ApiGetCustomer() {
     return new Promise<PropsCustomer[]>(resolve => {
         http.get(`/GetCustomers`).then((res) => {
             resolve(res.data);

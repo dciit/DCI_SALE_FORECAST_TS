@@ -12,6 +12,7 @@ export interface MRedux {
     reportFilter: any;
     privilege: any[];
     filter: MFilterSale[];
+    filters: any;
 }
 const initialState: MRedux = {
     login: false,
@@ -42,15 +43,27 @@ const initialState: MRedux = {
         { text: 'DIAMETER', sort: '', type: 'select', value: [] },
         { text: 'PLTYPE', sort: '', type: 'select', value: [] }
     ],
+    filters: {
+        y: '',
+        m: '',
+        d: '',
+        ymd: '',
+        ym: ''
+    }
 }
 
 const IndexReducer = (state = initialState, action: any) => {
     switch (action.type) {
+        case 'SET_FILTER_SALE_PAGE':
+            return {
+                ...state,
+                filters: { ...state.filters, y: action.payload.y }
+            }
         case 'SET_SORT':
-            let text:string = action.payload.text;
-            let sort:string = action.payload.sort;
-            let indexFilter :number = state.filter.findIndex(x=>x.text == text);
-            if(indexFilter != -1){
+            let text: string = action.payload.text;
+            let sort: string = action.payload.sort;
+            let indexFilter: number = state.filter.findIndex(x => x.text == text);
+            if (indexFilter != -1) {
                 state.filter[indexFilter].sort = sort;
             }
             return {

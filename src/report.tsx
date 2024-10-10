@@ -1,8 +1,7 @@
-//@ts-nocheck
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { API_GET_SALE } from './Service';
-import { Button, ButtonGroup, Stack, Typography } from '@mui/material';
+import { Button, Stack, Typography } from '@mui/material';
 import HomeIcon from '@mui/icons-material/Home';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import DialogReportFilter from './dialog.report.fitler';
@@ -156,7 +155,7 @@ function Report() {
             <Stack direction={'row'} alignItems={'center'} justifyContent={'space-between'}>
                 <Typography>ทั้งหมด : {data.length} รายการ</Typography>
                 <div className='flex gap-1'>
-                    <Button variant='contained'   onClick={() => window.open('../deliverycontrol', '_blank')}>Delivert Control Sheet</Button>&nbsp;
+                    <Button variant='contained' onClick={() => window.open('../deliverycontrol', '_blank')}>Delivert Control Sheet</Button>&nbsp;
                     <Button variant='outlined' startIcon={<SearchOffIcon />} onClick={handleClearFilter}>Clear Filter</Button>
                 </div>
             </Stack>
@@ -233,9 +232,9 @@ function Report() {
                                             <td>{oData.pltype}</td>
                                             <td className={`${total != '' && 'font-bold'} bg-orange-300 text-right`}>{total}</td>
                                             {
-                                                [...Array(31)].map((o: any, i: number) => {
-                                                    let txtVal: string = oData[`d${(i + 1).toLocaleString('en', { minimumIntegerDigits: 2 })}`] != '' ? oData[`d${(i + 1).toLocaleString('en', { minimumIntegerDigits: 2 })}`] : '0';
-                                                    let val: number = txtVal != '0' ? parseInt(txtVal) : 0;
+                                                [...Array(31)].map((_: any, i: number) => {
+                                                    let txtVal: string|number = oData[`d${(i + 1).toLocaleString('en', { minimumIntegerDigits: 2 })}` as keyof Sale] != '' ? oData[`d${(i + 1).toLocaleString('en', { minimumIntegerDigits: 2 })}` as keyof Sale] : '0';
+                                                    let val: number = txtVal != '0' ? Number(txtVal) : 0;
                                                     return <td key={i} className={`${val > 0 ? 'font-bold bg-green-300' : 'bg-gray-400'} text-right`}>{val > 0 ? val.toLocaleString('en', { minimumIntegerDigits: 2 }) : ''}</td>
                                                 })
                                             }
