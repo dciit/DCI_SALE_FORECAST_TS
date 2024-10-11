@@ -29,6 +29,7 @@ const getColumns = (): Column[] => [...[
     { columnId: "modelName", width: colWidth },
     { columnId: "diameter", width: 100 },
 
+//@ts-ignore
 ], ...[...Array(31)].map((o: any, i: number) => (
     { columnId: `d${(i + 1).toLocaleString('en', { minimumIntegerDigits: 2 })}`, width: colWidthDay }
 )), ...[{ columnId: "pltype", width: 125 }, { columnId: "total", width: 75 }]];
@@ -308,6 +309,7 @@ function SaleForecaseReactGrid() {
         setLoadExcel(true);
         const excelFormat = data.map((oExcel: MSale) => {
             let total = 0;
+            //@ts-ignore
             [...Array(31)].map((oo: any, ii: number) => {
                 let day: string = (ii + 1).toLocaleString('en', { minimumIntegerDigits: 2 });
                 total += Number(oExcel[`d${day}`]);
@@ -422,7 +424,7 @@ function SaleForecaseReactGrid() {
                             <span>Month : </span>
                             <select className={`focus:outline-none  border bg-white ${lrev == '999' ? ' text-[#009866]' : ' text-[#5c5fc8] '} p-1 pt-0 rounded-md`} value={monthSelected} onChange={(e: ChangeEvent<HTMLSelectElement>) => setMonthSelected(e.target.value)}>
                                 <option value="all">ALL</option>
-                                {
+                                {//@ts-ignore
                                     [...Array(12)].map((o: any, i: number) => {
                                         let month = (i + 1).toLocaleString('en', { minimumIntegerDigits: 2 });
                                         return <option key={i} value={month}>{month}</option>

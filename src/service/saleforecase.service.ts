@@ -1,7 +1,7 @@
 import Axios from "axios";
 import { api } from "../constant";
 import { DictMstr, MApiGetSale, MChoose, MDistribution, MGetSale, MUpdateSale, Status } from "../interface/saleforecase.interface";
-import { ParamDelectModelOfCustomer } from "../Interface";
+import { MCoreInterface_Parent, ParamDelectModelOfCustomer } from "../Interface";
 const http = Axios.create({
     baseURL: api,
     headers: {
@@ -91,6 +91,15 @@ export function API_ADD_MODEL_TO_CUSTOMER(param: DictMstr) {
 export function API_DEL_MODEL_OF_CUSTOMER(param: ParamDelectModelOfCustomer) {
     return new Promise<Status>(resolve => {
         http.post(`/saleforecase/customersetting/delmodelofcustomer`, param).then((res) => {
+            resolve(res.data);
+        })
+    })
+}
+
+
+export function API_COMPRESSOR(itemModel:string,status:string) {
+    return new Promise<MCoreInterface_Parent[]>(resolve => {
+        http.get(`/GetCompressordata/${itemModel}/${status}`).then((res) => {
             resolve(res.data);
         })
     })

@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { API_GET_SALE } from './Service';
@@ -67,10 +68,12 @@ function Report() {
             once = false;
         }
     }, [once]);
+    
     async function init() {
         let apiData = await API_GET_SALE({ ym: ym });
         apiData.data.map((oData: Person, iData: number) => {
             let sum = 0;
+            //@ts-ignore
             [...Array(31)].map((oNum: any, iNum: number) => {
                 let strDay: string = `d${((iNum + 1).toLocaleString('en', { minimumIntegerDigits: 2 }))}`;
                 if (typeof oData[strDay] != 'undefined') {
@@ -200,7 +203,7 @@ function Report() {
                                 </Stack>
                             </th>
                             {
-                                [...Array(31)].map((o: any, i: number) => {
+                                [...Array(31)].map((_: any, i: number) => {
                                     return <th key={i} className='text-center w-[50px]'>{`D${(i + 1).toLocaleString('en', { minimumIntegerDigits: 2 })}`}</th>
                                 })
                             }

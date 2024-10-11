@@ -9,6 +9,8 @@ import { useState } from 'react';
 import CustomerMaster from './customerMaster';
 import SearchIcon from '@mui/icons-material/Search';
 import TuneOutlinedIcon from '@mui/icons-material/TuneOutlined';
+import BackupTableIcon from '@mui/icons-material/BackupTable';
+
 function ToolbarComponent() {
     const reducer = useSelector((state: MRedux) => state.reducer);
     let oName = '';
@@ -57,6 +59,10 @@ function ToolbarComponent() {
                 <Stack className={`${typeof activeMenu.menuActive != 'undefined' && activeMenu.menuActive.toString() == "customerMaster" ? 'border-b-2 border-b-[#fd8c73]' : ''}  cursor-pointer h-[100%] hover:border-b-2 hover:border-b-[#fd8c73] px-3 transform-all duration-100`} direction={'row'} alignItems={'center'} justifyItems={'center'} justifyContent={'center'} spacing={1} onClick={() => handleShowCustomerMaster()}>
                     <SearchIcon className='text-gray-500' />
                     <Typography color="initial" className='font-semibold text-gray-600'>Customer Master</Typography>
+                </Stack>
+                <Stack className={`${typeof activeMenu.menuActive != 'undefined' && activeMenu.menuActive.toString() == "customerSetting" ? 'border-b-2 border-b-[#fd8c73]' : ''}  cursor-pointer h-[100%] hover:border-b-2 hover:border-b-[#fd8c73] px-3 transform-all duration-100`} direction={'row'} alignItems={'center'} justifyItems={'center'} justifyContent={'center'} spacing={1} onClick={() => handleActiveMenu('compressorhold')}>
+                    <BackupTableIcon  className='text-gray-500' />
+                    <Typography color="initial" className='font-semibold text-gray-600'>COMPRESSOR HOLD</Typography>
                 </Stack>
             </Stack>
             <CustomerMaster open={openCustomerMaster} close={setOpenCustomerMaster} />

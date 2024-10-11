@@ -293,3 +293,27 @@ export interface ItemSummarySale {
     text: string;
     value: number;
 }
+
+export interface MCoreInterface_Parent {
+     model : string;
+     sumhold : string;
+     sumunhold : string;
+     stockhold : string;
+     children: MCoreInterface_Child[];
+}
+
+export interface MCoreInterface_Child {
+    type : string;
+    model : string;
+    hold : string;
+    hdate : string;
+    hqty : string;
+    remark1 : string;
+    unhold : string;
+    cdate : string;
+    unqty : string;
+    remark2 : string;
+    stockhold : string;
+    sumqtyh : string;
+    sumqtyc : string;
+}

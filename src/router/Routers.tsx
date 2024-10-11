@@ -12,6 +12,7 @@ import SaleForecase from "../pages/saleforecase";
 // import SaleForecaseDev from "../pages/saleforecase-dev";
 import SaleForecaseReactGrid from "../pages/saleforecase.react-grid";
 import CustomerSetting from "../pages/customer.setting";
+import CompressorHold from "../pages/compressor.hold";
 const Routers = () => {
     let BASE = import.meta.env.VITE_PATH;
     let VER = import.meta.env.VITE_VERSION;
@@ -35,6 +36,7 @@ const Routers = () => {
                     <Route path={`/${BASE}/edit`} element={<SaleForecaseReactGrid />} />
                     <Route path={`/${BASE}/customerMaster`} element={<CustomerMaster />} />
                     <Route path={`/${BASE}/customerSetting`} element={<CustomerSetting />} />
+                    <Route path={`/${BASE}/compressorhold`} element={<CompressorHold />} />
                 </Route>
                 <Route path={`/*`} element={<Login />} />
                 <Route path={`${BASE}/login`} element={<Login />} />
