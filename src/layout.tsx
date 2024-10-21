@@ -1,5 +1,4 @@
 import { Outlet } from "react-router";
-import { Stack } from "@mui/material";
 import ToolbarComponent from './toolbar';
 import { useDispatch, useSelector } from "react-redux";
 import { MRedux } from "./Interface";
@@ -23,16 +22,19 @@ function Layout() {
         persistor.purge();
         location.reload();
     }
-    return <Stack className='h-[100%] w-[100%] bg-[#e7ebee++]'>
+    return <div className='h-[100%] w-[100%] bg-[#e7ebee++]'>
         {
-            !oLogin ? <Login /> : <Stack className='h-[100%] w-[100%] bg-[#e7ebee++]'>
+            !oLogin ? <Login /> : <div className='h-[100%] w-[100%] bg-[#e7ebee++]'>
                 <ToolbarComponent />
                 <div className="h-[90%]" id="outlet">
                     <Outlet />
                 </div>
-            </Stack>
+            </div>
         }
-    </Stack>
+        {/* <div  className="flex items-center justify-center h-full w-full text-red-500 font-bold">
+            ปิดใช้งานชั่วคราว 
+        </div> */}
+    </div>
 }
 
 export default Layout

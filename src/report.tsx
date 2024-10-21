@@ -2,13 +2,10 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { API_GET_SALE } from './Service';
-import { Button, Stack, Typography } from '@mui/material';
-import HomeIcon from '@mui/icons-material/Home';
-import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import DialogReportFilter from './dialog.report.fitler';
 import { MFitlerEdit, MReactSelect, Person } from './Interface';
 import { useDispatch, useSelector } from 'react-redux';
-import SearchOffIcon from '@mui/icons-material/SearchOff';
+import { Button } from 'antd';
 type Sale = {
     customer: string;
     modelName: string;
@@ -108,9 +105,9 @@ function Report() {
     function handleHome() {
         navigate(`/${BASE_PATH}/home`);
     }
-    function handleOpenFilter(colFilter = '') {
-        setColumnFilter(colFilter);
-    }
+    // function handleOpenFilter(colFilter = '') {
+    //     setColumnFilter(colFilter);
+    // }
     useEffect(() => {
         if (columnFilter != '') {
             setOpenFilter(true);
@@ -147,60 +144,60 @@ function Report() {
         await dispatch({ type: 'CLEAR_FILTER' });
     }
     return <div className='page-report'>
-        <Stack p={3} gap={2}>
+        <div >
             <div className='flex justify-center'>
-                <Typography variant='h4'>SALE FORECAST REPORT  {_year}</Typography>&nbsp;
-                <Typography variant='h4' className='text-blue-500'>{_month != '' ? monthNames[parseInt(_month) - 1].toUpperCase() : '-'}</Typography>
+                <span >SALE FORECAST REPORT  {_year}</span>&nbsp;
+                <span  className='text-blue-500'>{_month != '' ? monthNames[parseInt(_month) - 1].toUpperCase() : '-'}</span>
             </div>
-            <Stack justifyContent={'start'} justifyItems={'start'} alignContent={'start'} alignItems={'start'}>
-                <Button variant='contained' onClick={handleHome} startIcon={<HomeIcon />}>กลับหน้าแรก</Button>
-            </Stack>
-            <Stack direction={'row'} alignItems={'center'} justifyContent={'space-between'}>
-                <Typography>ทั้งหมด : {data.length} รายการ</Typography>
+            <div  >
+                <Button   onClick={handleHome} >กลับหน้าแรก</Button>
+            </div>
+            <div  >
+                <span>ทั้งหมด : {data.length} รายการ</span>
                 <div className='flex gap-1'>
-                    <Button variant='contained' onClick={() => window.open('../deliverycontrol', '_blank')}>Delivert Control Sheet</Button>&nbsp;
-                    <Button variant='outlined' startIcon={<SearchOffIcon />} onClick={handleClearFilter}>Clear Filter</Button>
+                    <Button onClick={() => window.open('../deliverycontrol', '_blank')}>Delivert Control Sheet</Button>&nbsp;
+                    <Button    onClick={handleClearFilter}>Clear Filter</Button>
                 </div>
-            </Stack>
+            </div>
             <div className='wrapper h-[600px] pt-0'>
                 <table id='tb-report' className='w-full'>
                     <thead>
                         <tr >
                             <th className='w-[50px] text-center'>#</th>
                             <th >
-                                <Stack direction={'row'} alignItems={'center'} gap={1}>
+                                <div >
                                     <span>Customer</span>
-                                    <FilterAltIcon onClick={() => handleOpenFilter('customer')} className={`cursor-pointer ${Object.keys(typeof reduxFilterReport.customer != 'undefined' ? reduxFilterReport.customer : []).length ? 'text-red-500' : 'text-gray-400'}`} />
-                                </Stack>
+                                    {/* <FilterAltIcon onClick={() => handleOpenFilter('customer')} className={`cursor-pointer ${Object.keys(typeof reduxFilterReport.customer != 'undefined' ? reduxFilterReport.customer : []).length ? 'text-red-500' : 'text-gray-400'}`} /> */}
+                                </div>
                             </th>
                             <th >
-                                <Stack direction={'row'} alignItems={'center'} gap={1}>
+                                <div >
                                     <span>M.Grp</span>
-                                    <FilterAltIcon onClick={() => handleOpenFilter('modelGroup')} className={`cursor-pointer ${Object.keys(typeof reduxFilterReport.modelGroup != 'undefined' ? reduxFilterReport.modelGroup : []).length ? 'text-red-500' : 'text-gray-400'}`} />
-                                </Stack>
+                                    {/* <FilterAltIcon onClick={() => handleOpenFilter('modelGroup')} className={`cursor-pointer ${Object.keys(typeof reduxFilterReport.modelGroup != 'undefined' ? reduxFilterReport.modelGroup : []).length ? 'text-red-500' : 'text-gray-400'}`} /> */}
+                                </div>
                             </th>
                             <th >
-                                <Stack direction={'row'} alignItems={'center'} gap={1}>
+                                <div >
                                     <span>Model</span>
-                                    <FilterAltIcon onClick={() => handleOpenFilter('model')} className={`cursor-pointer ${Object.keys(typeof reduxFilterReport.model != 'undefined' ? reduxFilterReport.model : []).length ? 'text-red-500' : 'text-gray-400'}`} />
-                                </Stack>
+                                    {/* <FilterAltIcon onClick={() => handleOpenFilter('model')} className={`cursor-pointer ${Object.keys(typeof reduxFilterReport.model != 'undefined' ? reduxFilterReport.model : []).length ? 'text-red-500' : 'text-gray-400'}`} /> */}
+                                </div>
                             </th>
                             <th >
-                                <Stack direction={'row'} alignItems={'center'} gap={1}>
+                                <div >
                                     <span>Sebango</span>
-                                    <FilterAltIcon onClick={() => handleOpenFilter('sebango')} className={`cursor-pointer ${Object.keys(typeof reduxFilterReport.sebango != 'undefined' ? reduxFilterReport.sebango : []).length ? 'text-red-500' : 'text-gray-400'}`} />
-                                </Stack>
+                                    {/* <FilterAltIcon onClick={() => handleOpenFilter('sebango')} className={`cursor-pointer ${Object.keys(typeof reduxFilterReport.sebango != 'undefined' ? reduxFilterReport.sebango : []).length ? 'text-red-500' : 'text-gray-400'}`} /> */}
+                                </div>
                             </th>
                             <th >
-                                <Stack direction={'row'} alignItems={'center'} gap={1}>
+                                <div >
                                     <span>Ptype</span>
-                                    <FilterAltIcon onClick={() => handleOpenFilter('pltype')} className={`cursor-pointer ${Object.keys(typeof reduxFilterReport.pltype != 'undefined' ? reduxFilterReport.pltype : []).length ? 'text-red-500' : 'text-gray-400'}`} />
-                                </Stack>
+                                    {/* <FilterAltIcon onClick={() => handleOpenFilter('pltype')} className={`cursor-pointer ${Object.keys(typeof reduxFilterReport.pltype != 'undefined' ? reduxFilterReport.pltype : []).length ? 'text-red-500' : 'text-gray-400'}`} /> */}
+                                </div>
                             </th>
                             <th >
-                                <Stack direction={'row'} alignItems={'center'} gap={1}>
+                                <div >
                                     <span>Total</span>
-                                </Stack>
+                                </div>
                             </th>
                             {
                                 [...Array(31)].map((_: any, i: number) => {
@@ -212,9 +209,9 @@ function Report() {
                     <tbody>
                         {
                             isLoading ? <tr><th colSpan={38} className='text-center'>
-                                <Typography className='text-[1.5em]'>กำลังโหลดข้อมูล . . . </Typography>
+                                <span className='text-[1.5em]'>กำลังโหลดข้อมูล . . . </span>
                             </th></tr> : (
-                                data.length == 0 ? <tr><td colSpan={38} className='text-center bg-white'>    <Typography className='text-[1.5em]'>ไม่พบข้อมูล</Typography></td></tr> :
+                                data.length == 0 ? <tr><td colSpan={38} className='text-center bg-white'>    <span className='text-[1.5em]'>ไม่พบข้อมูล</span></td></tr> :
                                     data.map((oData: Sale, iData: number) => {
                                         let num: number = iData + 1;
                                         let total: string = oData.total > 0 ? oData.total.toLocaleString('en', { minimumIntegerDigits: 2 }) : '';
@@ -248,7 +245,7 @@ function Report() {
                     </tbody>
                 </table>
             </div>
-        </Stack>
+        </div>
         <DialogReportFilter filter={columnFilter} open={openFilter} handleClose={handleCloseDialogFilter} customer={filterCustomer} setCustomer={setFilterCustomer} filterReport={filterReport} setFilter={setColumnFilter} defVal={defVal} setDefVal={setDefVal} />
     </div>
 }

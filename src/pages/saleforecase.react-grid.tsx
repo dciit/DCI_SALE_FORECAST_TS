@@ -1,25 +1,25 @@
+//@ts-nocheck
 import { ChangeEvent, useEffect, useState } from 'react'
-import DataUsageIcon from '@mui/icons-material/DataUsage';
-import ShortcutOutlinedIcon from '@mui/icons-material/ShortcutOutlined';
 import { ReactGrid, Column, Row, CellChange, TextCell } from "@silevis/reactgrid";
 import "@silevis/reactgrid/styles.css";
 import { MFilterSale, MGetSale, MMasterFilter, MSale } from '../interface/saleforecase.interface';
 import { API_GET_SALE, API_UPDATE_SALE } from '../service/saleforecase.service';
-import CleaningServicesIcon from '@mui/icons-material/CleaningServices';
-import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
-import CelebrationOutlinedIcon from '@mui/icons-material/CelebrationOutlined';
-import FilterAltOutlinedIcon from '@mui/icons-material/FilterAltOutlined';
-import FilterAltIcon from '@mui/icons-material/FilterAlt';
-import { Button, CircularProgress, IconButton } from '@mui/material';
 import DialogFilter from '../dialog/saleforecase.filter.dialog';
 import { useDispatch, useSelector } from 'react-redux';
 import moment from 'moment';
 import DialogDistribution from '../dialog/saleforecase.dialog.distribution';
 import DialogUnDistribution from '../dialog/saleforecase.dialog.undistribution';
-import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
 import { getModelGroupOfModelName } from '../function/main.function';
 import { downloadExcel } from 'react-export-table-to-excel';
-import { Select } from 'antd';
+import { Button, Select, Spin } from 'antd';
+import { AiOutlineSearch } from "react-icons/ai";
+import { AiOutlineRotateLeft } from "react-icons/ai";
+import { AiOutlineRotateRight } from "react-icons/ai";
+import { AiOutlineClear } from "react-icons/ai";
+import { AiFillFilter } from "react-icons/ai";
+import { AiOutlineFilter } from "react-icons/ai";
+
+
 const colWidth: number = 150;
 const colWidthDay: number = 65;
 const getColumns = (): Column[] => [...[
@@ -29,7 +29,7 @@ const getColumns = (): Column[] => [...[
     { columnId: "modelName", width: colWidth },
     { columnId: "diameter", width: 100 },
 
-//@ts-ignore
+    //@ts-ignore
 ], ...[...Array(31)].map((o: any, i: number) => (
     { columnId: `d${(i + 1).toLocaleString('en', { minimumIntegerDigits: 2 })}`, width: colWidthDay }
 )), ...[{ columnId: "pltype", width: 125 }, { columnId: "total", width: 75 }]];
@@ -378,7 +378,7 @@ function SaleForecaseReactGrid() {
 
 
     return <div className='p-6 flex flex-col gap-3' id='reactGrid'>
-        <div className='flex flex-row  py-3 border border-[#5c5fc840] rounded-lg px-6'>
+        <div className='flex flex-row  py-3   rounded-lg px-6  shadow-sm ' style={{ border: '1px solid #ddd' }} >
             <div className='flex grow flex-row items-center gap-3 select-none'>
                 <span>เครื่องมือค้นหา </span>
                 <Select
@@ -392,16 +392,12 @@ function SaleForecaseReactGrid() {
                 />
             </div>
             <div className='flex gap-2'>
-                <Button size='small' variant='contained' className={`${lrev == '999' ? 'bg-[#009866]' : 'bg-[#5c5fc8]'} text-white pl-5 pr-6 focus:outline-none`} startIcon={<SearchOutlinedIcon />} onClick={SearchData} >ค้นหา</Button>
-                <div className={`border border-[#a7a7a7] rounded-md flex items-center pl-4 pr-6 py-1 drop-shadow-md cursor-pointer select-none hover:bg-[#ddd] transition-all duration-300 gap-2 ${loadExcel == true && 'bg-[#ddd]'}`} onClick={handleExport}>
-                    {
-                        loadExcel == true ? <DataUsageIcon className='text-[#6d6d6d] animate-spin' /> : <FileDownloadOutlinedIcon className='text-[#6d6d6d]' />
-                    }
-                    <span>Excel</span>
-                </div>
+                <Button type='primary' icon={<AiOutlineSearch />} onClick={SearchData} >ค้นหา</Button>
+                <Button onClick={handleExport} loading={loadExcel} icon={
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="20px" height="20px"><path fill="#169154" d="M29,6H15.744C14.781,6,14,6.781,14,7.744v7.259h15V6z" /><path fill="#18482a" d="M14,33.054v7.202C14,41.219,14.781,42,15.743,42H29v-8.946H14z" /><path fill="#0c8045" d="M14 15.003H29V24.005000000000003H14z" /><path fill="#17472a" d="M14 24.005H29V33.055H14z" /><g><path fill="#29c27f" d="M42.256,6H29v9.003h15V7.744C44,6.781,43.219,6,42.256,6z" /><path fill="#27663f" d="M29,33.054V42h13.257C43.219,42,44,41.219,44,40.257v-7.202H29z" /><path fill="#19ac65" d="M29 15.003H44V24.005000000000003H29z" /><path fill="#129652" d="M29 24.005H44V33.055H29z" /></g><path fill="#0c7238" d="M22.319,34H5.681C4.753,34,4,33.247,4,32.319V15.681C4,14.753,4.753,14,5.681,14h16.638 C23.247,14,24,14.753,24,15.681v16.638C24,33.247,23.247,34,22.319,34z" /><path fill="#fff" d="M9.807 19L12.193 19 14.129 22.754 16.175 19 18.404 19 15.333 24 18.474 29 16.123 29 14.013 25.07 11.912 29 9.526 29 12.719 23.982z" /></svg>}>Export</Button>
             </div>
         </div>
-        <div className={`${defData.length == 0 && 'hidden'} flex  items-center gap-3 ${lrev == '999' ? 'bg-[#00986610]' : 'bg-[#5c5fc810]'} py-2 px-6 rounded-md border ${lrev == '999' ? 'border-[#00986610]' : 'border-[#5c5fc810]'} select-none`}>
+        <div className={`${defData.length == 0 && 'hidden'} flex  items-center gap-3 ${lrev == '999' ? 'bg-[#00986610]' : 'bg-[#5c5fc810]'} py-2 px-6 rounded-md select-none`} style={{ border: `1px solid ${lrev == '999' ? '#00986610' : '#5c5fc810'}` }}>
             <span className="relative flex h-2 w-2">
                 <span className={`animate-ping absolute inline-flex h-full w-full rounded-full ${lrev == "999" ? 'bg-[#00986675]' : 'bg-[#5c5fc875]'} opacity-75`}></span>
                 <span className={`relative inline-flex rounded-full h-2 w-2 ${lrev == "999" ? 'bg-[#009866]' : 'bg-[#5c5fc8]'}`}></span>
@@ -411,26 +407,27 @@ function SaleForecaseReactGrid() {
             <span> {lrev != "999" && 'แก้ไขข้อมูล '}อยู่ขณะนี้</span>
             <div>
                 {
-                    lrev == "999" ? <Button variant='contained' className='focus:outline-none bg-[#5c5fc8]' startIcon={<ShortcutOutlinedIcon />} onClick={() => setOpenUnDistribution(true)}>แก้ไข</Button> : <Button variant='contained' className='focus:outline-none bg-[#009866]' startIcon={<CelebrationOutlinedIcon />} onClick={() => setOpenDistribution(true)}>แจกจ่าย</Button>
+                    lrev == "999" ? <Button disabled = {load} type='primary' icon={<AiOutlineRotateLeft />} onClick={() => setOpenUnDistribution(true)}>เข้าสู่โหมดแก้ไข</Button> : <Button  disabled = {load}  type='primary' onClick={() => setOpenDistribution(true)} icon={<AiOutlineRotateRight />}>แจกจ่าย</Button>
                 }
             </div>
         </div>
         <div className='flex justify-between'>
-            <table>
+            <table className='shadow-md' style={{ border: '1px solid #5c5fc850' }}>
                 <tbody>
                     <tr className='font-semibold'>
                         <td className={`border px-3 text-white ${lrev == '999' ? 'bg-[#009866] border-[#009866]' : 'bg-[#5c5fc8] border-[#5c5fc8] '}`}>Summary </td>
                         <td className={`border text-white ${lrev == '999' ? 'bg-[#009866] border-[#009866]' : 'bg-[#5c5fc8] border-[#5c5fc8]'}`}>
                             <span>Month : </span>
-                            <select className={`focus:outline-none  border bg-white ${lrev == '999' ? ' text-[#009866]' : ' text-[#5c5fc8] '} p-1 pt-0 rounded-md`} value={monthSelected} onChange={(e: ChangeEvent<HTMLSelectElement>) => setMonthSelected(e.target.value)}>
-                                <option value="all">ALL</option>
-                                {//@ts-ignore
+                            <Select onChange={(e: ChangeEvent<HTMLSelectElement>) => setMonthSelected(e)} className='w-[75px]' value={monthSelected}>
+
+                                <Select.Option value="all">ALL</Select.Option>
+                                {
                                     [...Array(12)].map((o: any, i: number) => {
                                         let month = (i + 1).toLocaleString('en', { minimumIntegerDigits: 2 });
-                                        return <option key={i} value={month}>{month}</option>
+                                        return <Select.Option key={i} value={month}>{month}</Select.Option>
                                     })
                                 }
-                            </select>
+                            </Select>
                         </td>
                         {
                             Object.keys(summarys).map((o: string, i: number) => {
@@ -448,7 +445,7 @@ function SaleForecaseReactGrid() {
                 </tbody>
             </table>
             <div>
-                <div className='border rounded-md px-6 py-2 text-red-500 font-semibold drop-shadow-sm shadow-sm'>Secret</div>
+                <div className=' rounded-md px-6 py-2 text-red-500 font-semibold drop-shadow-sm shadow-sm' style={{ border: '1px solid #ddd' }}>Secret</div>
             </div>
         </div>
         <div className='flex '>
@@ -464,33 +461,35 @@ function SaleForecaseReactGrid() {
                                 }
                             </div>
                             <div key={i} className={`   flex items-center justify-center   gap-1`}>
-                                <IconButton onClick={() => setColumnFilter(o.text)} className={`${counter > 0 && 'bg-[#5c5fc820]'}`}>
+                                <Button shape='circle' onClick={() => setColumnFilter(o.text)} >
                                     {
-                                        counter == 0 ? <FilterAltOutlinedIcon className='text-[#8b8b8b]' style={{ fontSize: '18px' }} /> : <FilterAltIcon className='text-[#5c5fc8]' style={{ fontSize: '18px' }} />
+                                        counter == 0 ? <AiOutlineFilter /> : <AiFillFilter />
                                     }
-                                </IconButton>
+                                </Button>
                             </div>
                         </div>
                     })
                 }
             </div>
             <div className=' flex items-center gap-2'>
-
-                <Button variant='contained' color='error' startIcon={<CleaningServicesIcon />} onClick={handleClearFilter}>ล้างตัวกรอง</Button>
+                <Button color='danger' icon={<AiOutlineClear />} onClick={handleClearFilter}>ล้างตัวกรอง</Button>
             </div>
         </div>
         <div className={`w-[100%] overflow-x-auto  h-[500px]  pt-0 gap-3 ${lrev == "999" ? 'tb-distribution' : 'tb-undistribution'}`}>
-            {
+            {/* {
                 load == true ? <div id='loading' className={`flex flex-col gap-2 items-center justify-center h-full  text-white rounded-lg ${lrev == '999' ? 'bg-[#009866]' : 'bg-[#5c5fc8]'}`}>
                     <CircularProgress sx={{ color: 'white' }} />
                     <span className='drop-shadow-xl'>กำลังโหลดข้อมูล</span>
                 </div> : (rows.length == 0 ? <div id='nodata'>
                     <span className='text-[#5c5fc8]'>ไม่พบข้อมูล</span>
-                </div> : <ReactGrid rows={rows} columns={columns} stickyTopRows={1} stickyLeftColumns={4} onCellsChanged={handleChanges} stickyRightColumns={2} />)
+                </div> : )
             }
             {
                 (data.length == 0 && load == false) && <div className='border text-center select-none '>ไม่พบข้อมูลที่คุณค้นหา</div>
-            }
+            } */}
+            <Spin spinning={load} >
+                <ReactGrid rows={rows} columns={columns} stickyTopRows={1} stickyLeftColumns={4} onCellsChanged={handleChanges} stickyRightColumns={2} />
+            </Spin>
         </div>
         <div className='flex'>
             <div className={`${lrev == '999' ? 'bg-[#009866]' : 'bg-[#5c5fc8]'} text-white px-3`}>จำนวน</div>

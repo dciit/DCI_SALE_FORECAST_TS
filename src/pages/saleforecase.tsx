@@ -1,16 +1,14 @@
-import { Avatar } from '@mui/material'
 import { faker } from '@faker-js/faker';
-import AccessAlarmOutlinedIcon from '@mui/icons-material/AccessAlarmOutlined';
-import AirplayOutlinedIcon from '@mui/icons-material/AirplayOutlined';
-import AssessmentOutlinedIcon from '@mui/icons-material/AssessmentOutlined';
-import KeyboardVoiceOutlinedIcon from '@mui/icons-material/KeyboardVoiceOutlined';
+import { Avatar } from 'antd';
 import moment from 'moment';
+import { AiFillAlert } from "react-icons/ai";
+
 function SaleForecase() {
     const today: string = moment().format('DD');
     const month: string = moment().format('MMM');
     const dddd: string = moment().format('dddd');
     const textColor: string = '#5c5fc8';
-    const icons: any[] = [<AccessAlarmOutlinedIcon />, <AirplayOutlinedIcon />, <AssessmentOutlinedIcon />];
+    const icons: any[] = [<AiFillAlert />, <AiFillAlert />, <AiFillAlert />];
 
 
     return (
@@ -38,7 +36,7 @@ function SaleForecase() {
                         <div id="search" className='flex gap-1'>
                             <input type="text" className='bg-[#ddd] rounded-sm pl-3 py-1' placeholder='Search' />
                             <div className='bg-[#ddd] w-fit rounded-sm px-2 py-1 text-[#575757]'>
-                                <KeyboardVoiceOutlinedIcon />
+                                {/* <KeyboardVoiceOutlinedIcon /> */}
                             </div>
                         </div>
                         <div >

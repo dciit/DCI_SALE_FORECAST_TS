@@ -1,8 +1,7 @@
-import { Button } from "@mui/material";
 import { useRef } from 'react';
 import { DownloadTableExcel } from "react-export-table-to-excel";
-import TextSnippetIcon from '@mui/icons-material/TextSnippet';
 import { Column, DefaultCellTypes, Row } from "@silevis/reactgrid";
+import { Button } from 'antd';
 interface MExcelProps {
     year: string;
     month: string;
@@ -21,7 +20,7 @@ function ExportToExcel(props: MExcelProps) {
             sheet={`${year}-${month}`}
             currentTableRef={tableRef.current}
         >
-            <Button variant='contained' color='success' startIcon={<TextSnippetIcon />} >Excel</Button>
+            <Button  color='success'  >Excel</Button>
         </DownloadTableExcel>
         <table ref={tableRef} className="hidden">
             <tbody>

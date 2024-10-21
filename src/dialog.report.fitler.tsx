@@ -1,14 +1,9 @@
 import { useEffect, useState } from 'react'
-import Dialog from '@mui/material/Dialog'
-import DialogTitle from '@mui/material/DialogTitle'
-import DialogContent from '@mui/material/DialogContent'
-import DialogActions from '@mui/material/DialogActions'
-import Button from '@mui/material/Button'
 import { API_GET_CUSTOMER, API_GET_MODELS, API_GET_PLTYPE, API_GET_SEBANGO } from './Service'
 import Select from 'react-select'
-import { Box, CircularProgress, Stack, Typography } from '@mui/material'
 import { MReactSelect } from './Interface'
 import { useDispatch, useSelector } from 'react-redux'
+import { Button, Modal, Typography } from 'antd'
 function DialogReportFilter(props: any) {
     const reduxFilterReport = useSelector((state: any) => state.reducer);
     const dispatch = useDispatch();
@@ -84,28 +79,20 @@ function DialogReportFilter(props: any) {
         filterReport();
     }
     return (
-        <Dialog open={open} onClose={() => handleClose()} fullWidth>
-            <DialogTitle>
-                Filter
-            </DialogTitle>
-            <DialogContent dividers>
-                <Box height={'500px'}>
-                    <Stack gap={1}>
-                        <Typography className='text-blue-500 font-semibold'>{filter}</Typography>
-                        {
-                            load ? <Stack alignItems={'center'} gap={1}>
-                                <CircularProgress />
-                                <Typography>กำลังโหลดข้อมูล</Typography>
-                            </Stack> :
-                                <Select options={options} defaultValue={defVal} isMulti onChange={handleChange} closeMenuOnSelect={false} />
-                        }
-                    </Stack>
-                </Box>
-            </DialogContent>
-            <DialogActions>
-                <Button variant='outlined' onClick={() => handleClose()} >Close</Button>
-            </DialogActions>
-        </Dialog>
+        <Modal title='Filter' open={open} onClose={() => handleClose()} footer={<Button onClick={() => handleClose()} >Close</Button>}>
+            <div className='h-[500px]' >
+                <div >
+                    <Typography className='text-blue-500 font-semibold'>{filter}</Typography>
+                    {
+                        load ? <div >
+                            {/* <CircularProgress /> */}
+                            <Typography>กำลังโหลดข้อมูล</Typography>
+                        </div> :
+                            <Select options={options} defaultValue={defVal} isMulti onChange={handleChange} closeMenuOnSelect={false} />
+                    }
+                </div>
+            </div>
+        </Modal>
     )
 }
 

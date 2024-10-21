@@ -24,6 +24,13 @@ h1 {
   font-size: 3.2em;
   line-height: 1.1;
 }
+button.ant-btn-primary {
+background: #1677FF !important;
+}
+button.ant-btn-primary:hover {
+  background: #4096ff !important;
+}
+/* 
 
 button {
   border-radius: 8px;
@@ -35,16 +42,17 @@ button {
   background-color: #1a1a1a;
   cursor: pointer;
   transition: border-color 0.25s;
-}
+} */
 
+/* 
 button:hover {
   border-color: #646cff;
-}
+} */
 
-button:focus,
+/* button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
-}
+} */
 
 
 .wrapper {

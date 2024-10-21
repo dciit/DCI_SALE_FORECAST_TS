@@ -1,12 +1,14 @@
-import { Autocomplete, Button, IconButton, TextField } from '@mui/material'
 import { useEffect, useState } from 'react'
-import { API_ADD_MODEL_TO_CUSTOMER, API_DEL_MODEL_OF_CUSTOMER , API_GET_MODEL, API_GET_MODEL_BY_CUSTOMER } from '../service/saleforecase.service';
+import { API_ADD_MODEL_TO_CUSTOMER, API_DEL_MODEL_OF_CUSTOMER, API_GET_MODEL, API_GET_MODEL_BY_CUSTOMER } from '../service/saleforecase.service';
 import { DictMstr, Status } from '../interface/saleforecase.interface';
-import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import SettingPallet from '../components/setting.pallet';
 import SettingCustomer from '../components/setting.customer';
-import {  ApiGetCustomer } from '../Service';
+import { ApiGetCustomer } from '../Service';
 import { PropsCustomer } from '../Interface';
+import { AiOutlineDelete } from "react-icons/ai";
+import { AiFillPlusCircle } from "react-icons/ai";
+
+import { Button, Popconfirm, Select, Spin } from 'antd';
 export interface mOption {
     label: string;
     value: string;
@@ -23,6 +25,7 @@ function CustomerSetting() {
     const [modelOfCustomer, setModelOfCustomer] = useState<DictMstr[]>([]);
     const [modelSelected, setModelSelected] = useState<string | undefined>('');
     const [once, setOnce] = useState<boolean>(true);
+    const [load, setLoad] = useState<boolean>(true);
     useEffect(() => {
         if (once == true) {
             init();
@@ -30,8 +33,12 @@ function CustomerSetting() {
         }
     }, [once]);
     const init = async () => {
+        setLoad(true);
         let apiGetCustomer = await ApiGetCustomer();
         setCustomers(apiGetCustomer);
+        setTimeout(() => {
+            setLoad(false);
+        }, 1000);
     }
     useEffect(() => {
         if (customers.length) {
@@ -105,14 +112,6 @@ function CustomerSetting() {
             return oTab;
         }))
     }
-    // useEffect(()=>{
-    //     if(tabs.find(x=>x.key == 'pallet' && x.active == true) != undefined){
-    //         initPallet();
-    //     }
-    // },[tabs]);
-    // const initPallet = async ()=>{
-    //     let resPallet = await ApiGetPalletOfCustomer();
-    // }
     return (
         <div className='p-6 flex  flex-col gap-3'>
             <div className='flex flex-col gap-2'>
@@ -130,17 +129,25 @@ function CustomerSetting() {
                     tabs.find(x => x.active == true)?.key == 'model' && <div className='py-3 flex flex-col gap-6'>
                         <div className='flex flex-col gap-1 px-4 py-4 shadow-md border'>
                             <span>Please Select Customer : </span>
-                            <select className='border rounded-md focus:outline-none cursor-pointer px-3 py-2 bg-[#5c5fc810]' onChange={(e: any) => setCustomer(e.target.value)} value={customer}>
+                            {/* <select className='border rounded-md focus:outline-none cursor-pointer px-3 py-2 bg-[#5c5fc810]' onChange={(e: any) => setCustomer(e.target.value)} value={customer}>
                                 {
                                     customers.map((oCus: PropsCustomer, iCus: number) => {
                                         return <option value={oCus.VenderShortName} key={iCus}>{oCus.VenderShortName}</option>
                                     })
                                 }
-                            </select>
+                            </select> */}
+
+                            <Select value={customer} onChange={(e: any) => setCustomer(e)} size='large'>
+                                {
+                                    customers.map((oCus: PropsCustomer, iCus: number) => {
+                                        return <Select.Option value={oCus.VenderShortName} key={iCus}>{oCus.VenderShortName}</Select.Option>
+                                    })
+                                }
+                            </Select>
 
                             <span>Please Select Model of Customer : </span>
                             <div className='flex gap-3'>
-                                <Autocomplete
+                                {/* <Autocomplete
                                     className='grow'
                                     size='small'
                                     options={modelMaster}
@@ -150,36 +157,56 @@ function CustomerSetting() {
                                         console.log(e);
                                         setModelSelected(newValue?.value)
                                     }}
-                                />
-                                <Button variant='contained' onClick={handleAddModelToCustomer}>เพิ่ม</Button>
+                                /> */}
+                                <Select placeholder='เลือกโมเดลที่ต้องการเพิ่ม' className='w-full' onChange={(e: any) => setModelSelected(e)} value={modelSelected != '' ? modelSelected : null}>
+                                    {
+                                        modelMaster.map((o: mOption, i: number) => {
+                                            return <Select.Option value={o.value} key={i}>{o.label}</Select.Option>
+                                        })
+                                    }
+                                </Select>
+                                <Popconfirm
+                                    title="แจ้งเตือน"
+                                    description="คุณต้องการเพิ่มโมเดล ให้กับลูกค้า ใช่หรือไม่ ?"
+                                    onConfirm={handleAddModelToCustomer}
+                                    okText="ยืนยัน"
+                                    cancelText="ยกเลิก"
+                                >
+                                    <Button type='primary' icon={<AiFillPlusCircle />}  >เพิ่ม</Button>
+                                </Popconfirm>
+
                             </div>
                         </div>
                         <div className='flex flex-col gap-1  overflow-y-auto max-h-[500px]'>
                             <span>Drawing of Customer ({modelOfCustomer.length})</span>
-                            <table className='w-[100%]'>
-                                <tbody>
-                                    <tr className='bg-[#5c5fc8] text-white sticky top-0'>
-                                        <td className='border px-3 '>ModelName</td>
-                                        <td className='border  text-center'>#</td>
-                                    </tr>
-                                    {
-                                        modelOfCustomer.length == 0 ? <tr><td className='border text-center'>ไม่พบข้อมูล</td></tr> :
-                                            modelOfCustomer.map((o: DictMstr, i: number) => {
-                                                return <tr key={i}>
-                                                    <td width={'90%'} className='border px-3 cursor-pointer hover:bg-[#5c5fc810] transition-all duration-300'>{o.refCode}</td>
-                                                    <td className='border text-center'><IconButton className='focus:outline-none' onClick={() => {
-                                                        if (o.dictId != undefined && o.dictId != '' && o.refCode != undefined && o.refCode != '') {
-                                                            handleDelModelOfCustomer(o.dictId, o.refCode)
-                                                        } else {
-                                                            alert(`ข้อมูลไม่ครบถ้วน Dict Code : ${o.dictId}, Model : ${o.refCode}`)
-                                                        }
-                                                    }}><DeleteOutlineIcon className='text-[#5c5fc8] ' /></IconButton></td>
-                                                </tr>
-                                            })
+                            <Spin spinning={load}>
+                                <table className='w-[100%]'>
+                                    <tbody>
+                                        <tr className='bg-[#16345e] text-white sticky top-0 z-[999]'>
+                                            <td className='border px-3 '>ModelName</td>
+                                            <td className='border  text-center'>#</td>
+                                        </tr>
+                                        {
+                                            modelOfCustomer.length == 0 ? <tr><td className='border text-center'>ไม่พบข้อมูล</td></tr> :
+                                                modelOfCustomer.map((o: DictMstr, i: number) => {
+                                                    return <tr key={i}>
+                                                        <td width={'90%'} className='border px-3 cursor-pointer hover:bg-[#5c5fc810] transition-all duration-300 font-semibold'>{o.refCode}</td>
+                                                        <td className='border text-center'>
+                                                            <Button type='primary' onClick={() => {
+                                                                if (o.dictId != undefined && o.dictId != '' && o.refCode != undefined && o.refCode != '') {
+                                                                    handleDelModelOfCustomer(o.dictId, o.refCode)
+                                                                } else {
+                                                                    alert(`ข้อมูลไม่ครบถ้วน Dict Code : ${o.dictId}, Model : ${o.refCode}`)
+                                                                }
+                                                            }}><AiOutlineDelete /></Button>
+                                                        </td>
+                                                    </tr>
+                                                })
 
-                                    }
-                                </tbody>
-                            </table>
+                                        }
+                                    </tbody>
+                                </table>
+                            </Spin>
                         </div>
                     </div>
                 }

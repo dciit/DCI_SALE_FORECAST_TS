@@ -1,19 +1,19 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { useDispatch } from 'react-redux'
-import { FormControl, InputAdornment, InputLabel, OutlinedInput, Stack, Typography } from '@mui/material';
-import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
-import AccountBoxIcon from '@mui/icons-material/AccountBox';
-import { API_HR_LOGIN , API_PRIVILEGE } from './Service';
+import { API_HR_LOGIN, API_PRIVILEGE } from './Service';
 import { useNavigate } from 'react-router-dom';
 import { KeyboardEvent } from 'react';
 import { MLogin } from './Interface';
+import { Button, Input } from 'antd';
 function Login() {
+    const [load, setLoad] = useState<boolean>(false)
     const version = import.meta.env.VITE_VERSION;
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const rev = import.meta.env.VITE_VERSION;
     const [empcode, setEmpcode] = useState<string>('');
     async function handleLogin() {
+        setLoad(true);
         let login: MLogin = await API_HR_LOGIN(empcode);
         if (login.status) {
             let privilege = await API_PRIVILEGE('UKEHARAI', 'EDIT');
@@ -24,6 +24,7 @@ function Login() {
         } else {
             alert('ไม่สามารถเข้าสู่ระบบได้ !');
             setEmpcode('');
+            setLoad(false);
         }
     }
 
@@ -34,47 +35,22 @@ function Login() {
         }
     };
     return (
-        <Stack className='h-[100%] w-[100%]' direction={'row'} justifyContent={'center'}  >
-            <div className='flex-1 bg-[#36a6ff ]'>
-                <Stack className='w-full h-full' justifyContent={'center'} alignContent={'center'} alignItems={'center'}>
-                    <MonetizationOnIcon className='text-[20em] animate-bounce delay-10000 text-[#292c3d]' />
-                    <Typography variant='h3' className='text-[#292c3d] '>SALE FORECAST</Typography>
-                    <span>VERSION : {version}</span>
-                </Stack>
+        <div className='h-[100%] w-[100%] flex flex-col gap-3 items-center justify-center bg-gradient-to-r from-blue-600 to-violet-600'>
+            <div className='flex flex-col gap-6 w-fit border rounded-lg shadow-md px-6 pb-6 pt-5 bg-white'>
+                <div className='flex flex-col '>
+                    <span className='text-[3em] font-bold'>SALE FORECASE</span>
+                    <span className='text-gray-600'>ระบบจัดการข้อมูลการขาย</span>
+                </div>
+                <div className='flex  flex-col gap-1'>
+                    <span className='text-black/80'>รหัสพนักงาน</span>
+                    <Input value={empcode} onChange={(e) => setEmpcode(e.target.value)} placeholder='ระบุรหัสพนักงาน' autoFocus onKeyDown={handleKeyPress}  disabled = {load}/>
+                </div>
+                <Button type='primary' onClick={handleLogin} loading={load}>เข้าสู่ระบบ</Button>
             </div>
-            <div className='flex flex-1 bg-[#292c3d] items-center justify-center' onKeyUp={handleKeyPress}>
-                <Stack className=' w-[100%] flex-right' spacing={3}>
-                    <Typography className='text-white pl-[30%] text-[1.5vw]' style={{ fontFamily: 'system-ui' }}>Login to your account</Typography>
-                    <Stack className='h-fit'>
-                        <div className='px-6'>
-                            <FormControl fullWidth sx={{ m: 1 }}>
-                                <InputLabel htmlFor="outlined-adornment-amount">EMPCODE</InputLabel>
-                                <OutlinedInput
-                                    autoFocus
-                                    type='text'
-                                    className='text-white text-[1.5vw]'
-                                    startAdornment={<InputAdornment position="start"><AccountBoxIcon className='text-white' /></InputAdornment>}
-                                    label="Amount"
-                                    value={empcode}
-                                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                                        let oEmpcode = e.target.value;
-                                        if (oEmpcode.length > 5) {
-                                            oEmpcode = oEmpcode.substring(0, 5);
-                                        }
-                                        setEmpcode(oEmpcode)
-                                    }}
-                                />
-                            </FormControl>
-                        </div>
-                    </Stack>
-                    <Stack direction={'row'}>
-                        <div className='w-[60%] font-semibold text-[2vw] hover:text-[2.3vw]  border-btn-login py-3  text-[#36a6ff]  bg-white  pl-[25%] duration-500 transition-all select-none cursor-pointer' onClick={handleLogin} > LOGIN</div>
-                        <div></div>
-                    </Stack>
-                </Stack>
-
+            <div className='text-white/80 flex items-end '>
+                <span>Version : {version}</span>
             </div>
-        </Stack>
+        </div>
     )
 }
 

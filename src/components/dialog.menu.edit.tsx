@@ -1,17 +1,14 @@
-// @ts-nocheck
-import { Dialog, DialogTitle, List, ListItem, ListItemButton, ListItemAvatar, Avatar, ListItemText, DialogContent } from '@mui/material'
+//@ts-nocheck
 import { useDispatch, useSelector } from 'react-redux';
-import EditIcon from '@mui/icons-material/Edit';
 import { useNavigate } from 'react-router-dom';
 import moment from 'moment';
 import { MRedux, oSale } from '../Interface';
-import SearchIcon from '@mui/icons-material/Search';
 import CHECK_PRIVILEGE from '../Method';
-import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import { API_GET_SALE } from '../Service';
 import { downloadExcel } from 'react-export-table-to-excel';
 import { useEffect, useState } from 'react';
 import { getModelGroupOfModelName } from '../function/main.function';
+import { Modal } from 'antd';
 function DialogMenuEdit(props: any) {
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -115,9 +112,8 @@ function DialogMenuEdit(props: any) {
 
 
     return (
-        <Dialog onClose={close} open={open} >
-            <DialogTitle>{`${year} : ${moment(month, 'M').format('MMM').toUpperCase()}`}</DialogTitle>
-            <DialogContent dividers>
+        <Modal onClose={close} open={open} title = {`${year} : ${moment(month, 'M').format('MMM').toUpperCase()}`}>
+            {/* <DialogContent dividers>
                 <List sx={{ pt: 0 }}>
                     <ListItem disableGutters onClick={handleEdit}>
                         <ListItemButton autoFocus >
@@ -154,8 +150,8 @@ function DialogMenuEdit(props: any) {
                         </>
                     }
                 </List>
-            </DialogContent>
-        </Dialog>
+            </DialogContent> */}
+        </Modal>
     )
 }
 
