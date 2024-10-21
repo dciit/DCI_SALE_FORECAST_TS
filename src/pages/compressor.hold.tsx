@@ -42,7 +42,6 @@ function CompressorHold() {
     <>
       <div className="mx-auto max-w-screen-2xl bg-white">
         <h1 className="m-2 text-2xl font-bold text-gray-900">
-          COMPRESSOR HOLD
           Compressor / ODM Hold
         </h1>
         <div className="bg-white py-2 px-3">
@@ -233,12 +232,10 @@ function CompressorHold() {
                                     {Number(oParent.sumhold).toLocaleString()}
                                   </td>
                                   <td className="whitespace-no-wrap py-2 text-sm font-bold  sm:px-2 lg:table-cell w-[20%]">
-                                    UNHOLD ทั้งหมด:{" "}
                                      CANCLE HOLD ทั้งหมด:{" "}
                                     {Number(oParent.sumunhold).toLocaleString()}
                                   </td>
                                   <td className="whitespace-no-wrap py-2 text-sm font-bold  sm:px-2 lg:table-cell w-[20%]">
-                                    STOCK HOLD ทั้งหมด:{" "}
                                       Hold Remain ทั้งหมด:{" "}
                                     {Number(oParent.stockhold).toLocaleString()}
                                   </td>
